@@ -49,7 +49,6 @@ async function getLanguages() {
     
     for (const entry of Object.entries(response))
         languages[entry[1].name] = entry[0];
-    return;
 }
 
 /**
