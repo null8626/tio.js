@@ -49,7 +49,7 @@ function requestText(path) {
 async function resolveLanguage(language) {
     language = language ? language.toLowerCase() : defaultLanguage;
     if (language === defaultLanguage) return language;
-    else if (!languages) languages = Object.keys(JSON.parse(await requestText('./languages.json'))).map(x => x.toLowerCase());
+    else if (!languages) languages = Object.keys(JSON.parse(await requestText('/languages.json'))).map(x => x.toLowerCase());
     if (languages.includes(language)) return language;
     
     throw new TypeError(`Invalid language. List of all listed languages are in "await tio.languages();"`);
@@ -151,7 +151,7 @@ module.exports = Object.assign(
      * @returns {string[]} The list of available languages.
      */
     languages: async () => {
-        if (!languages) languages = Object.keys(JSON.parse(await requestText('./languages.json'))).map(x => x.toLowerCase());
+        if (!languages) languages = Object.keys(JSON.parse(await requestText('/languages.json'))).map(x => x.toLowerCase());
         return languages;
     },
     
