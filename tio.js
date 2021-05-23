@@ -39,27 +39,19 @@ function requestText(path) {
 
 /**
  * @async
- * Gets the available list of languages from languages.json.
- * @returns {void}
- */
-async function getLanguages() {
-    if (languages) return;
-    const response = JSON.parse(await requestText('/languages.json'));
-    languages = {};
-    
-    for (const entry of Object.entries(response))
-        languages[entry[1].name] = entry[0];
-    return;
-}
-
-/**
- * @async
  * Handles if a language is available to use or not.
  * @returns {string} The parsed language.
  */
 async function resolveLanguage(language) {
-    await getLanguages();
-    if (Object.keys(languages).includes(language)) return languages[language];
+    if (!languages) {
+        const response = JSON.parse(await requestText('/languages.json'));
+        languages = {};
+        
+        for (const entry of Object.entries(response))
+            languages[entry[1].name] = entry[0];
+    }
+    
+    if (languages[language]) return languages[language];
     else if (Object.values(languages).includes(language)) return language;
     
     throw new TypeError(`Invalid language.`);
@@ -139,8 +131,8 @@ module.exports = Object.assign(
      * @returns {Promise<void>}
      */
     setDefaultLanguage: async (language) => {
-        if (language === defaultLanguage) return;
         language = language.toLowerCase();
+        if (language === defaultLanguage) return;
         language = await resolveLanguage(language);
         defaultLanguage = language;
     },
