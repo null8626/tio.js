@@ -138,8 +138,8 @@ module.exports = Object.assign(
      * @returns {Promise<void>}
      */
     setDefaultLanguage: async (language) => {
-        if (language === defaultLanguage) return;
         language = language.toLowerCase();
+        if (language === defaultLanguage) return;
         language = await resolveLanguage(language);
         defaultLanguage = language;
     },
