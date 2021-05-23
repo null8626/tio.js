@@ -1,6 +1,6 @@
 {
   "name": "tio.js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Unofficial node.js wrapper for the TryItOnline (tio.run) API.",
   "main": "tio.js",
   "scripts": {

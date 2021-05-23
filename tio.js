@@ -53,7 +53,7 @@ async function resolveLanguage(language) {
     if (languages[language]) return languages[language];
     else if (Object.values(languages).includes(language)) return language;
     
-    throw new TypeError('Invalid language.');
+    throw new TypeError(`Invalid language.\nList of available languages: ${Object.values(languages).join(', ')}\n\n`);
 }
 
 /**
