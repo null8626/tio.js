@@ -149,5 +149,7 @@ module.exports = Object.assign(
      * Returns the default language to use if language parameter is not provided.
      * @returns {string}
      */
-    getDefaultLanguage: () => defaultLanguage
+    getDefaultLanguage: () => defaultLanguage,
+    
+    version: require('./package.json').version
 });
