@@ -1,4 +1,4 @@
-const { request, get } = require('https');
+const { request } = require('https');
 const { deflateRawSync, gunzipSync } = require('zlib');
 const { randomBytes } = require('crypto');
 const getRequestBody = (c, l) => deflateRawSync(Buffer.from([
@@ -22,17 +22,22 @@ let defaultLanguage = 'javascript-node';
 let nextRequest = null;
 
 /**
+ * @async
  * Does a simple GET request to the TIO page. Used primarily for scraping.
  * @param {string} [path] The request path.
  * @returns {Promise<string>} The request response.
  */
 function requestText(path) {
     return new Promise(resolve => {
-        get(`https://tio.run${path || '/'}`, response => {
+        request({
+            method: 'GET',
+            host: 'tio.run',
+            path: path || '/'
+        }, response => {
             let str = '';
             response.on('data', data => str += data);
             response.once('end', () => resolve(str));
-        });
+        }).end();
     });
 }
 
@@ -42,31 +47,28 @@ function requestText(path) {
  * @returns {Promise<string>} The resolved language.
  */
 async function resolveLanguage(language) {
-    if (!languages) {
-        const response = JSON.parse(await requestText('/languages.json'));
-        
-        languages = Object.fromEntries(
-            Object.entries(response).map(([K, V]) => [V.name, K])
-        );
-    }
+    language = language ? language.toLowerCase() : defaultLanguage;
+    if (language === defaultLanguage) return language;
+    else if (!languages) languages = Object.keys(JSON.parse(await requestText('./languages.json'))).map(x => x.toLowerCase());
+    if (languages.includes(language)) return language;
     
-    if (languages[language]) return languages[language];
-    else if (Object.values(languages).includes(language)) return language;
-    
-    throw new TypeError(`Invalid language.\nList of available languages: ${Object.values(languages).join(', ')}\n\n`);
+    throw new TypeError(`Invalid language. List of all listed languages are in "await tio.languages();"`);
 }
 
 /**
  * @async
- * Gets the run URL by scraping the website's backend.
+ * Prepares the request.
  * @returns {Promise<void>}
  */
-async function getRunURL() {
+async function prepare() {
     if (runURL) return;
     const scrapeResponse = await requestText();
     const frontendJSurl = scrapeResponse.match(/<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/)[1];
+    if (!frontendJSurl) throw new Error('An error occurred while scraping tio.run. Please try again later or report to the developer about this bug.');
     const frontendJS = await requestText(frontendJSurl);
     runURL = frontendJS.match(/^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m)[1];
+    
+    if (!runURL) throw new Error('An error occurred while scraping tio.run. Please try again later or report to the developer about this bug.');
 }
 
 module.exports = Object.assign(
@@ -85,17 +87,12 @@ module.exports = Object.assign(
         if (delayAmount > 0)
             await new Promise(end => setTimeout(end, delayAmount * 1000));
         
-        language = language ? language.toLowerCase() : defaultLanguage;
-        if (language !== defaultLanguage)
-            language = await resolveLanguage(language);
-        
-        await getRunURL();
+        language = await resolveLanguage(language);
+        await prepare();
         let response = await new Promise(resolve => {
-            const randomStuff = randomBytes(16).toString('hex');
-            
             request({
                 host: 'tio.run',
-                path: `/cgi-bin/static/${runURL}/${randomStuff}`,
+                path: `/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`,
                 method: 'POST'
             }, resp => {
                 let buf = Buffer.alloc(0);
@@ -147,6 +144,16 @@ module.exports = Object.assign(
      * @returns {string}
      */
     getDefaultLanguage: () => defaultLanguage,
+    
+    /**
+     * @async
+     * Fetches all the available languages.
+     * @returns {string[]} The list of available languages.
+     */
+    languages: async () => {
+        if (!languages) languages = Object.keys(JSON.parse(await requestText('./languages.json'))).map(x => x.toLowerCase());
+        return languages;
+    },
     
     version: require('./package.json').version
 });
