@@ -1,4 +1,4 @@
-declare function tio(code: string, language?: string): Promise<tio.TioResponse>;
+declare function tio(code: string, language?: string, timeout?: number): Promise<tio.TioResponse>;
 
 declare module tio {
     interface TioResponse {
