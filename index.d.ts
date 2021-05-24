@@ -1,4 +1,6 @@
-declare module 'tio.js' {
+declare function tio(code: string, language?: string): Promise<tio.TioResponse>;
+
+declare module tio {
     interface TioResponse {
         output: string;
         language: string;
@@ -9,11 +11,10 @@ declare module 'tio.js' {
         exitCode: number;
     }
     
-    function main(name: string, language?: string): Promise<TioResponse>;
-    
-    export = main;
     export function setDefaultLanguage(language: string): Promise<void>;
     export function getDefaultLanguage(): string;
     export function languages(): Promise<string[]>;
     export const version: string;
 }
+
+export = tio;
