@@ -114,18 +114,21 @@ module.exports = Object.assign(
             
             response = response.replace(new RegExp(response.slice(-16).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), '');
         
-            r(response.split('\n').slice(-5).map(x => Number(x.slice(11, ...(/[^\d]$/.test(x) ? [-2] : [])))));
+            const split = response.split('\n');
+            
+            r([split, split.slice(-5).map(x => Number(x.slice(11, ...(/[^\d]$/.test(x) ? [-2] : []))))]);
         });
         
         if (Array.isArray(output)) {
+            const [main, other] = output;
             return {
-                output: output.slice(0, -5).join('\n').trim(),
+                output: main.slice(0, -5).join('\n').trim(),
                 language,
-                realTime: output[0],
-                userTime: output[1],
-                sysTime: output[2],
-                CPUshare: output[3],
-                exitCode: output[4]
+                realTime: other[0],
+                userTime: other[1],
+                sysTime: other[2],
+                CPUshare: other[3],
+                exitCode: other[4]
             };
         } else {
             return {
