@@ -1,9 +1,9 @@
+"use strict";
+
 const { request } = require('https');
 const { deflateRawSync, gunzipSync } = require('zlib');
 const { randomBytes } = require('crypto');
-const getRequestBody = (c, l) => deflateRawSync(Buffer.from([
-    'Vlang', 1, l, 'VTIO_OPTIONS', 0, 'F.code.tio', c.length, `${c}F.input.tio`, 0, 'Vargs', 0, 'R'
-].join('\0'), 'binary'), { level: 9 });
+const getRequestBody = (c, l) => deflateRawSync(Buffer.from(`Vlang\0${1}\0${l}\0VTIO_OPTIONS\0${0}\0F.code.tio\0${c.length}\0${c}F.input.tio\0${0}\0Vargs\0${0}\0R`, 'binary'), { level: 9 });
 
 /**
  * @typedef {Object} TioResponse
@@ -19,7 +19,6 @@ const getRequestBody = (c, l) => deflateRawSync(Buffer.from([
 let runURL = null;
 let languages = null;
 let defaultLanguage = 'javascript-node';
-let nextRequest = null;
 
 /**
  * @async
@@ -47,6 +46,9 @@ function requestText(path) {
  * @returns {Promise<string>} The resolved language.
  */
 async function resolveLanguage(language) {
+    if (language && typeof language !== 'string')
+        throw new TypeError("'language' must be a string.");
+
     language = language ? language.toLowerCase() : defaultLanguage;
     if (language === defaultLanguage) return language;
     else if (!languages) languages = Object.keys(JSON.parse(await requestText('/languages.json'))).map(x => x.toLowerCase());
@@ -81,11 +83,7 @@ module.exports = Object.assign(
      */
     async (code, language) => {
         if (typeof code !== 'string')
-            throw new TypeError("'code' must be a string");
-        
-        const delayAmount = nextRequest ? nextRequest - Math.round(Date.now() / 1000) : 0;
-        if (delayAmount > 0)
-            await new Promise(end => setTimeout(end, delayAmount * 1000));
+            throw new TypeError("'code' must be a string.");
         
         language = await resolveLanguage(language);
         await prepare();
@@ -104,7 +102,6 @@ module.exports = Object.assign(
             ));
         });
         
-        nextRequest = Math.round(Date.now() / 1000) + 2;
         response = response.replace(new RegExp(response.slice(-16).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), '');
         
         const split = response.split('\n');

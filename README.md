@@ -37,13 +37,13 @@ const tio = require('tio.js');
     await tio.setDefaultLanguage('python3');
     console.log(tio.getDefaultLanguage()); // python3
     
-    const response = await tio(`print('Hello, World!')`);
+    const response = await tio('print("Hello, World!")');
     console.log(response);
 })();
 ```
 
 ## Sample response
-This is the sample response whenever you ran `await tio(...);`.
+This is the sample response whenever you call `await tio(...);`.
 
 ```js
 {

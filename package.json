@@ -1,6 +1,6 @@
 {
   "name": "tio.js",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Unofficial node.js wrapper for the TryItOnline (tio.run) API.",
   "main": "tio.js",
   "scripts": {
@@ -16,7 +16,9 @@
     "evaluate",
     "code",
     "tryitonline",
-    "tio.run"
+    "tio.run",
+    "api",
+    "api-wrapper"
   ],
   "dependencies": {},
   "author": "vierofernando",
