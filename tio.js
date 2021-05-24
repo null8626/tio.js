@@ -79,48 +79,65 @@ module.exports = Object.assign(
      * Evaluates code through the TryItOnline API.
      * @param {string} code The code to run.
      * @param {string} [language] The programming language to use. Uses the default language if not specified.
+     * @param {number} [timeout] After how much time should the code execution timeout.
      * @returns {Promise<TioResponse>} The code response.
      */
-    async (code, language) => {
+    async (code, language, timeout) => {
         if (typeof code !== 'string')
             throw new TypeError("'code' must be a string.");
+        if (timeout != null && !Number.isInteger(timeout))
+            throw new TypeError("'timeout' must be a number.");
         
         language = await resolveLanguage(language);
         await prepare();
-        let response = await new Promise(resolve => {
-            request({
-                host: 'tio.run',
-                path: `/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`,
-                method: 'POST'
-            }, resp => {
-                let buf = Buffer.alloc(0);
-                resp.on('data', d => buf = Buffer.concat([buf, d]));
-                resp.once('end', () => resolve(gunzipSync(buf).toString()));
-            }).end(getRequestBody(
-                unescape(encodeURIComponent(code)),
-                unescape(encodeURIComponent(language))
-            ));
+        const output = await new Promise(async r => {
+            const t = timeout != null ? setTimeout(() => {
+                r('Timeout');
+            }, timeout) : null;
+          
+            let response = await new Promise(resolve => {
+                request({
+                    host: 'tio.run',
+                    path: `/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`,
+                    method: 'POST'
+                }, resp => {
+                    let buf = Buffer.alloc(0);
+                    resp.on('data', d => buf = Buffer.concat([buf, d]));
+                    resp.once('end', () => resolve(gunzipSync(buf).toString()));
+                }).end(getRequestBody(
+                    unescape(encodeURIComponent(code)),
+                    unescape(encodeURIComponent(language))
+                ));
+            });
+        
+            if (t) clearTimeout(t);
+            
+            response = response.replace(new RegExp(response.slice(-16).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), '');
+        
+            r(response.split('\n').slice(-5).map(x => Number(x.slice(11, ...(/[^\d]$/.test(x) ? [-2] : [])))));
         });
         
-        response = response.replace(new RegExp(response.slice(-16).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), '');
-        
-        const split = response.split('\n');
-        const [
-            realTime,
-            userTime,
-            sysTime,
-            CPUshare,
-            exitCode
-        ] = split.slice(-5).map(x => Number(x.slice(11, ...(/[^\d]$/.test(x) ? [-2] : []))));
-        return {
-            output: split.slice(0, -5).join('\n').trim(),
-            language,
-            realTime,
-            userTime,
-            sysTime,
-            CPUshare,
-            exitCode
-        };
+        if (Array.isArray(output)) {
+            return {
+                output: output.slice(0, -5).join('\n').trim(),
+                language,
+                realTime: output[0],
+                userTime: output[1],
+                sysTime: output[2],
+                CPUshare: output[3],
+                exitCode: output[4]
+            };
+        } else {
+            return {
+                output,
+                language,
+                realTime: timeout,
+                userTime: timeout,
+                sysTime: timeout,
+                CPUshare: 0,
+                exitCode: 0
+            };
+        }
     },
 {
     /**
