@@ -2,7 +2,7 @@
   "name": "tio.js",
   "version": "1.0.8",
   "description": "Unofficial node.js wrapper for the TryItOnline (tio.run) API.",
-  "main": "tio.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
