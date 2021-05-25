@@ -168,7 +168,7 @@ module.exports = Object.assign(
     /**
      * @async
      * Fetches all the available languages.
-     * @returns {string[]} The list of available languages.
+     * @returns {Promise<string[]>} The list of available languages.
      */
     languages: async () => {
         if (!languages) languages = Object.keys(JSON.parse(await requestText('/languages.json'))).map(x => x.toLowerCase());
@@ -179,9 +179,7 @@ module.exports = Object.assign(
      * Returns the default timeout used by the library.
      * @returns {number|null} A number (in ms) or null if not set.
      */
-    getDefaultTimeout: () => {
-        return defaultTimeout;
-    },
+    getDefaultTimeout: () => defaultTimeout,
 
     /**
      * Sets the default timeout for the library.
