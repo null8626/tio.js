@@ -4,6 +4,7 @@ declare module tio {
     interface TioResponse {
         output: string;
         language: string;
+        timedOut: boolean;
         realTime: number;
         userTime: number;
         sysTime: number;
@@ -13,6 +14,8 @@ declare module tio {
     
     export function setDefaultLanguage(language: string): Promise<void>;
     export function getDefaultLanguage(): string;
+    export function setDefaultTimeout(timeout: number | null): void;
+    export function getDefaultTimeout(): number | null;
     export function languages(): Promise<string[]>;
     export const version: string;
 }

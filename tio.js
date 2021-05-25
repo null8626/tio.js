@@ -9,6 +9,7 @@ const getRequestBody = (c, l) => deflateRawSync(Buffer.from(`Vlang\0${1}\0${l}\0
  * @typedef {Object} TioResponse
  * @property {string} output The code output.
  * @property {string} language The language used.
+ * @property {boolean} timedOut A boolean to check if the request timed out.
  * @property {number} realTime How long the code runs real time.
  * @property {number} userTime How long the code runs user time.
  * @property {number} sysTime How long the code runs system time.
@@ -18,6 +19,7 @@ const getRequestBody = (c, l) => deflateRawSync(Buffer.from(`Vlang\0${1}\0${l}\0
 
 let runURL = null;
 let languages = null;
+let defaultTimeout = null;
 let defaultLanguage = 'javascript-node';
 
 /**
@@ -79,68 +81,69 @@ module.exports = Object.assign(
      * Evaluates code through the TryItOnline API.
      * @param {string} code The code to run.
      * @param {string} [language] The programming language to use. Uses the default language if not specified.
-     * @param {number} [timeout] After how much time should the code execution timeout.
+     * @param {number} [timeout] After how much time should the code execution timeout. (in ms)
      * @returns {Promise<TioResponse>} The code response.
      */
     async (code, language, timeout) => {
         if (typeof code !== 'string')
             throw new TypeError("'code' must be a string.");
-        if (timeout != null && !Number.isInteger(timeout))
+        if (timeout && !Number.isInteger(timeout))
             throw new TypeError("'timeout' must be a number.");
-        
+        else if (timeout && timeout < 500)
+            throw new TypeError("'timeout' must be longer than 500 ms.");
+        else if (!timeout && defaultTimeout)
+            timeout = defaultTimeout;
+
         language = await resolveLanguage(language);
         await prepare();
-        const output = await new Promise(async r => {
-            const t = timeout != null ? setTimeout(() => {
-                r('Timeout');
-            }, timeout) : null;
-          
-            let response = await new Promise(resolve => {
-                request({
-                    host: 'tio.run',
-                    path: `/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`,
-                    method: 'POST'
-                }, resp => {
-                    let buf = Buffer.alloc(0);
-                    resp.on('data', d => buf = Buffer.concat([buf, d]));
-                    resp.once('end', () => resolve(gunzipSync(buf).toString()));
-                }).end(getRequestBody(
-                    unescape(encodeURIComponent(code)),
-                    unescape(encodeURIComponent(language))
-                ));
+        let response = await new Promise(resolve => {
+            const currentRequest = request({
+                host: 'tio.run',
+                path: `/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`,
+                method: 'POST'
+            }, resp => {
+                let buf = Buffer.alloc(0);
+                resp.on('data', d => buf = Buffer.concat([buf, d]));
+                resp.once('end', () => resolve(gunzipSync(buf).toString()));
             });
-        
-            if (t) clearTimeout(t);
             
-            response = response.replace(new RegExp(response.slice(-16).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), '');
-        
-            const split = response.split('\n');
-            
-            r([split, split.slice(-5).map(x => Number(x.slice(11, ...(/[^\d]$/.test(x) ? [-2] : []))))]);
+            if (timeout)
+                currentRequest.setTimeout(timeout, () => {
+                    if (!currentRequest.destroyed) currentRequest.destroy();
+                    resolve(null);
+                });
+
+            currentRequest.end(getRequestBody(
+                unescape(encodeURIComponent(code)),
+                unescape(encodeURIComponent(language))
+            ));
         });
-        
-        if (Array.isArray(output)) {
-            const [main, other] = output;
+
+        if (!response)
             return {
-                output: main.slice(0, -5).join('\n').trim(),
+                output: `Request timed out after ${timeout}ms`,
                 language,
-                realTime: other[0],
-                userTime: other[1],
-                sysTime: other[2],
-                CPUshare: other[3],
-                exitCode: other[4]
-            };
-        } else {
-            return {
-                output,
-                language,
-                realTime: timeout,
-                userTime: timeout,
-                sysTime: timeout,
+                timedOut: true,
+                realTime: timeout / 1000, // the website formats this as in seconds
+                userTime: timeout / 1000,
+                sysTime: timeout / 1000,
                 CPUshare: 0,
                 exitCode: 0
             };
-        }
+
+        response = response.replace(new RegExp(response.slice(-16).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), '');
+        const split = response.split('\n');
+        const [ realTime, userTime, sysTime, CPUshare, exitCode ] = split.slice(-5).map(x => Number(x.slice(11, ...(/[^\d]$/.test(x) ? [-2] : []))));
+        return {
+            output: split.slice(0, -5).join('\n').trim(),
+            language,
+            timedOut: false,
+            realTime,
+            userTime,
+            sysTime,
+            CPUshare,
+            exitCode,
+        };
     },
 {
     /**
@@ -170,6 +173,32 @@ module.exports = Object.assign(
     languages: async () => {
         if (!languages) languages = Object.keys(JSON.parse(await requestText('/languages.json'))).map(x => x.toLowerCase());
         return languages;
+    },
+
+    /**
+     * Returns the default timeout used by the library.
+     * @returns {number|null} A number (in ms) or null if not set.
+     */
+    getDefaultTimeout: () => {
+        return defaultTimeout;
+    },
+
+    /**
+     * Sets the default timeout for the library.
+     * @param {number|null} [timeout] The new default timeout (in ms) or null to disable it.
+     * @returns {void}
+     */
+    setDefaultTimeout: (timeout) => {
+        if (!timeout) {
+            defaultTimeout = null;
+            return;
+        }
+
+        if (!Number.isInteger(timeout))
+            throw new TypeError("'timeout' must be a number");
+        else if (timeout < 500)
+            throw new TypeError("'timeout' must be longer than 500 ms.");
+        defaultTimeout = Number(timeout);
     },
     
     version: require('./package.json').version
