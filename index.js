@@ -62,7 +62,7 @@ async function resolveLanguage(language) {
 /**
  * @async
  * Prepares the request.
- * @returns {Promise<void>}
+ * @returns {Promise<undefined>}
  */
 async function prepare() {
     if (runURL) return;
@@ -150,7 +150,7 @@ module.exports = Object.assign(
      * @async
      * Sets the default language.
      * @param {string} language Language to use as default.
-     * @returns {Promise<void>}
+     * @returns {Promise<undefined>}
      */
     setDefaultLanguage: async (language) => {
         language = language.toLowerCase();
@@ -177,14 +177,14 @@ module.exports = Object.assign(
 
     /**
      * Returns the default timeout used by the library.
-     * @returns {number|null} A number (in ms) or null if not set.
+     * @returns {number | null} A number (in ms) or null if not set.
      */
     getDefaultTimeout: () => defaultTimeout,
 
     /**
      * Sets the default timeout for the library.
-     * @param {number|null} [timeout] The new default timeout (in ms) or null to disable it.
-     * @returns {void}
+     * @param {number | null} [timeout] The new default timeout (in ms) or null to disable it.
+     * @returns {undefined}
      */
     setDefaultTimeout: (timeout) => {
         if (!timeout) {

@@ -1,25 +1,25 @@
 declare module 'tio.js' {
-  namespace tio {
-    interface TioResponse {
-      output: string;
-      language: string;
-      timedOut: boolean;
-      realTime: number;
-      userTime: number;
-      sysTime: number;
-      CPUshare: number;
-      exitCode: number;
-    }
-    
-    function setDefaultLanguage(language: string): Promise<void>;
-    function getDefaultLanguage(): string;
-    function setDefaultTimeout(timeout: number | null): void;
-    function getDefaultTimeout(): number | null;
-    function languages(): Promise<string[]>;
-    const version: string;
+  interface TioResponse {
+    output: string;
+    language: string;
+    timedOut: boolean;
+    realTime: number;
+    userTime: number;
+    sysTime: number;
+    CPUshare: number;
+    exitCode: number;
+  }
+
+  type TioFunction = (code: string, language?: string, timeout?: number) => Promise<TioResponse>;
+
+  interface Tio extends TioFunction {
+    setDefaultLanguage: (language: string) => Promise<undefined>;
+    getDefaultLanguage: () => string;
+    setDefaultTimeout: (timeout: number | null) => undefined;
+    getDefaultTimeout: () => number | null;
+    languages: () => Promise<string[]>;
+    version: string;
   }
   
-  function tio(code: string, language?: string, timeout?: number): Promise<tio.TioResponse>;
-  
-  export = tio;
+  export = Tio;
 }
