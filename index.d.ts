@@ -10,16 +10,25 @@ declare module 'tio.js' {
     exitCode: number;
   }
 
-  type TioFunction = (code: string, language?: string, timeout?: number) => Promise<TioResponse>;
+  function setDefaultLanguage(language: string): Promise<void>;
+  function getDefaultLanguage(): string;
+  function setDefaultTimeout(timeout: number | null): void;
+  function getDefaultTimeout(): number | null;
+  function languages(): Promise<string[]>;
+  const version: string;
 
-  interface Tio extends TioFunction {
-    setDefaultLanguage: (language: string) => Promise<undefined>;
-    getDefaultLanguage: () => string;
-    setDefaultTimeout: (timeout: number | null) => undefined;
-    getDefaultTimeout: () => number | null;
-    languages: () => Promise<string[]>;
-    version: string;
-  }
-  
-  export = Tio;
+  export {
+    setDefaultLanguage,
+    getDefaultLanguage,
+    setDefaultTimeout,
+    getDefaultTimeout,
+    languages,
+    version
+  };
+
+  export default function tioRun(
+    code: string,
+    language?: string,
+    timeout?: number
+  ): Promise<TioResponse>;
 }
