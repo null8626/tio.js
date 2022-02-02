@@ -1,9 +1,17 @@
-"use strict";
+import { request } from 'node:https';
+import { deflateRawSync, gunzipSync } from 'node:zlib';
+import { randomBytes } from 'node:crypto';
 
-const { request } = require('https');
-const { deflateRawSync, gunzipSync } = require('zlib');
-const { randomBytes } = require('crypto');
-const getRequestBody = (c, l) => deflateRawSync(Buffer.from(`Vlang\0${1}\0${l}\0VTIO_OPTIONS\0${0}\0F.code.tio\0${c.length}\0${c}F.input.tio\0${0}\0Vargs\0${0}\0R`, 'binary'), { level: 9 });
+const getRequestBody = (c, l) =>
+  deflateRawSync(
+    Buffer.from(
+      `Vlang\0${1}\0${l}\0VTIO_OPTIONS\0${0}\0F.code.tio\0${
+        c.length
+      }\0${c}F.input.tio\0${0}\0Vargs\0${0}\0R`,
+      'binary'
+    ),
+    { level: 9 }
+  );
 
 /**
  * @typedef {Object} TioResponse
@@ -23,181 +31,257 @@ let defaultTimeout = null;
 let defaultLanguage = 'javascript-node';
 
 /**
- * @async
  * Does a simple GET request to the TIO page. Used primarily for scraping.
  * @param {string} [path] The request path.
  * @returns {Promise<string>} The request response.
  */
 function requestText(path) {
-    return new Promise(resolve => {
-        request({
-            method: 'GET',
-            host: 'tio.run',
-            path: path || '/'
-        }, response => {
-            let str = '';
-            response.on('data', data => str += data);
-            response.once('end', () => resolve(str));
-        }).end();
-    });
+  return new Promise((resolve) => {
+    request(
+      {
+        method: 'GET',
+        host: 'tio.run',
+        path: path ?? '/'
+      },
+      (response) => {
+        let str = '';
+
+        response.on('data', (data) => {
+          str += data;
+        });
+        response.once('end', () => resolve(str));
+      }
+    ).end();
+  });
 }
 
 /**
- * @async
  * Handles if a language is available to use or not.
+ * @async
  * @returns {Promise<string>} The resolved language.
  */
 async function resolveLanguage(language) {
-    if (language && typeof language !== 'string')
-        throw new TypeError("'language' must be a string.");
+  if (language !== undefined && typeof language !== 'string')
+    throw new TypeError("Argument 'language' must be of type string.");
 
-    language = language ? language.toLowerCase() : defaultLanguage;
-    if (language === defaultLanguage) return language;
-    else if (!languages) languages = Object.keys(JSON.parse(await requestText('/languages.json'))).map(x => x.toLowerCase());
-    if (languages.includes(language)) return language;
-    
-    throw new TypeError(`Invalid language. List of all listed languages are in "await tio.languages();"`);
+  language = language !== undefined ? language.toLowerCase() : defaultLanguage;
+
+  if (language === defaultLanguage) return language;
+
+  if (languages === null) languages = await languages_();
+
+  if (!languages.includes(language))
+    throw new Error(
+      "Unsupported/Invalid language provided, a list of supported languages can be requested with 'tio.languages()'."
+    );
+
+  return language;
 }
 
 /**
- * @async
  * Prepares the request.
- * @returns {Promise<undefined>}
+ * @async
+ * @returns {Promise<void>}
  */
 async function prepare() {
-    if (runURL) return;
-    const scrapeResponse = await requestText();
-    const frontendJSurl = scrapeResponse.match(/<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/)[1];
-    if (!frontendJSurl) throw new Error('An error occurred while scraping tio.run. Please try again later or report to the developer about this bug.');
-    const frontendJS = await requestText(frontendJSurl);
-    runURL = frontendJS.match(/^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m)[1];
-    
-    if (!runURL) throw new Error('An error occurred while scraping tio.run. Please try again later or report to the developer about this bug.');
+  if (runURL !== null) return;
+
+  const scrapeResponse = await requestText();
+  const frontendJSURL = scrapeResponse.match(
+    /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/
+  )?.[1];
+
+  if (frontendJSURL === undefined)
+    throw new Error(
+      'An error occurred while scraping tio.run. Please try again later or report this bug to the developer.'
+    );
+
+  const frontendJS = await requestText(frontendJSURL);
+
+  runURL = frontendJS.match(
+    /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m
+  )?.[1];
+
+  if (runURL === undefined) {
+    runURL = null;
+
+    throw new Error(
+      'An error occurred while scraping tio.run. Please try again later or report this bug to the developer.'
+    );
+  }
 }
 
-module.exports = Object.assign(
-    /**
-     * @async
-     * Evaluates code through the TryItOnline API.
-     * @param {string} code The code to run.
-     * @param {string} [language] The programming language to use. Uses the default language if not specified.
-     * @param {number} [timeout] After how much time should the code execution timeout. (in ms)
-     * @returns {Promise<TioResponse>} The code response.
-     */
-    async (code, language, timeout) => {
-        if (typeof code !== 'string')
-            throw new TypeError("'code' must be a string.");
-        if (timeout && !Number.isInteger(timeout))
-            throw new TypeError("'timeout' must be a number.");
-        else if (timeout && timeout < 500)
-            throw new TypeError("'timeout' must be longer than 500 ms.");
-        else if (!timeout && defaultTimeout)
-            timeout = defaultTimeout;
+/**
+ * Fetches all the available languages.
+ * @async
+ * @returns {Promise<string[]>} The list of available languages.
+ */
+async function languages_() {
+  if (languages === null)
+    languages = Object.keys(
+      JSON.parse(await requestText('/languages.json'))
+    ).map((x) => x.toLowerCase());
 
-        language = await resolveLanguage(language);
-        await prepare();
-        let response = await new Promise(resolve => {
-            const currentRequest = request({
-                host: 'tio.run',
-                path: `/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`,
-                method: 'POST'
-            }, resp => {
-                let buf = Buffer.alloc(0);
-                resp.on('data', d => buf = Buffer.concat([buf, d]));
-                resp.once('end', () => resolve(gunzipSync(buf).toString()));
-            });
-            
-            if (timeout)
-                currentRequest.setTimeout(timeout, () => {
-                    if (!currentRequest.destroyed) currentRequest.destroy();
-                    resolve(null);
-                });
+  return languages;
+}
 
-            currentRequest.end(getRequestBody(
-                unescape(encodeURIComponent(code)),
-                unescape(encodeURIComponent(language))
-            ));
+/**
+ * Sets the default language.
+ * @async
+ * @param {string} language The language to use as default.
+ * @returns {Promise<void>}
+ */
+async function setDefaultLanguage(language) {
+  if (typeof language !== 'string')
+    throw new TypeError("Argument 'language' must be of type string.");
+
+  language = language.toLowerCase();
+
+  if (language === defaultLanguage) return;
+
+  language = await resolveLanguage(language);
+  defaultLanguage = language;
+}
+
+/**
+ * Returns the default language.
+ * @returns {string}
+ */
+function getDefaultLanguage() {
+  return defaultLanguage;
+}
+
+/**
+ * Sets the default timeout for the library.
+ * @param {number | null} [timeout] The new default timeout (in ms) or null to disable it.
+ * @returns {void}
+ */
+function setDefaultTimeout(timeout) {
+  if (timeout == undefined) {
+    defaultTimeout = null;
+
+    return;
+  }
+
+  if (!Number.isInteger(timeout))
+    throw new TypeError("Argument 'timeout' must be an integer.");
+  if (timeout < 500)
+    throw new RangeError(
+      "Argument 'timeout' must be greater than or equal to 500."
+    );
+
+  defaultTimeout = parseInt(timeout);
+}
+
+/**
+ * Returns the default timeout used by the library.
+ * @returns {number | null} A number (in ms) or null if not set.
+ */
+function getDefaultTimeout() {
+  return defaultTimeout;
+}
+
+const version = require('./package.json').version;
+
+export {
+  languages_ as languages,
+  setDefaultLanguage,
+  getDefaultLanguage,
+  setDefaultTimeout,
+  getDefaultTimeout,
+  version
+};
+
+/**
+ * Evaluates code through the TryItOnline API.
+ * @async
+ * @param {string} code The code to run.
+ * @param {string} [language] The programming language to use. Uses the default language if not specified.
+ * @param {number} [timeout] After how much time should the code execution timeout. (in ms)
+ * @returns {Promise<TioResponse>} The code response.
+ */
+async function tioRun(code, language, timeout) {
+  if (typeof code !== 'string')
+    throw new TypeError("Argument 'code' must be of type string.");
+  if (timeout !== undefined) {
+    if (!Number.isInteger(timeout))
+      throw new TypeError("Argument 'timeout' must be an integer.");
+    if (timeout < 500)
+      throw new RangeError(
+        "Argument 'timeout' must be greater than or equal to 500."
+      );
+  } else if (defaultTimeout !== null) timeout = defaultTimeout;
+
+  language = await resolveLanguage(language);
+
+  await prepare();
+
+  let response = await new Promise((resolve) => {
+    const currentRequest = request(
+      {
+        host: 'tio.run',
+        path: `/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`,
+        method: 'POST'
+      },
+      (resp) => {
+        let buf = Buffer.alloc(0);
+
+        resp.on('data', (d) => {
+          buf = Buffer.concat([buf, d]);
         });
+        resp.once('end', () => resolve(gunzipSync(buf).toString()));
+      }
+    );
 
-        if (!response)
-            return {
-                output: `Request timed out after ${timeout}ms`,
-                language,
-                timedOut: true,
-                realTime: timeout / 1000, // the website formats this as in seconds
-                userTime: timeout / 1000,
-                sysTime: timeout / 1000,
-                CPUshare: 0,
-                exitCode: 0
-            };
+    if (timeout !== undefined)
+      currentRequest.setTimeout(timeout, () => {
+        if (!currentRequest.destroyed) currentRequest.destroy();
 
-        response = response.replace(new RegExp(response.slice(-16).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), '');
-        const split = response.split('\n');
-        const [ realTime, userTime, sysTime, CPUshare, exitCode ] = split.slice(-5).map(x => Number(x.slice(11, ...(/[^\d]$/.test(x) ? [-2] : []))));
-        return {
-            output: split.slice(0, -5).join('\n').trim(),
-            language,
-            timedOut: false,
-            realTime,
-            userTime,
-            sysTime,
-            CPUshare,
-            exitCode,
-        };
-    },
-{
-    /**
-     * @async
-     * Sets the default language.
-     * @param {string} language Language to use as default.
-     * @returns {Promise<undefined>}
-     */
-    setDefaultLanguage: async (language) => {
-        language = language.toLowerCase();
-        if (language === defaultLanguage) return;
-        language = await resolveLanguage(language);
-        defaultLanguage = language;
-    },
-    
-    /**
-     * Returns the default language to use if language parameter is not provided.
-     * @returns {string}
-     */
-    getDefaultLanguage: () => defaultLanguage,
-    
-    /**
-     * @async
-     * Fetches all the available languages.
-     * @returns {Promise<string[]>} The list of available languages.
-     */
-    languages: async () => {
-        if (!languages) languages = Object.keys(JSON.parse(await requestText('/languages.json'))).map(x => x.toLowerCase());
-        return languages;
-    },
+        resolve(null);
+      });
 
-    /**
-     * Returns the default timeout used by the library.
-     * @returns {number | null} A number (in ms) or null if not set.
-     */
-    getDefaultTimeout: () => defaultTimeout,
+    currentRequest.end(getRequestBody(code, language));
+  });
 
-    /**
-     * Sets the default timeout for the library.
-     * @param {number | null} [timeout] The new default timeout (in ms) or null to disable it.
-     * @returns {undefined}
-     */
-    setDefaultTimeout: (timeout) => {
-        if (!timeout) {
-            defaultTimeout = null;
-            return;
-        }
+  if (response === null) {
+    // The website formats this as in seconds.
+    const timeoutInSecs = timeout / 1000;
 
-        if (!Number.isInteger(timeout))
-            throw new TypeError("'timeout' must be a number");
-        else if (timeout < 500)
-            throw new TypeError("'timeout' must be longer than 500 ms.");
-        defaultTimeout = Number(timeout);
-    },
-    
-    version: require('./package.json').version
-});
+    return {
+      output: `Request timed out after ${timeout}ms`,
+      language,
+      timedOut: true,
+      realTime: timeoutInSecs,
+      userTime: timeoutInSecs,
+      sysTime: timeoutInSecs,
+      CPUshare: 0,
+      exitCode: 0
+    };
+  }
+
+  response = response.replace(
+    new RegExp(
+      response.slice(-16).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'),
+      'g'
+    ),
+    ''
+  );
+
+  const split = response.split('\n');
+  const [realTime, userTime, sysTime, CPUshare, exitCode] = split
+    .slice(-5)
+    .map((x) => parseInt(x.slice(11, ...(/[^\d]$/.test(x) ? [-2] : []))));
+
+  return {
+    output: split.slice(0, -5).join('\n').trim(),
+    language,
+    timedOut: false,
+    realTime,
+    userTime,
+    sysTime,
+    CPUshare,
+    exitCode
+  };
+}
+
+export default tioRun;
