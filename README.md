@@ -115,6 +115,6 @@ console.log(response); // Does the same as the example before.
 ```
 git clone https://github.com/vierofernando/tio.js.git
 cd tio.js
-npm i
+npm install
 npm run build
 ```
