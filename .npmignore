@@ -1,0 +1,8 @@
+.prettierrc
+LICENSE
+index.ts
+.eslintrc
+tsconfig.json
+.editorconfig
+.vscode/
+.github/

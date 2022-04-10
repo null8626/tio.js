@@ -1,12 +1,13 @@
 {
   "name": "tio.js",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Unofficial node.js wrapper for the TryItOnline (tio.run) API.",
   "main": "index.js",
-  "type": "module",
   "types": "index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm run test && npx tsc --project tsconfig.json",
+    "prepare": "npx prettier --write index.ts",
+    "test": "npx eslint index.ts"
   },
   "repository": {
     "type": "git",
@@ -15,17 +16,36 @@
   "keywords": [
     "tio",
     "eval",
-    "evaluate",
     "code",
     "tryitonline",
-    "tio.run",
-    "api",
-    "api-wrapper"
+    "api"
   ],
-  "author": "vierofernando",
+  "author": {
+    "name": "vierofernando",
+    "email": "vierofernando9@gmail.com"
+  },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vierofernando/tio.js/issues"
+    "url": "https://github.com/vierofernando/tio.js/issues",
+    "email": "vierofernando9@gmail.com"
   },
-  "homepage": "https://github.com/vierofernando/tio.js#readme"
+  "homepage": "https://github.com/vierofernando/tio.js#readme",
+  "devDependencies": {
+    "@types/node": "17.0.23",
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "5.17.0",
+    "eslint": "8.12.0",
+    "pre-commit": "1.2.2",
+    "prettier": "2.6.1",
+    "typescript": "4.6.3"
+  },
+  "pre-commit": {
+    "run": [
+      "prepare"
+    ],
+    "silent": true
+  },
+  "dependencies": {
+    "undici": "5.0.0"
+  }
 }
