@@ -22,6 +22,7 @@ let runURL: Option<string> = null;
 let languages: Option<string[]> = null;
 let defaultTimeout: Option<number> = null;
 let defaultLanguage: string = "javascript-node";
+let nextRefresh: number = 0;
 
 function createRequestBody(code: string, language: string): Buffer {
   return deflateRawSync(
@@ -44,16 +45,7 @@ function requestText(path: string): Promise<string> {
       return client.destroy(error, () => reject(error));
     }
 
-    let output: string = "";
-
-    response.body
-      .on("error", (err: Error) => {
-        client.destroy(err, () => reject(err));
-      })
-      .on("data", (chunk: string) => {
-        output += chunk;
-      })
-      .on("close", () => client.close(() => resolve(output)));
+    resolve(await response.body.text());
   });
 }
 
@@ -82,7 +74,7 @@ async function resolveLanguage(language: Option<string>): Promise<string> {
 }
 
 async function prepare(): Promise<void> {
-  if (runURL !== null) {
+  if (runURL !== null && Date.now() < nextRefresh) {
     return;
   }
 
@@ -102,6 +94,8 @@ async function prepare(): Promise<void> {
 
     throw new Error("An error occurred while scraping tio.run. Please try again later or report this bug to the developer.");
   }
+  
+  nextRefresh = Date.now() + 850000;
 }
 
 async function setDefaultLanguage(language: string): Promise<void> {
@@ -152,32 +146,32 @@ async function tioRun(code: string, language: Option<string>, timeout: Option<nu
 
     const response: ResponseData = await client.request({
       path: `/cgi-bin/static/${runURL}/${randomBytes(16).toString("hex")}`,
-      method: "GET",
+      method: "POST",
       body: createRequestBody(code, language!),
       bodyTimeout: timeout ?? 0
     });
 
+    let error: Option<Error> = null;
+
     if (response.statusCode >= 400) {
-      const error: Error = new Error(`Received invalid status code: ${response.statusCode} from the server.`);
-      return client.destroy(error, () => reject(error));
+      error = new Error(`Received invalid status code: ${response.statusCode} from the server.`);
+      await client.destroy(error);
     }
 
     let output: Buffer = Buffer.alloc(0);
 
     response.body
-      .on("error", (err: Error) => {
+      .on("error", async (err: Error) => {
         if (err instanceof errors.BodyTimeoutError) {
           timedOut = true;
         }
 
-        // eslint please don't bully prettier :c
-        // eslint-disable-next-line
-        client.destroy(err, () => (timedOut ? resolve(null) : reject(err)));
+        error = err;
       })
       .on("data", (chunk: Buffer) => {
         output = Buffer.concat([output, chunk]);
       })
-      .on("close", () => client.close(() => resolve(gunzipSync(output).toString())));
+      .on("close", () => client.close(() => error ? timedOut ? resolve(null) : reject(error) : resolve(gunzipSync(output).toString())));
   });
 
   if (result == null) {
