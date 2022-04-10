@@ -9,5 +9,5 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: lts/*
-    - run: npm install --save-dev
+    - run: npm install
     - run: npm run test
