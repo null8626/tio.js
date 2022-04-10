@@ -1,7 +1,13 @@
-[![Workflow status](https://github.com/vierofernando/tio.js/workflows/CI/badge.svg)](https://github.com/vierofernando/tio.js/actions)]
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+# tio.js [![CI][ci-image]][ci-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![prettier][prettier-image]][prettier-url]
 
-# tio.js
+[ci-image]: https://github.com/vierofernando/tio.js/actions/workflows/lint.yml/badge.svg?branch=master
+[ci-url]: https://github.com/vierofernando/tio.js/actions/workflows/lint.yml
+[prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
+[prettier-url]: https://github.com/prettier/prettier
+[npm-image]: https://img.shields.io/npm/v/tio.js.svg
+[npm-url]: https://npmjs.org/package/tio.js
+[downloads-image]: https://img.shields.io/npm/dm/tio.js.svg
+[downloads-url]: https://npmjs.org/package/tio.js
 
 Unofficial Node.js wrapper for the _TryItOnline_ ([tio.run](https://tio.run)) API.
 
