@@ -1,4 +1,4 @@
-[![Workflow status](https://github.com/vierofernando/tio.js/workflows/CI/badge.svg)](https://github.com/vierofernando/tio.js/actions)]
+[![Workflow status](https://github.com/vierofernando/tio.js/workflows/CI/badge.svg)](https://github.com/vierofernando/tio.js/actions)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 # tio.js
