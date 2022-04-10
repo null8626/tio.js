@@ -1,8 +1,7 @@
-import { Client } from "undici";
+import { Client, errors } from "undici";
 import { deflateRawSync, gunzipSync } from "node:zlib";
 import { randomBytes } from "node:crypto";
 import type { ResponseData } from "undici/types/dispatcher";
-import { BodyTimeoutError } from "undici/types/errors";
 import { Buffer } from "node:buffer";
 
 export interface TioResponse {
@@ -133,9 +132,7 @@ function getDefaultTimeout(): Option<number> {
 
 const version: string = "2.1.0";
 
-export { fetchLanguages as languages, setDefaultLanguage, getDefaultLanguage, setDefaultTimeout, getDefaultTimeout, version };
-
-export default async function tioRun(code: string, language: Option<string>, timeout: Option<number>): Promise<TioResponse> {
+async function tioRun(code: string, language: Option<string>, timeout: Option<number>): Promise<TioResponse> {
   if (typeof timeout === "number" && !Number.isInteger(timeout)) {
     throw new TypeError("Timeout must be a valid integer.");
   } else if (typeof timeout === "number" && timeout < 500) {
@@ -169,7 +166,7 @@ export default async function tioRun(code: string, language: Option<string>, tim
 
     response.body
       .on("error", (err: Error) => {
-        if (err instanceof BodyTimeoutError) {
+        if (err instanceof errors.BodyTimeoutError) {
           timedOut = true;
         }
 
@@ -221,3 +218,7 @@ export default async function tioRun(code: string, language: Option<string>, tim
     exitCode
   };
 }
+
+Object.assign(tioRun, { languages: fetchLanguages, setDefaultLanguage, getDefaultLanguage, setDefaultTimeout, getDefaultTimeout, version });
+
+export default tioRun;
