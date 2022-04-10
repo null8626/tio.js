@@ -170,10 +170,8 @@ async function tioRun(code: string, language: Option<string>, timeout: Option<nu
       })
       .on("data", (chunk: Buffer) => {
         output = Buffer.concat([output, chunk]);
-      });
-    
-    // eslint-disable-next-line
-    response.body.on("close", () => client.close(() => (error ? (timedOut ? resolve(null) : reject(error)) : resolve(gunzipSync(output).toString()))));
+      })
+      .on("close", () => client.close(() => (error ? (timedOut ? resolve(null) : reject(error)) : resolve(gunzipSync(output).toString())))); // eslint-disable-line
   });
 
   if (result == null) {
