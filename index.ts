@@ -94,7 +94,7 @@ async function prepare(): Promise<void> {
 
     throw new Error("An error occurred while scraping tio.run. Please try again later or report this bug to the developer.");
   }
-  
+
   nextRefresh = Date.now() + 850000;
 }
 
@@ -171,7 +171,7 @@ async function tioRun(code: string, language: Option<string>, timeout: Option<nu
       .on("data", (chunk: Buffer) => {
         output = Buffer.concat([output, chunk]);
       })
-      .on("close", () => client.close(() => error ? timedOut ? resolve(null) : reject(error) : resolve(gunzipSync(output).toString())));
+      .on("close", () => client.close(() => (error ? (timedOut ? resolve(null) : reject(error)) : resolve(gunzipSync(output).toString())))); // eslint-disable-line
   });
 
   if (result == null) {
