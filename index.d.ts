@@ -1,34 +1,19 @@
-declare module 'tio.js' {
-  interface TioResponse {
-    output: string;
-    language: string;
-    timedOut: boolean;
-    realTime: number;
-    userTime: number;
-    sysTime: number;
-    CPUshare: number;
-    exitCode: number;
-  }
-
-  function setDefaultLanguage(language: string): Promise<void>;
-  function getDefaultLanguage(): string;
-  function setDefaultTimeout(timeout: number | null): void;
-  function getDefaultTimeout(): number | null;
-  function languages(): Promise<string[]>;
-  const version: string;
-
-  export {
-    setDefaultLanguage,
-    getDefaultLanguage,
-    setDefaultTimeout,
-    getDefaultTimeout,
-    languages,
-    version
-  };
-
-  export default function tioRun(
-    code: string,
-    language?: string,
-    timeout?: number
-  ): Promise<TioResponse>;
+export interface TioResponse {
+    readonly output: string;
+    readonly language: string;
+    readonly timedOut: boolean;
+    readonly realTime: number;
+    readonly userTime: number;
+    readonly sysTime: number;
+    readonly CPUshare: number;
+    readonly exitCode: number;
 }
+export declare type Option<T> = T | undefined | null;
+declare function fetchLanguages(): Promise<string[]>;
+declare function setDefaultLanguage(language: string): Promise<void>;
+declare function getDefaultLanguage(): string;
+declare function setDefaultTimeout(timeout: Option<number>): void;
+declare function getDefaultTimeout(): Option<number>;
+declare const version: string;
+export { fetchLanguages as languages, setDefaultLanguage, getDefaultLanguage, setDefaultTimeout, getDefaultTimeout, version };
+export default function tioRun(code: string, language: Option<string>, timeout: Option<number>): Promise<TioResponse>;

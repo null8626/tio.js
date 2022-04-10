@@ -1,0 +1,12 @@
+{
+  "editor.tabSize": 2,
+  "typescript.format.semicolons": "insert",
+  "typescript.locale": "en",
+  "typescript.preferences.quoteStyle": "double",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "npm.packageManager": "npm",
+  "npm.runSilent": true,
+  "terminal.integrated.cursorBlinking": true,
+  "window.autoDetectColorScheme": true,
+  "editor.wordWrapColumn": 150
+}
