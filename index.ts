@@ -157,7 +157,7 @@ export default async function tioRun(code: string, language: Option<string>, tim
       path: `/cgi-bin/static/${runURL}/${randomBytes(16).toString("hex")}`,
       method: "GET",
       body: createRequestBody(code, language!),
-      bodyTimeout: defaultTimeout ?? 0
+      bodyTimeout: timeout ?? 0
     });
 
     if (response.statusCode >= 400) {
