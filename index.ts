@@ -139,8 +139,6 @@ async function tioRun(code: string, language: Option<string>, timeout: Option<nu
 
   await prepare();
 
-  let timedOut: boolean = false;
-
   let result: Option<string> = await new Promise(async (resolve, reject) => {
     const client: Client = new Client("https://tio.run:443");
 
@@ -151,27 +149,20 @@ async function tioRun(code: string, language: Option<string>, timeout: Option<nu
       bodyTimeout: timeout ?? 0
     });
 
-    let error: Option<Error> = null;
-
     if (response.statusCode >= 400) {
-      error = new Error(`Received invalid status code: ${response.statusCode} from the server.`);
-      await client.destroy(error);
+      await client.destroy();
+      return reject(new Error(`Received invalid status code: ${response.statusCode} from the server.`));
     }
 
-    let output: Buffer = Buffer.alloc(0);
-
-    response.body
-      .on("error", async (err: Error) => {
-        if (err instanceof errors.BodyTimeoutError) {
-          timedOut = true;
-        }
-
-        error = err;
-      })
-      .on("data", (chunk: Buffer) => {
-        output = Buffer.concat([output, chunk]);
-      })
-      .on("close", () => client.close(() => (error ? (timedOut ? resolve(null) : reject(error)) : resolve(gunzipSync(output).toString())))); // eslint-disable-line
+    try {
+      resolve(gunzipSync(Buffer.from(await response.body.arrayBuffer())).toString());
+    } catch (err) {
+      if (err instanceof errors.BodyTimeoutError) {
+        resolve(null);
+      } else {
+        reject(err);
+      }
+    }
   });
 
   if (result == null) {
@@ -181,7 +172,7 @@ async function tioRun(code: string, language: Option<string>, timeout: Option<nu
     return {
       output: `Request timed out after ${timeout}ms`,
       language,
-      timedOut,
+      timedOut: true,
       realTime: timeoutInSecs,
       userTime: timeoutInSecs,
       sysTime: timeoutInSecs,
@@ -204,7 +195,7 @@ async function tioRun(code: string, language: Option<string>, timeout: Option<nu
   return {
     output: split.slice(0, -5).join("\n").trim(),
     language,
-    timedOut,
+    timedOut: false,
     realTime,
     userTime,
     sysTime,
