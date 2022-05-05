@@ -6,3 +6,4 @@ tsconfig.json
 .editorconfig
 .vscode/
 .github/
+test.mjs
