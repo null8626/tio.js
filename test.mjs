@@ -4,8 +4,9 @@ import test from "node:test";
 let tio;
 let output;
 
-test("importing the tio module", () => {
-  tio = (await import("./index"))?.default;
+test("importing the tio module", async () => {
+  tio = await import("./index");
+  tio = tio?.default; // this is stupid but at least it fixes the problemo
   assertNotEqual(tio, null);
 });
 
