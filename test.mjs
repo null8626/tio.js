@@ -1,5 +1,5 @@
 import { notEqual, strict } from "node:assert";
-import test from "node:test";
+import { test } from "fast-fail";
 
 let tio;
 let output;
@@ -22,7 +22,7 @@ test("setting the default language to Python 3", async () => {
 
 test("evaluating a simple Hello, World in Python 3", async () => {
   const { output } = await tio("print(\"Hello, World!\")");
-  strict.equal(output, "Hello, World");
+  strict.equal(output, "Hello, World!");
 });
 
 test("evaluating an infinite loop", async () => {
