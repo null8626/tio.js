@@ -10,4 +10,5 @@ jobs:
         node-version: 18
     - run: npm install
     - run: npm run build
+    - run: dir
     - run: node ./test.mjs

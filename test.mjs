@@ -5,7 +5,7 @@ let tio;
 let output;
 
 test("importing the tio module", async () => {
-  tio = await import("../index");
+  tio = await import("./index.js");
   tio = tio?.default; // this is stupid but at least it fixes the problemo
   notEqual(tio, null);
 });
