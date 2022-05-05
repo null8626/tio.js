@@ -1,5 +1,5 @@
 import { notEqual, strict } from "node:assert";
-import test from "fast-fail";
+import { test } from "fast-fail";
 
 let tio;
 let output;
