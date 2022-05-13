@@ -1,6 +1,6 @@
 {
   "name": "tio.js",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Unofficial node.js wrapper for the TryItOnline (tio.run) API.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -31,13 +31,13 @@
   },
   "homepage": "https://github.com/vierofernando/tio.js#readme",
   "devDependencies": {
-    "@types/node": "17.0.23",
-    "@typescript-eslint/eslint-plugin": "5.18.0",
-    "@typescript-eslint/parser": "5.18.0",
-    "eslint": "8.12.0",
+    "@types/node": "^17.0.23",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "@typescript-eslint/parser": "^5.23.0",
+    "eslint": "^8.15.0",
     "pre-commit": "1.2.2",
-    "prettier": "2.6.1",
-    "typescript": "4.6.3"
+    "prettier": "^2.6.2",
+    "typescript": "^4.6.4"
   },
   "pre-commit": {
     "run": [

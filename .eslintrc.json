@@ -1,9 +1,7 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": ["@typescript-eslint"],
   "env": {
     "es2022": true,
     "node": true
@@ -15,12 +13,14 @@
       "impliedStrict": true
     }
   },
-  "overrides": [{
-    "files": ["index.ts"],
-    "parserOptions": {
-      "project": ["./tsconfig.json"]
+  "overrides": [
+    {
+      "files": ["index.ts"],
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
+      }
     }
-  }],
+  ],
   "rules": {
     "no-restricted-globals": [
       "error",
@@ -83,7 +83,6 @@
     "block-scoped-var": "error",
     "camelcase": "warn",
     "class-methods-use-this": "error",
-    "curly": "warn",
     "default-case-last": "warn",
     "dot-notation": "error",
     "no-alert": "error",
@@ -141,10 +140,13 @@
     "switch-colon-spacing": "error",
     "template-curly-spacing": "error",
     "yield-star-spacing": "error",
-    "@typescript-eslint/array-type": ["error", {
-      "default": "array",
-      "readonly": "array"
-    }],
+    "@typescript-eslint/array-type": [
+      "error",
+      {
+        "default": "array",
+        "readonly": "array"
+      }
+    ],
     "@typescript-eslint/await-thenable": "error",
     "@typescript-eslint/class-literal-property-style": ["error", "fields"],
     "@typescript-eslint/comma-dangle": ["error"],
@@ -188,18 +190,20 @@
     "@typescript-eslint/prefer-optional-chain": "error",
     "@typescript-eslint/prefer-reduce-type-parameter": "warn",
     "@typescript-eslint/prefer-return-this-type": "warn",
-    "@typescript-eslint/quotes": ["error", "double"],
     "@typescript-eslint/require-array-sort-compare": "warn",
     "@typescript-eslint/restrict-plus-operands": "error",
     "@typescript-eslint/semi": "error",
     "@typescript-eslint/space-before-blocks": "warn",
     "@typescript-eslint/type-annotation-spacing": "error",
-    "@typescript-eslint/typedef": ["error", {
-      "memberVariableDeclaration": true,
-      "parameter": true,
-      "propertyDeclaration": true,
-      "variableDeclaration": true
-    }],
+    "@typescript-eslint/typedef": [
+      "error",
+      {
+        "memberVariableDeclaration": true,
+        "parameter": true,
+        "propertyDeclaration": true,
+        "variableDeclaration": true
+      }
+    ],
     "@typescript-eslint/unified-signatures": "warn"
   }
 }
