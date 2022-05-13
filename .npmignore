@@ -1,7 +1,7 @@
-.prettierrc
+.prettierrc.json
 LICENSE
 index.ts
-.eslintrc
+.eslintrc.json
 tsconfig.json
 .editorconfig
 .vscode/

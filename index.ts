@@ -1,8 +1,8 @@
-import { Client, errors } from "undici";
-import { deflateRawSync, gunzipSync } from "node:zlib";
-import { randomBytes } from "node:crypto";
-import type { ResponseData } from "undici/types/dispatcher";
-import { Buffer } from "node:buffer";
+import { Client, errors } from 'undici';
+import { deflateRawSync, gunzipSync } from 'node:zlib';
+import { randomBytes } from 'node:crypto';
+import type { ResponseData } from 'undici/types/dispatcher';
+import { Buffer } from 'node:buffer';
 
 export interface TioResponse {
   readonly output: string;
@@ -21,7 +21,7 @@ export type Option<T> = T | undefined | null;
 let runURL: Option<string> = null;
 let languages: Option<string[]> = null;
 let defaultTimeout: Option<number> = null;
-let defaultLanguage: string = "javascript-node";
+let defaultLanguage: string = 'javascript-node';
 let nextRefresh: number = 0;
 
 function createRequestBody(code: string, language: string): Buffer {
@@ -33,11 +33,11 @@ function createRequestBody(code: string, language: string): Buffer {
 
 function requestText(path: string): Promise<string> {
   return new Promise(async (resolve, reject) => {
-    const client: Client = new Client("https://tio.run:443");
+    const client: Client = new Client('https://tio.run:443');
 
     const response: ResponseData = await client.request({
       path,
-      method: "GET"
+      method: 'GET'
     });
 
     if (response.statusCode >= 400) {
@@ -51,7 +51,7 @@ function requestText(path: string): Promise<string> {
 
 async function fetchLanguages(): Promise<string[]> {
   if (languages === null) {
-    languages = Object.keys(JSON.parse(await requestText("/languages.json"))).map((x: string): string => x.toLowerCase());
+    languages = Object.keys(JSON.parse(await requestText('/languages.json'))).map((x: string): string => x.toLowerCase());
   }
 
   return languages!;
@@ -67,7 +67,7 @@ async function resolveLanguage(language: Option<string>): Promise<string> {
   }
 
   if (!languages!.includes(language)) {
-    throw new Error("Unsupported/Invalid language provided, a list of supported languages can be requested with `await tio.languages()`.");
+    throw new Error('Unsupported/Invalid language provided, a list of supported languages can be requested with `await tio.languages()`.');
   }
 
   return language;
@@ -78,11 +78,11 @@ async function prepare(): Promise<void> {
     return;
   }
 
-  const scrapeResponse: string = await requestText("/");
+  const scrapeResponse: string = await requestText('/');
   const frontendJSURL: Option<string> = scrapeResponse.match(/<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/)?.[1];
 
   if (frontendJSURL == null) {
-    throw new Error("An error occurred while scraping tio.run. Please try again later or report this bug to the developer.");
+    throw new Error('An error occurred while scraping tio.run. Please try again later or report this bug to the developer.');
   }
 
   const frontendJS: string = await requestText(frontendJSURL);
@@ -92,7 +92,7 @@ async function prepare(): Promise<void> {
   if (runURL == null) {
     runURL = null;
 
-    throw new Error("An error occurred while scraping tio.run. Please try again later or report this bug to the developer.");
+    throw new Error('An error occurred while scraping tio.run. Please try again later or report this bug to the developer.');
   }
 
   nextRefresh = Date.now() + 850000;
@@ -111,10 +111,10 @@ function getDefaultLanguage(): string {
 }
 
 function setDefaultTimeout(timeout: Option<number>): void {
-  if (typeof timeout === "number" && !Number.isInteger(timeout)) {
-    throw new TypeError("Timeout must be a valid integer.");
-  } else if (typeof timeout === "number" && timeout < 500) {
-    throw new RangeError("Timeout must be greater or equal to 500.");
+  if (typeof timeout === 'number' && !Number.isInteger(timeout)) {
+    throw new TypeError('Timeout must be a valid integer.');
+  } else if (typeof timeout === 'number' && timeout < 500) {
+    throw new RangeError('Timeout must be greater or equal to 500.');
   }
 
   defaultTimeout = timeout;
@@ -124,14 +124,14 @@ function getDefaultTimeout(): Option<number> {
   return defaultTimeout;
 }
 
-const version: string = "2.1.0";
+const version: string = '2.1.0';
 
 async function tioRun(code: string, language: Option<string>, timeout: Option<number>): Promise<TioResponse> {
-  if (typeof timeout === "number" && !Number.isInteger(timeout)) {
-    throw new TypeError("Timeout must be a valid integer.");
-  } else if (typeof timeout === "number" && timeout < 500) {
-    throw new RangeError("Timeout must be greater or equal to 500.");
-  } else if (defaultTimeout != null && typeof timeout !== "number") {
+  if (typeof timeout === 'number' && !Number.isInteger(timeout)) {
+    throw new TypeError('Timeout must be a valid integer.');
+  } else if (typeof timeout === 'number' && timeout < 500) {
+    throw new RangeError('Timeout must be greater or equal to 500.');
+  } else if (defaultTimeout != null && typeof timeout !== 'number') {
     timeout = defaultTimeout;
   }
 
@@ -140,11 +140,11 @@ async function tioRun(code: string, language: Option<string>, timeout: Option<nu
   await prepare();
 
   let result: Option<string> = await new Promise(async (resolve, reject) => {
-    const client: Client = new Client("https://tio.run:443");
+    const client: Client = new Client('https://tio.run:443');
 
     const response: ResponseData = await client.request({
-      path: `/cgi-bin/static/${runURL}/${randomBytes(16).toString("hex")}`,
-      method: "POST",
+      path: `/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`,
+      method: 'POST',
       body: createRequestBody(code, language!),
       bodyTimeout: timeout ?? 0
     });
@@ -181,9 +181,9 @@ async function tioRun(code: string, language: Option<string>, timeout: Option<nu
     };
   }
 
-  result = result.replace(new RegExp(result.slice(-16).replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&"), "g"), "");
+  result = result.replace(new RegExp(result.slice(-16).replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), '');
 
-  const split: string[] = result.split("\n");
+  const split: string[] = result.split('\n');
   const [realTime, userTime, sysTime, CPUshare, exitCode] = split.slice(-5).map((x: string) => {
     if (/[^\d]$/.test(x)) {
       return parseInt(x.slice(11, -2));
@@ -193,7 +193,7 @@ async function tioRun(code: string, language: Option<string>, timeout: Option<nu
   });
 
   return {
-    output: split.slice(0, -5).join("\n").trim(),
+    output: split.slice(0, -5).join('\n').trim(),
     language,
     timedOut: false,
     realTime,
