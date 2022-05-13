@@ -12,11 +12,8 @@
 Unofficial Node.js wrapper for the _TryItOnline_ ([tio.run](https://tio.run)) API.
 
 ```console
-$ npm i tio.js
+npm i tio.js
 ```
-
-| ⚠️ WARNING: This is an ES module and can't be imported with CommonJS's `require()`. If you want to use the CommonJS version, revert to version `1.1.0`. |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 
 # Examples
 
