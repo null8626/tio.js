@@ -15,7 +15,7 @@
   },
   "overrides": [
     {
-      "files": ["index.ts"],
+      "files": ["src/**/*.ts"],
       "parserOptions": {
         "project": ["./tsconfig.json"]
       }

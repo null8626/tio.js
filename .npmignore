@@ -1,6 +1,6 @@
 .prettierrc.json
 LICENSE
-index.ts
+src/
 .eslintrc.json
 tsconfig.json
 .editorconfig

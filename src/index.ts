@@ -61,14 +61,6 @@ async function requestText(path: string): Promise<string> {
   return await response.text();
 }
 
-function resolveLanguage(language: Option<TioLanguage>): TioLanguage {
-  if (language != null && language !== _defaultLanguage && !languages.includes(language)) {
-    throw new TioError('Unsupported/Invalid language provided, a list of supported languages can be requested with `await tio.languages()`.');
-  }
-
-  return language ?? _defaultLanguage;
-}
-
 async function prepare(): Promise<void> {
   if (runURL !== null && Date.now() < nextRefresh) {
     return;
@@ -130,13 +122,18 @@ async function tioRun(code: string, language: Option<TioLanguage>, timeout: Opti
   } else if (_defaultTimeout == null || typeof timeout !== 'number') {
     timeout = _defaultTimeout;
   }
+  
+  if (language != null && language !== _defaultLanguage && !languages.includes(language)) {
+    throw new TioError('Unsupported/Invalid language provided, a list of supported languages can be requested with `await tio.languages()`.');
+  }
+
+  language ??= _defaultLanguage;
 
   await prepare();
-  language = resolveLanguage(language);
 
   let result: Option<string> = await evaluate(code, language);
 
-  if (result == null) {
+  if (result === null) {
     // The website formats this as in seconds.
     const timeoutInSecs: number = timeout! / 1000;
 
@@ -152,7 +149,7 @@ async function tioRun(code: string, language: Option<TioLanguage>, timeout: Opti
     };
   }
 
-  result = result.replace(new RegExp(result.slice(-16).replace(ESCAPE_REGEX, '\\$&'), 'g'), '');
+  result = result!.replace(new RegExp(result!.slice(-16).replace(ESCAPE_REGEX, '\\$&'), 'g'), '');
 
   const split: string[] = result.split('\n');
   const [realTime, userTime, sysTime, CPUshare, exitCode] = split.slice(-5).map((x: string) => {
