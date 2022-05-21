@@ -21,12 +21,8 @@ export interface TioResponse {
 export type Option<T> = T | undefined | null;
 
 export class TioError extends Error {
-  public constructor(message: string, options: Option<ErrorOptions> = null) {
-    if (options != null) {
-      super(message, options);
-    } else {
-      super(message);
-    }
+  public constructor(message: string) {
+    super(message);
 
     this.name = `TioError: ${message}`;
   }
