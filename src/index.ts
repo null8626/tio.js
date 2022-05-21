@@ -42,19 +42,10 @@ export class TioHttpError extends TioError {
   }
 }
 
-export type TioRun = (code: string, language: Option<TioLanguage>, timeout: Option<number>) => Promise<TioResponse>;
-
-export interface Tio extends TioRun {
-  languages: TioLanguage[];
-  version: string;
-  defaultLanguage: TioLanguage;
-  defaultTimeout: Option<number>;
-}
-
 const SCRIPT_REGEX: RegExp = /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/;
 const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m;
 
-const version: string = '3.0.0';
+const version: '2.2.0' = '2.2.0';
 
 let runURL: Option<string> = null;
 let defaultTimeout: Option<number> = null;
@@ -102,7 +93,7 @@ async function evaluate(code: string, language: TioLanguage, timeout: Option<num
   const response: Response = await fetch(`https://tio.run/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`, {
     method: 'POST',
     body: deflateRawSync(
-      Buffer.from(`Vlang\0\x31\0${language}\0VTIO_OPTIONS\0\x30\0F.code.tioRun\0${code.length}\0${code}F.input.tioRun\0\x30\0Vargs\0\x30\0R`),
+      Buffer.from(`Vlang\0\x31\0${language}\0VTIO_OPTIONS\0\x30\0F.code.tio\0${code.length}\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`),
       { level: 9 }
     ),
     signal: ab.signal
@@ -132,7 +123,7 @@ async function evaluate(code: string, language: TioLanguage, timeout: Option<num
   return gunzipSync(Buffer.from(data)).toString();
 }
 
-async function tioRun(code: string, language: Option<TioLanguage> = null, timeout: Option<number> = null): Promise<TioResponse> {
+async function tio(code: string, language: Option<TioLanguage> = null, timeout: Option<number> = null): Promise<TioResponse> {
   if (typeof timeout === 'number' && (!Number.isSafeInteger(timeout) || timeout < 500)) {
     throw new TioError('Timeout must be a valid integer. and it must be greater or equal to 500.');
   } else if (language != null && language !== defaultLanguage && !languages.includes(language)) {
@@ -178,21 +169,21 @@ async function tioRun(code: string, language: Option<TioLanguage> = null, timeou
   });
 }
 
-Object.defineProperty(tioRun, 'languages', {
+Object.defineProperty(tio, 'languages', {
   configurable: false,
   enumerable: true,
   writable: false,
   value: languages
 });
 
-Object.defineProperty(tioRun, 'version', {
+Object.defineProperty(tio, 'version', {
   configurable: false,
   enumerable: true,
   writable: false,
   value: version
 });
 
-Object.defineProperty(tioRun, 'defaultLanguage', {
+Object.defineProperty(tio, 'defaultLanguage', {
   configurable: false,
   enumerable: true,
 
@@ -202,14 +193,14 @@ Object.defineProperty(tioRun, 'defaultLanguage', {
 
   set(lang: TioLanguage) {
     if (lang != null && lang !== defaultLanguage && !languages.includes(lang)) {
-      throw new TioError('Unsupported/Invalid language provided, a list of supported languages can be requested with `await tioRun.languages()`.');
+      throw new TioError('Unsupported/Invalid language provided, a list of supported languages can be requested with `await tio.languages()`.');
     }
 
     defaultLanguage = lang;
   }
 });
 
-Object.defineProperty(tioRun, 'defaultTimeout', {
+Object.defineProperty(tio, 'defaultTimeout', {
   configurable: false,
   enumerable: true,
 
@@ -225,7 +216,5 @@ Object.defineProperty(tioRun, 'defaultTimeout', {
     defaultTimeout = timeout;
   }
 });
-
-const tio: Tio = Object.freeze(tioRun) as Tio;
 
 export default tio;
