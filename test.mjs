@@ -1,14 +1,8 @@
 import { notEqual, strict } from 'node:assert';
 import test from 'fast-fail';
+import tio from "./dist/index.js";
 
-let tio;
 let output;
-
-test('importing the tio module', async () => {
-  tio = await import('./dist/index.js');
-  tio = tio?.default; // this is stupid but at least it fixes the problemo
-  notEqual(tio, null);
-});
 
 test('evaluating a simple Hello, World in JavaScript', async () => {
   const { output } = await tio("console.log('Hello, World!');");
