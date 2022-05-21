@@ -46,7 +46,7 @@ export type TioRun = (code: string, language: Option<TioLanguage>, timeout: Opti
 
 export interface Tio extends TioRun {
   languages: TioLanguage[];
-  version: string;
+  version: '3.0.0';
   defaultLanguage: TioLanguage;
   defaultTimeout: Option<number>;
 }
@@ -54,7 +54,7 @@ export interface Tio extends TioRun {
 const SCRIPT_REGEX: RegExp = /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/;
 const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m;
 
-const version: '2.2.0' = '2.2.0';
+const version: '3.0.0' = '3.0.0';
 
 let runURL: Option<string> = null;
 let defaultTimeout: Option<number> = null;
