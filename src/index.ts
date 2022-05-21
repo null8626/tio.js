@@ -1,7 +1,9 @@
 import { deflateRawSync, gunzip, gunzipSync } from 'node:zlib';
 import { randomBytes } from 'node:crypto';
 import { Buffer } from 'node:buffer';
-import { inspect } from 'node:util';
+
+import createTimeout from './timeout.js';
+import type { TioTimeout } from './timeout';
 
 import languages from './languages.js';
 import type { TioLanguage } from './languages';
@@ -40,15 +42,14 @@ export class TioHttpError extends TioError {
   }
 }
 
-const ESCAPE_REGEX: RegExp = /[-/\\^$*+?.()|[\]{}]/g;
 const SCRIPT_REGEX: RegExp = /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/;
 const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m;
 
 const version: '2.2.0' = '2.2.0';
 
 let runURL: Option<string> = null;
-let _defaultTimeout: Option<number> = null;
-let _defaultLanguage: TioLanguage = 'javascript-node';
+let defaultTimeout: Option<number> = null;
+let defaultLanguage: TioLanguage = 'javascript-node';
 let nextRefresh: number = 0;
 
 async function requestText(path: string): Promise<string> {
@@ -86,52 +87,58 @@ async function prepare(): Promise<void> {
   nextRefresh = Date.now() + 850000;
 }
 
-async function evaluate(code: string, language: TioLanguage): Promise<Option<string>> {
-  const ac: AbortController = new AbortController();
-  let timedOut: boolean = false;
-
-  if (_defaultTimeout !== null) {
-    setTimeout(() => {
-      ac.abort();
-      timedOut = true;
-    }, _defaultTimeout);
-  }
-
+async function evaluate(code: string, language: TioLanguage, timeout: Option<number>): Promise<Option<string>> {
+  const ab: AbortController = new AbortController();
+  
   const response: Response = await fetch(`https://tio.run/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`, {
     method: 'POST',
     body: deflateRawSync(
       Buffer.from(`Vlang\0\x31\0${language}\0VTIO_OPTIONS\0\x30\0F.code.tio\0${code.length}\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`),
       { level: 9 }
     ),
-    signal: ac.signal
+    signal: ab.signal
   });
 
-  // @ts-ignore: this CAN evaluate to true.
-  if (timedOut === true) {
-    return null;
-  } else if (response.status >= 400) {
+  if (response.status >= 400) {
     throw new TioHttpError(response);
   }
 
-  return gunzipSync(Buffer.from(await response.arrayBuffer())).toString();
-}
+  let data: Option<ArrayBuffer> = null;
+  
+  if (timeout === null) {
+    data = await response.arrayBuffer();
+  } else {
+    const tm: TioTimeout = createTimeout(timeout!);
+    
+    data = await Promise.race([
+      response.arrayBuffer(),
+      tm.promise
+    ]);
 
-async function tioRun(code: string, language: Option<TioLanguage>, timeout: Option<number>): Promise<TioResponse> {
-  if (typeof timeout === 'number' && (!Number.isSafeInteger(timeout) || timeout < 500)) {
-    throw new TioError('Timeout must be a valid integer. and it must be greater or equal to 500.');
-  } else if (_defaultTimeout == null || typeof timeout !== 'number') {
-    timeout = _defaultTimeout;
+    if (data !== null) {
+      tm.cancel();
+    } else {
+      ab.abort();
+      return null;
+    }
   }
 
-  if (language != null && language !== _defaultLanguage && !languages.includes(language)) {
+  return gunzipSync(Buffer.from(data)).toString();
+}
+
+async function tioRun(code: string, language: Option<TioLanguage> = null, timeout: Option<number> = null): Promise<TioResponse> {
+  if (typeof timeout === 'number' && (!Number.isSafeInteger(timeout) || timeout < 500)) {
+    throw new TioError('Timeout must be a valid integer. and it must be greater or equal to 500.');
+  } else if (language != null && language !== defaultLanguage && !languages.includes(language)) {
     throw new TioError('Unsupported/Invalid language provided, a list of supported languages can be requested with `await tio.languages()`.');
   }
 
-  language ??= _defaultLanguage;
+  timeout ??= defaultTimeout;
+  language ??= defaultLanguage;
 
   await prepare();
 
-  let result: Option<string> = await evaluate(code, language);
+  const result: Option<string> = await evaluate(code, language, timeout);
 
   if (result === null) {
     // The website formats this as in seconds.
@@ -149,19 +156,12 @@ async function tioRun(code: string, language: Option<TioLanguage>, timeout: Opti
     };
   }
 
-  result = result!.replace(new RegExp(result!.slice(-16).replace(ESCAPE_REGEX, '\\$&'), 'g'), '');
-
-  const split: string[] = result.split('\n');
-  const [realTime, userTime, sysTime, CPUshare, exitCode] = split.slice(-5).map((x: string) => {
-    if (/[^\d]$/.test(x)) {
-      return Number(x.slice(11, -2));
-    }
-
-    return Number(x.slice(11));
-  });
+  const s: string[] = result!.replaceAll(result!.slice(-16), '').split('\n');
+  const output: string = s.slice(0, -5).join('\n');
+  const [realTime, userTime, sysTime, CPUshare, exitCode] = s.slice(-5).map((x: string) => parseFloat(x.slice(11).split(' ')[0]));
 
   return {
-    output: split.slice(0, -5).join('\n').trim(),
+    output,
     language,
     timedOut: false,
     realTime,
@@ -172,30 +172,52 @@ async function tioRun(code: string, language: Option<TioLanguage>, timeout: Opti
   };
 }
 
-Object.assign(tioRun, {
-  languages,
+Object.defineProperty(tioRun, 'languages', {
+  configurable: false,
+  enumerable: true,
+  writable: false,
+  value: languages
+});
 
-  get defaultLanguage(): TioLanguage {
-    return _defaultLanguage;
+Object.defineProperty(tioRun, 'version', {
+  configurable: false,
+  enumerable: true,
+  writable: false,
+  value: version
+});
+
+Object.defineProperty(tioRun, 'defaultLanguage', {
+  configurable: false,
+  enumerable: true,
+
+  get(): TioLanguage {
+    return defaultLanguage;
   },
 
-  set defaultLanguage(lang: TioLanguage) {
-    _defaultLanguage = lang;
+  set(lang: TioLanguage) {
+    if (lang != null && lang !== defaultLanguage && !languages.includes(lang)) {
+      throw new TioError('Unsupported/Invalid language provided, a list of supported languages can be requested with `await tio.languages()`.');
+    }
+
+    defaultLanguage = lang;
+  }
+});
+
+Object.defineProperty(tioRun, 'defaultTimeout', {
+  configurable: false,
+  enumerable: true,
+
+  get(): Option<number> {
+    return defaultTimeout;
   },
 
-  get defaultTimeout(): Option<number> {
-    return _defaultTimeout;
-  },
-
-  set defaultTimeout(timeout: Option<number>) {
+  set(timeout: Option<number>) {
     if (typeof timeout === 'number' && (!Number.isSafeInteger(timeout) || timeout < 500)) {
       throw new TioError('Timeout must be a valid integer. and it must be greater or equal to 500.');
     }
 
-    _defaultTimeout = timeout;
-  },
-
-  version
+    defaultTimeout = timeout;
+  }
 });
 
 export default tioRun;
