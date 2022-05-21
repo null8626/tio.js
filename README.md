@@ -11,7 +11,7 @@
 
 Unofficial Node.js wrapper for the _TryItOnline_ ([tio.run](https://tio.run)) API.
 
-```console
+```shell
 npm i tio.js
 ```
 
@@ -116,7 +116,7 @@ console.log(response); // Does the same as the example before.
 
 # Building locally
 
-```
+```shell
 git clone https://github.com/vierofernando/tio.js.git
 cd tio.js
 npm install --save-dev
