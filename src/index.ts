@@ -136,7 +136,7 @@ async function tioRun(code: string, language: Option<TioLanguage> = null, timeou
   if (typeof timeout === 'number' && (!Number.isSafeInteger(timeout) || timeout < 500)) {
     throw new TioError('Timeout must be a valid integer. and it must be greater or equal to 500.');
   } else if (language != null && language !== defaultLanguage && !languages.includes(language)) {
-    throw new TioError('Unsupported/Invalid language provided, a list of supported languages can be requested with `await tioRun.languages()`.');
+    throw new TioError('Unsupported/Invalid language provided, a list of supported languages can be requested with `tio.languages`.');
   }
 
   timeout ??= defaultTimeout;
