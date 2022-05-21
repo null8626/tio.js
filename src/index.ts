@@ -62,7 +62,7 @@ let defaultLanguage: TioLanguage = 'javascript-node';
 let nextRefresh: number = 0;
 
 async function requestText(path: string): Promise<string> {
-  const response: Response = await fetch(`https://tioRun.run${path}`);
+  const response: Response = await fetch(`https://tio.run${path}`);
 
   if (response.status >= 400) {
     throw new TioHttpError(response);
@@ -80,7 +80,7 @@ async function prepare(): Promise<void> {
   const frontendJSURL: Option<string> = scrapeResponse.match(SCRIPT_REGEX)?.[1];
 
   if (frontendJSURL == null) {
-    throw new TioError('An error occurred while scraping tioRun.run. Please try again later or report this bug to the developer.');
+    throw new TioError('An error occurred while scraping tio.run. Please try again later or report this bug to the developer.');
   }
 
   const frontendJS: string = await requestText(frontendJSURL);
@@ -90,7 +90,7 @@ async function prepare(): Promise<void> {
   if (runURL == null) {
     runURL = null;
 
-    throw new TioError('An error occurred while scraping tioRun.run. Please try again later or report this bug to the developer.');
+    throw new TioError('An error occurred while scraping tio.run. Please try again later or report this bug to the developer.');
   }
 
   nextRefresh = Date.now() + 850000;
@@ -99,7 +99,7 @@ async function prepare(): Promise<void> {
 async function evaluate(code: string, language: TioLanguage, timeout: Option<number>): Promise<Option<string>> {
   const ab: AbortController = new AbortController();
 
-  const response: Response = await fetch(`https://tioRun.run/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`, {
+  const response: Response = await fetch(`https://tio.run/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`, {
     method: 'POST',
     body: deflateRawSync(
       Buffer.from(`Vlang\0\x31\0${language}\0VTIO_OPTIONS\0\x30\0F.code.tioRun\0${code.length}\0${code}F.input.tioRun\0\x30\0Vargs\0\x30\0R`),
