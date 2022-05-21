@@ -8,7 +8,7 @@ export interface TioTimeout {
 
 export default function createTimeout(tm: number): TioTimeout {
   let t: Option<NodeJS.Timeout> = null;
-  
+
   return {
     cancel(): void {
       clearTimeout(t!);

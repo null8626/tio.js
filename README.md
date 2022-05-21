@@ -22,9 +22,7 @@ npm i tio.js
 ```js
 import tio from 'tio.js';
 
-const languages = await tio.languages();
-
-console.log(languages);
+console.log(tio.languages);
 ```
 
 ## Evaluating a string
@@ -67,9 +65,7 @@ Set a default language so you don't have to repeat the same arguments all over a
 ```js
 import tio from 'tio.js';
 
-await tio.setDefaultLanguage('python3');
-
-console.log(tio.getDefaultLanguage()); // python3
+tio.defaultLanguage = 'python3';
 
 const response = await tio('print("Hello, World!")');
 
@@ -111,9 +107,7 @@ Just like setting a default language beforehand, you can set default timeouts so
 ```js
 import tio from 'tio.js';
 
-tio.setDefaultTimeout(10000);
-
-console.log(tio.getDefaultTimeout()); // 10000
+tio.defaultTimeout = 10000;
 
 const response = await tio('for (;;);', 'javascript-node');
 
