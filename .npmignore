@@ -1,4 +1,5 @@
 .prettierrc.json
+.prettierignore
 LICENSE
 src/
 .eslintrc.json

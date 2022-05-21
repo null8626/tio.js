@@ -10,8 +10,7 @@ jobs:
           node-version: 18
       - name: Installing dependencies
         run: |
-          npm install
-          npm install fast-fail@1.0.3
+          npm install --save-dev
       - name: Compiling and linting the project
         run: |
           npm run build
