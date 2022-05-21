@@ -17,6 +17,7 @@
     "target": "es2022",
     "allowJs": true,
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "removeComments": true
   }
 }
