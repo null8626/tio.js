@@ -122,7 +122,7 @@ async function tioRun(code: string, language: Option<TioLanguage>, timeout: Opti
   } else if (_defaultTimeout == null || typeof timeout !== 'number') {
     timeout = _defaultTimeout;
   }
-  
+
   if (language != null && language !== _defaultLanguage && !languages.includes(language)) {
     throw new TioError('Unsupported/Invalid language provided, a list of supported languages can be requested with `await tio.languages()`.');
   }
