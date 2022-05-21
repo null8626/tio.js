@@ -123,7 +123,7 @@ async function evaluate(code: string, language: TioLanguage, timeout: Option<num
   return gunzipSync(Buffer.from(data)).toString();
 }
 
-async function tioRun(code: string, language: Option<TioLanguage> = null, timeout: Option<number> = null): Promise<TioResponse> {
+async function tio(code: string, language: Option<TioLanguage> = null, timeout: Option<number> = null): Promise<TioResponse> {
   if (typeof timeout === 'number' && (!Number.isSafeInteger(timeout) || timeout < 500)) {
     throw new TioError('Timeout must be a valid integer. and it must be greater or equal to 500.');
   } else if (language != null && language !== defaultLanguage && !languages.includes(language)) {
@@ -169,21 +169,21 @@ async function tioRun(code: string, language: Option<TioLanguage> = null, timeou
   };
 }
 
-Object.defineProperty(tioRun, 'languages', {
+Object.defineProperty(tio, 'languages', {
   configurable: false,
   enumerable: true,
   writable: false,
   value: languages
 });
 
-Object.defineProperty(tioRun, 'version', {
+Object.defineProperty(tio, 'version', {
   configurable: false,
   enumerable: true,
   writable: false,
   value: version
 });
 
-Object.defineProperty(tioRun, 'defaultLanguage', {
+Object.defineProperty(tio, 'defaultLanguage', {
   configurable: false,
   enumerable: true,
 
@@ -200,7 +200,7 @@ Object.defineProperty(tioRun, 'defaultLanguage', {
   }
 });
 
-Object.defineProperty(tioRun, 'defaultTimeout', {
+Object.defineProperty(tio, 'defaultTimeout', {
   configurable: false,
   enumerable: true,
 
@@ -217,4 +217,4 @@ Object.defineProperty(tioRun, 'defaultTimeout', {
   }
 });
 
-export default tioRun;
+export default tio;
