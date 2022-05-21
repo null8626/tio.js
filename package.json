@@ -46,8 +46,8 @@
     ],
     "silent": true
   },
-  "dependencies": {
-    "undici": "5.0.0"
+  "engines": {
+    "node": ">= 18"
   },
   "type": "module"
 }
