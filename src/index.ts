@@ -89,7 +89,7 @@ async function prepare(): Promise<void> {
 
 async function evaluate(code: string, language: TioLanguage, timeout: Option<number>): Promise<Option<string>> {
   const ab: AbortController = new AbortController();
-  
+
   const response: Response = await fetch(`https://tio.run/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`, {
     method: 'POST',
     body: deflateRawSync(
@@ -104,16 +104,13 @@ async function evaluate(code: string, language: TioLanguage, timeout: Option<num
   }
 
   let data: Option<ArrayBuffer> = null;
-  
+
   if (timeout === null) {
     data = await response.arrayBuffer();
   } else {
     const tm: TioTimeout = createTimeout(timeout!);
-    
-    data = await Promise.race([
-      response.arrayBuffer(),
-      tm.promise
-    ]);
+
+    data = await Promise.race([response.arrayBuffer(), tm.promise]);
 
     if (data !== null) {
       tm.cancel();
