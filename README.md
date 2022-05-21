@@ -18,6 +18,7 @@ npm i tio.js
 # Examples
 
 ## Getting a list of available languages
+
 ```js
 import tio from 'tio.js';
 
@@ -27,6 +28,7 @@ console.log(languages);
 ```
 
 ## Evaluating a string
+
 Evaluating a string is really simple.
 
 ```js
@@ -59,6 +61,7 @@ console.log(response);
 ```
 
 ## Setting a default language
+
 Set a default language so you don't have to repeat the same arguments all over again.
 
 ```js
@@ -74,6 +77,7 @@ console.log(response);
 ```
 
 ## Timeouts
+
 Use this to contain scripts that runs longer than it should've been. **(e.g. infinite loop)**
 
 ```js
@@ -86,6 +90,7 @@ console.log(response);
 ```
 
 **Console output:**
+
 ```js
 {
   output: 'Request timed out after 10000ms',
@@ -100,6 +105,7 @@ console.log(response);
 ```
 
 ## Setting a default timeout
+
 Just like setting a default language beforehand, you can set default timeouts so you don't have to enter the same arguments again.
 
 ```js
@@ -115,6 +121,7 @@ console.log(response); // Does the same as the example before.
 ```
 
 # Building locally
+
 ```
 git clone https://github.com/vierofernando/tio.js.git
 cd tio.js

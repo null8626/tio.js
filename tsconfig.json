@@ -1,7 +1,5 @@
 {
-  "files": [
-    "index.ts"
-  ],
+  "files": ["index.ts"],
   "outFile": "index.js",
   "compilerOptions": {
     "declaration": true,
@@ -17,6 +15,7 @@
     "target": "es2022",
     "allowJs": true,
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "removeComments": true
   }
 }
