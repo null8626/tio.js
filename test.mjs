@@ -16,8 +16,8 @@ test('evaluating a simple Hello, World in JavaScript', async () => {
 });
 
 test('setting the default language to Python 3', async () => {
-  await tio.setDefaultLanguage('python3');
-  strict.equal(tio.getDefaultLanguage(), 'python3');
+  tio.defaultLanguage = 'python3';
+  strict.equal(tio.defaultLanguage, 'python3');
 });
 
 test('evaluating a simple Hello, World in Python 3', async () => {
@@ -27,6 +27,15 @@ test('evaluating a simple Hello, World in Python 3', async () => {
 
 test('evaluating an infinite loop', async () => {
   const { output, timedOut } = await tio('for (;;);', 'javascript-node', 10000);
+
+  strict.equal(timedOut, true);
+  strict.equal(output, 'Request timed out after 10000ms');
+});
+
+test('evaluating an infinite loop using defaultTimeout', async () => {
+  tio.defaultTimeout = 10000;
+
+  const { output, timedOut } = await tio('for (;;);', 'javascript-node');
 
   strict.equal(timedOut, true);
   strict.equal(output, 'Request timed out after 10000ms');
