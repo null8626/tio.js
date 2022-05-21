@@ -42,6 +42,15 @@ export class TioHttpError extends TioError {
   }
 }
 
+export type TioRun = (code: string, language: Option<TioLanguage>, timeout: Option<number>) => Promise<TioResponse>;
+
+export interface Tio extends TioRun {
+  languages: TioLanguage[];
+  version: string;
+  defaultLanguage: TioLanguage;
+  defaultTimeout: Option<number>;
+}
+
 const SCRIPT_REGEX: RegExp = /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/;
 const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m;
 
@@ -53,7 +62,7 @@ let defaultLanguage: TioLanguage = 'javascript-node';
 let nextRefresh: number = 0;
 
 async function requestText(path: string): Promise<string> {
-  const response: Response = await fetch(`https://tio.run${path}`);
+  const response: Response = await fetch(`https://tioRun.run${path}`);
 
   if (response.status >= 400) {
     throw new TioHttpError(response);
@@ -71,7 +80,7 @@ async function prepare(): Promise<void> {
   const frontendJSURL: Option<string> = scrapeResponse.match(SCRIPT_REGEX)?.[1];
 
   if (frontendJSURL == null) {
-    throw new TioError('An error occurred while scraping tio.run. Please try again later or report this bug to the developer.');
+    throw new TioError('An error occurred while scraping tioRun.run. Please try again later or report this bug to the developer.');
   }
 
   const frontendJS: string = await requestText(frontendJSURL);
@@ -81,7 +90,7 @@ async function prepare(): Promise<void> {
   if (runURL == null) {
     runURL = null;
 
-    throw new TioError('An error occurred while scraping tio.run. Please try again later or report this bug to the developer.');
+    throw new TioError('An error occurred while scraping tioRun.run. Please try again later or report this bug to the developer.');
   }
 
   nextRefresh = Date.now() + 850000;
@@ -90,10 +99,10 @@ async function prepare(): Promise<void> {
 async function evaluate(code: string, language: TioLanguage, timeout: Option<number>): Promise<Option<string>> {
   const ab: AbortController = new AbortController();
 
-  const response: Response = await fetch(`https://tio.run/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`, {
+  const response: Response = await fetch(`https://tioRun.run/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`, {
     method: 'POST',
     body: deflateRawSync(
-      Buffer.from(`Vlang\0\x31\0${language}\0VTIO_OPTIONS\0\x30\0F.code.tio\0${code.length}\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`),
+      Buffer.from(`Vlang\0\x31\0${language}\0VTIO_OPTIONS\0\x30\0F.code.tioRun\0${code.length}\0${code}F.input.tioRun\0\x30\0Vargs\0\x30\0R`),
       { level: 9 }
     ),
     signal: ab.signal
@@ -123,11 +132,11 @@ async function evaluate(code: string, language: TioLanguage, timeout: Option<num
   return gunzipSync(Buffer.from(data)).toString();
 }
 
-async function tio(code: string, language: Option<TioLanguage> = null, timeout: Option<number> = null): Promise<TioResponse> {
+async function tioRun(code: string, language: Option<TioLanguage> = null, timeout: Option<number> = null): Promise<TioResponse> {
   if (typeof timeout === 'number' && (!Number.isSafeInteger(timeout) || timeout < 500)) {
     throw new TioError('Timeout must be a valid integer. and it must be greater or equal to 500.');
   } else if (language != null && language !== defaultLanguage && !languages.includes(language)) {
-    throw new TioError('Unsupported/Invalid language provided, a list of supported languages can be requested with `await tio.languages()`.');
+    throw new TioError('Unsupported/Invalid language provided, a list of supported languages can be requested with `await tioRun.languages()`.');
   }
 
   timeout ??= defaultTimeout;
@@ -141,7 +150,7 @@ async function tio(code: string, language: Option<TioLanguage> = null, timeout: 
     // The website formats this as in seconds.
     const timeoutInSecs: number = timeout! / 1000;
 
-    return {
+    return Object.freeze({
       output: `Request timed out after ${timeout}ms`,
       language,
       timedOut: true,
@@ -150,14 +159,14 @@ async function tio(code: string, language: Option<TioLanguage> = null, timeout: 
       sysTime: timeoutInSecs,
       CPUshare: 0,
       exitCode: 0
-    };
+    });
   }
 
   const s: string[] = result!.replaceAll(result!.slice(-16), '').split('\n');
   const output: string = s.slice(0, -5).join('\n');
   const [realTime, userTime, sysTime, CPUshare, exitCode] = s.slice(-5).map((x: string) => parseFloat(x.slice(11).split(' ')[0]));
 
-  return {
+  return Object.freeze({
     output,
     language,
     timedOut: false,
@@ -166,24 +175,24 @@ async function tio(code: string, language: Option<TioLanguage> = null, timeout: 
     sysTime,
     CPUshare,
     exitCode
-  };
+  });
 }
 
-Object.defineProperty(tio, 'languages', {
+Object.defineProperty(tioRun, 'languages', {
   configurable: false,
   enumerable: true,
   writable: false,
   value: languages
 });
 
-Object.defineProperty(tio, 'version', {
+Object.defineProperty(tioRun, 'version', {
   configurable: false,
   enumerable: true,
   writable: false,
   value: version
 });
 
-Object.defineProperty(tio, 'defaultLanguage', {
+Object.defineProperty(tioRun, 'defaultLanguage', {
   configurable: false,
   enumerable: true,
 
@@ -193,14 +202,14 @@ Object.defineProperty(tio, 'defaultLanguage', {
 
   set(lang: TioLanguage) {
     if (lang != null && lang !== defaultLanguage && !languages.includes(lang)) {
-      throw new TioError('Unsupported/Invalid language provided, a list of supported languages can be requested with `await tio.languages()`.');
+      throw new TioError('Unsupported/Invalid language provided, a list of supported languages can be requested with `await tioRun.languages()`.');
     }
 
     defaultLanguage = lang;
   }
 });
 
-Object.defineProperty(tio, 'defaultTimeout', {
+Object.defineProperty(tioRun, 'defaultTimeout', {
   configurable: false,
   enumerable: true,
 
@@ -216,5 +225,7 @@ Object.defineProperty(tio, 'defaultTimeout', {
     defaultTimeout = timeout;
   }
 });
+
+const tio: Tio = Object.freeze(tioRun) as Tio;
 
 export default tio;
