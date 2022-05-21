@@ -1,7 +1,7 @@
 {
-  "files": ["index.ts"],
-  "outFile": "index.js",
+  "include": ["src/**/*.ts"],
   "compilerOptions": {
+    "outDir": "dist",
     "declaration": true,
     "noImplicitAny": true,
     "noImplicitOverride": true,
