@@ -3,7 +3,7 @@
   "version": "3.0.0",
   "description": "Unofficial node.js wrapper for the TryItOnline (tio.run) API.",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "build": "npm run test && npx tsc --project tsconfig.json",
     "prepare": "npx prettier . --write",
