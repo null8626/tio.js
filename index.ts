@@ -3,8 +3,8 @@ import { randomBytes } from 'node:crypto';
 import { Buffer } from 'node:buffer';
 import { inspect } from 'node:util';
 
-import languages from "./languages.js";
-import type { TioLanguage } from "./languages";
+import languages from './languages.js';
+import type { TioLanguage } from './languages';
 
 export interface TioResponse {
   readonly output: string;
@@ -108,7 +108,7 @@ async function evaluate(code: string, language: TioLanguage): Promise<Option<str
       timedOut = true;
     }, _defaultTimeout);
   }
-  
+
   const response: Response = await fetch(`https://tio.run/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`, {
     method: 'POST',
     body: deflateRawSync(
@@ -181,7 +181,7 @@ async function tioRun(code: string, language: Option<TioLanguage>, timeout: Opti
 
 Object.assign(tioRun, {
   languages,
-  
+
   get defaultLanguage(): TioLanguage {
     return _defaultLanguage;
   },
@@ -193,15 +193,15 @@ Object.assign(tioRun, {
   get defaultTimeout(): Option<number> {
     return _defaultTimeout;
   },
-  
+
   set defaultTimeout(timeout: Option<number>) {
     if (typeof timeout === 'number' && (!Number.isSafeInteger(timeout) || timeout < 500)) {
       throw new TioError('Timeout must be a valid integer. and it must be greater or equal to 500.');
     }
-  
+
     _defaultTimeout = timeout;
   },
-  
+
   version
 });
 

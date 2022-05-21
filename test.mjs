@@ -11,7 +11,7 @@ test('importing the tio module', async () => {
 });
 
 test('evaluating a simple Hello, World in JavaScript', async () => {
-  const { output } = await tio('console.log(\'Hello, World!\');');
+  const { output } = await tio("console.log('Hello, World!');");
   strict.equal(output, 'Hello, World!');
 });
 
@@ -21,7 +21,7 @@ test('setting the default language to Python 3', async () => {
 });
 
 test('evaluating a simple Hello, World in Python 3', async () => {
-  const { output } = await tio('print(\'Hello, World!\')');
+  const { output } = await tio("print('Hello, World!')");
   strict.equal(output, 'Hello, World!');
 });
 

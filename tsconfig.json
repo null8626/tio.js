@@ -1,7 +1,5 @@
 {
-  "files": [
-    "index.ts"
-  ],
+  "files": ["index.ts"],
   "outFile": "index.js",
   "compilerOptions": {
     "declaration": true,
