@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vierofernando/tio.js.git"
+    "url": "git+https://github.com/null8626/tio.js.git"
   },
   "keywords": [
     "tio",
@@ -21,15 +21,15 @@
     "api"
   ],
   "author": {
-    "name": "vierofernando",
-    "email": "vierofernando9@gmail.com"
+    "name": "null8626",
+    "email": "null86269@gmail.com"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vierofernando/tio.js/issues",
-    "email": "vierofernando9@gmail.com"
+    "url": "https://github.com/null8626/tio.js/issues",
+    "email": "null86269@gmail.com"
   },
-  "homepage": "https://github.com/vierofernando/tio.js#readme",
+  "homepage": "https://github.com/null8626/tio.js#readme",
   "devDependencies": {
     "@types/node": "^17.0.23",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
