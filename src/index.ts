@@ -1,11 +1,9 @@
-import { deflateRawSync, gunzip, gunzipSync } from 'node:zlib';
+import { deflateRawSync, gunzipSync } from 'node:zlib';
 import { randomBytes } from 'node:crypto';
 import { Buffer } from 'node:buffer';
 
-import createTimeout from './timeout.js';
-import type { TioTimeout } from './timeout';
-
-import languages from './languages.js';
+import Timeout from './timeout';
+import languages from './languages';
 import type { TioLanguage } from './languages';
 
 export interface TioResponse {
@@ -20,7 +18,7 @@ export interface TioResponse {
 }
 
 // embrace rust <3
-export type Option<T> = T | undefined | null;
+export type Option<T> = T | undefined | null | void;
 
 export class TioError extends Error {
   public constructor(message: string) {
@@ -46,11 +44,12 @@ const SCRIPT_REGEX: RegExp =
   /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/;
 const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m;
 
-const version: '3.0.0' = '3.0.0';
+const version: '3.0.1' = '3.0.1';
 
 let runURL: Option<string> = null;
 let defaultTimeout: Option<number> = null;
 let defaultLanguage: TioLanguage = 'javascript-node';
+let refreshTimeout: number = 850000;
 let nextRefresh: number = 0;
 
 async function requestText(path: string): Promise<string> {
@@ -89,7 +88,7 @@ async function prepare(): Promise<void> {
     );
   }
 
-  nextRefresh = Date.now() + 850000;
+  nextRefresh = Date.now() + refreshTimeout;
 }
 
 async function evaluate(
@@ -106,9 +105,7 @@ async function evaluate(
     {
       method: 'POST',
       body: deflateRawSync(
-        Buffer.from(
-          `Vlang\0\x31\0${language}\0VTIO_OPTIONS\0\x30\0F.code.tio\0${code.length}\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`
-        ),
+        `Vlang\0\x31\0${language}\0VTIO_OPTIONS\0\x30\0F.code.tio\0${code.length}\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`,
         { level: 9 }
       ),
       signal: ab.signal
@@ -124,7 +121,7 @@ async function evaluate(
   if (timeout === null) {
     data = await response.arrayBuffer();
   } else {
-    const tm: TioTimeout = createTimeout(timeout!);
+    const tm: Timeout = new Timeout(timeout!);
 
     data = await Promise.race([response.arrayBuffer(), tm.promise]);
 
@@ -136,7 +133,8 @@ async function evaluate(
     }
   }
 
-  return gunzipSync(Buffer.from(data)).toString();
+  // eslint-disable-next-line
+  return gunzipSync(data!).toString();
 }
 
 async function tio(
@@ -254,6 +252,25 @@ Object.defineProperty(tio, 'defaultTimeout', {
     }
 
     defaultTimeout = timeout;
+  }
+});
+
+Object.defineProperty(tio, 'refreshTimeout', {
+  configurable: false,
+  enumerable: true,
+
+  get(): number {
+    return refreshTimeout;
+  },
+
+  set(timeout: number) {
+    if (timeout !== Infinity && (!Number.isSafeInteger(timeout) || timeout < 500000)) {
+      throw new TioError(
+        'Refresh timeout must be a valid integer. and it must be greater or equal to 500000.'
+      );
+    }
+
+    refreshTimeout = timeout;
   }
 });
 

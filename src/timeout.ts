@@ -1,21 +1,17 @@
 // rust <3
 type Option<T> = T | undefined | null;
 
-export interface TioTimeout {
-  cancel: () => void;
-  promise: Promise<null>;
-}
+export default class Timeout {
+  private t: Option<NodeJS.Timeout> = null;
+  public readonly promise: Promise<void>;
 
-export default function createTimeout(tm: number): TioTimeout {
-  let t: Option<NodeJS.Timeout> = null;
+  public constructor(tm: number) {
+    this.promise = new Promise(resolve => {
+      this.t = setTimeout(resolve, tm);
+    });
+  }
 
-  return {
-    cancel(): void {
-      clearTimeout(t!);
-    },
-
-    promise: new Promise(resolve => {
-      t = setTimeout(() => resolve(null), tm);
-    })
-  };
+  public cancel(): void {
+    clearTimeout(this.t!);
+  }
 }
