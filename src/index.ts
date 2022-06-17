@@ -18,7 +18,7 @@ export interface TioResponse {
 }
 
 // embrace rust <3
-export type Option<T> = T | undefined | null | void;
+export type Option<T> = T | undefined | null;
 
 export class TioError extends Error {
   public constructor(message: string) {
@@ -133,8 +133,7 @@ async function evaluate(
     }
   }
 
-  // eslint-disable-next-line
-  return gunzipSync(data!).toString();
+  return gunzipSync(data).toString();
 }
 
 async function tio(
