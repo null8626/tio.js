@@ -2,8 +2,8 @@ import { deflateRawSync, gunzipSync } from 'node:zlib';
 import { randomBytes } from 'node:crypto';
 import { Buffer } from 'node:buffer';
 
-import Timeout from './timeout';
-import languages from './languages';
+import Timeout from './timeout.js';
+import languages from './languages.js';
 import type { TioLanguage } from './languages';
 
 export interface TioResponse {
@@ -18,7 +18,7 @@ export interface TioResponse {
 }
 
 // embrace rust <3
-export type Option<T> = T | undefined | null | void;
+export type Option<T> = T | undefined | null;
 
 export class TioError extends Error {
   public constructor(message: string) {
@@ -133,8 +133,7 @@ async function evaluate(
     }
   }
 
-  // eslint-disable-next-line
-  return gunzipSync(data!).toString();
+  return gunzipSync(data).toString();
 }
 
 async function tio(
@@ -264,7 +263,10 @@ Object.defineProperty(tio, 'refreshTimeout', {
   },
 
   set(timeout: number) {
-    if (timeout !== Infinity && (!Number.isSafeInteger(timeout) || timeout < 500000)) {
+    if (
+      timeout !== Infinity &&
+      (!Number.isSafeInteger(timeout) || timeout < 500000)
+    ) {
       throw new TioError(
         'Refresh timeout must be a valid integer. and it must be greater or equal to 500000.'
       );
