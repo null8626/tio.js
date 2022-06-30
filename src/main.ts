@@ -47,7 +47,7 @@ export async function requestText(path: string): Promise<string> {
 export function randomHex(size: number): string {
   const arr: Uint8Array = new Uint8Array(size);
 
-  return [...crypto.getRandomValues(arr)].map(x => x.toString(16).padStart(2, '0')).join('');
+  return [...globalThis.crypto.getRandomValues(arr)].map(x => x.toString(16).padStart(2, '0')).join('');
 }
 
 // constants
