@@ -9,9 +9,9 @@
 [downloads-image]: https://img.shields.io/npm/dm/tio.js.svg
 [downloads-url]: https://npmjs.org/package/tio.js
 
-Evaluate code in a sandboxed environment everywhere with Node.js or Deno.
+Evaluate code in a sandboxed environment everywhere with [Node.js](https://npmjs.org/package/tio.js) or [Deno](https://deno.land/x/tio).
 
-### Node.js
+### [Node.js](https://npmjs.org/package/tio.js)
 
 In the shell, do:
 
@@ -25,7 +25,7 @@ In your source:
 import tio from 'tio.js';
 ```
 
-### Deno
+### [Deno](https://deno.land/x/tio)
 
 In your source:
 
