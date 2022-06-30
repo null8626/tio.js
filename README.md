@@ -121,12 +121,3 @@ const response = await tio('for (;;);', 'javascript-node');
 
 console.log(response); // Does the same as the example before.
 ```
-
-# Building locally
-
-```shell
-git clone https://github.com/null8626/tio.js.git
-cd tio.js
-npm install --save-dev --ignore-scripts
-npm run build
-```
