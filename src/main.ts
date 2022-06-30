@@ -44,9 +44,11 @@ export async function requestText(path: string): Promise<string> {
   return await response.text();
 }
 
-export function randomHex(size: number): string {
+export async function randomHex(size: number): Promise<string> {
   const arr: Uint8Array = new Uint8Array(size);
 
+  // @ts-ignore
+  const crypto: any = globalThis.Deno ? globalThis.crypto : await import('node:crypto');
   return [...crypto.getRandomValues(arr)].map(x => x.toString(16).padStart(2, '0')).join('');
 }
 

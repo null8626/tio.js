@@ -60,8 +60,9 @@ async function evaluate(code: string, language: TioLanguage, timeout: Option<num
     encoder.encode(`Vlang\0\x31\0${language}\0VTIO_OPTIONS\0\x30\0F.code.tio\0${code.length}\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`),
     { level: 9 }
   );
+  const hex: string = await randomHex(16);
 
-  const response: Response = await fetch(`https://tio.run/cgi-bin/static/${runURL}/${randomHex(16)}`, {
+  const response: Response = await fetch(`https://tio.run/cgi-bin/static/${runURL}/${hex}`, {
     method: 'POST',
     body: body.buffer,
     signal: ab.signal
