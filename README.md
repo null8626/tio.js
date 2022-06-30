@@ -9,10 +9,28 @@
 [downloads-image]: https://img.shields.io/npm/dm/tio.js.svg
 [downloads-url]: https://npmjs.org/package/tio.js
 
-Unofficial Node.js wrapper for the _TryItOnline_ ([tio.run](https://tio.run)) API.
+Evaluate code in a sandboxed environment everywhere with Node.js or Deno.
+
+### Node.js
+
+In the shell, do:
 
 ```shell
 npm i tio.js
+```
+
+In your source:
+
+```ts
+import tio from 'tio.js';
+```
+
+### Deno
+
+In your source:
+
+```ts
+import tio from 'https://deno.land/x/tio@v3.0.2/mod.ts';
 ```
 
 # Examples
@@ -20,8 +38,6 @@ npm i tio.js
 ## Getting a list of available languages
 
 ```js
-import tio from 'tio.js';
-
 console.log(tio.languages);
 ```
 
@@ -30,8 +46,6 @@ console.log(tio.languages);
 Evaluating a string is really simple.
 
 ```js
-import tio from 'tio.js';
-
 // Evaluate a code (Node.js is the default language).
 let response = await tio('console.log("Hello, World!");');
 
@@ -47,7 +61,7 @@ console.log(response);
 
 ```js
 {
-  output: 'Hello, World!',
+  output: 'Hello, World!\n',
   language: 'javascript-node',
   timedOut: false,
   realTime: 0.069,
@@ -63,8 +77,6 @@ console.log(response);
 Set a default language so you don't have to repeat the same arguments all over again.
 
 ```js
-import tio from 'tio.js';
-
 tio.defaultLanguage = 'python3';
 
 const response = await tio('print("Hello, World!")');
@@ -77,8 +89,6 @@ console.log(response);
 Use this to contain scripts that runs longer than it should've been. **(e.g. infinite loop)**
 
 ```js
-import tio from 'tio.js';
-
 // Make the response time out after waiting for 10000 ms (10 seconds).
 const response = await tio('for (;;);', 'javascript-node', 10000);
 
@@ -105,8 +115,6 @@ console.log(response);
 Just like setting a default language beforehand, you can set default timeouts so you don't have to enter the same arguments again.
 
 ```js
-import tio from 'tio.js';
-
 tio.defaultTimeout = 10000;
 
 const response = await tio('for (;;);', 'javascript-node');
@@ -119,6 +127,6 @@ console.log(response); // Does the same as the example before.
 ```shell
 git clone https://github.com/null8626/tio.js.git
 cd tio.js
-npm install --save-dev
+npm install --save-dev --ignore-scripts
 npm run build
 ```

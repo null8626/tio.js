@@ -2,7 +2,7 @@
 type Option<T> = T | undefined | null;
 
 export default class Timeout {
-  private t: Option<NodeJS.Timeout> = null;
+  private t: Option<any> = null;
   public readonly promise: Promise<null>;
 
   public constructor(tm: number) {
@@ -12,6 +12,6 @@ export default class Timeout {
   }
 
   public cancel(): void {
-    clearTimeout(this.t!);
+    clearTimeout(this.t);
   }
 }

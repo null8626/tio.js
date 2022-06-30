@@ -9,3 +9,4 @@ tsconfig.json
 .vscode/
 .github/
 test.mjs
+mod.ts

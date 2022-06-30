@@ -1,13 +1,31 @@
-import Timeout from './timeout.js';
-import languages from './languages.js';
-import type { TioLanguage } from './languages';
-import { Option, randomHex, requestText, RUNURL_REGEX, SCRIPT_REGEX, TioError, TioHttpError, TioResponse, version } from './main.js';
-import { deflateRawSync, gunzipSync } from 'zlib';
+// @ts-ignore
+import { gunzip, deflateRaw } from 'https://deno.land/x/compress@v0.4.5/zlib/mod.ts';
+
+// @ts-ignore
+import Timeout from './src/timeout.ts';
+
+// @ts-ignore
+import languages from './src/languages.ts';
+import type { TioLanguage } from './src/languages';
+
+import {
+  DEFAULT_LANGUAGE,
+  DEFAULT_REFRESH_TIMEOUT,
+  Option,
+  randomHex,
+  requestText,
+  RUNURL_REGEX,
+  SCRIPT_REGEX,
+  TioError,
+  TioHttpError,
+  TioResponse,
+  version // @ts-ignore
+} from './src/main.ts';
 
 let runURL: Option<string> = null;
 let defaultTimeout: Option<number> = null;
-let defaultLanguage: TioLanguage = 'javascript-node';
-let refreshTimeout: number = 850000;
+let defaultLanguage: TioLanguage = DEFAULT_LANGUAGE;
+let refreshTimeout: number = DEFAULT_REFRESH_TIMEOUT;
 let nextRefresh: number = 0;
 
 async function prepare(): Promise<void> {
@@ -37,12 +55,15 @@ async function prepare(): Promise<void> {
 
 async function evaluate(code: string, language: TioLanguage, timeout: Option<number>): Promise<Option<string>> {
   const ab: AbortController = new AbortController();
+  const encoder: TextEncoder = new TextEncoder();
+  const body: Uint8Array = deflateRaw(
+    encoder.encode(`Vlang\0\x31\0${language}\0VTIO_OPTIONS\0\x30\0F.code.tio\0${code.length}\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`),
+    { level: 9 }
+  );
 
   const response: Response = await fetch(`https://tio.run/cgi-bin/static/${runURL}/${randomHex(16)}`, {
     method: 'POST',
-    body: deflateRawSync(`Vlang\0\x31\0${language}\0VTIO_OPTIONS\0\x30\0F.code.tio\0${code.length}\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`, {
-      level: 9
-    }),
+    body: body.buffer,
     signal: ab.signal
   });
 
@@ -67,7 +88,8 @@ async function evaluate(code: string, language: TioLanguage, timeout: Option<num
     }
   }
 
-  return gunzipSync(data).toString();
+  const decoder: TextDecoder = new TextDecoder();
+  return decoder.decode(gunzip(new Uint8Array(data!)));
 }
 
 async function tio(code: string, language: Option<TioLanguage> = null, timeout: Option<number> = null): Promise<TioResponse> {

@@ -1,7 +1,7 @@
 {
   "name": "tio.js",
-  "version": "3.0.1",
-  "description": "Unofficial node.js wrapper for the TryItOnline (tio.run) API.",
+  "version": "3.0.2",
+  "description": "Evaluate code in a sandboxed environment everywhere with Node.js or Deno.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
