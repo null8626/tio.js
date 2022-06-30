@@ -1,6 +1,6 @@
-import { notEqual, strict } from 'node:assert';
-import test from 'fast-fail';
+import { strict } from 'node:assert';
 import tio from './dist/index.js';
+import test from 'fast-fail';
 
 let output;
 
