@@ -1,11 +1,7 @@
-.prettierrc.json
-.gitattributes
 LICENSE
 src/
-.eslintrc.json
 tsconfig.json
 .editorconfig
-.vscode/
 .github/
-test.mjs
+__tests__/
 mod.ts
