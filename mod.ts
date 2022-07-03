@@ -1,7 +1,6 @@
-// @ts-ignore
 import {
   gunzip,
-  deflateRaw
+  deflateRaw // @ts-ignore
 } from 'https://deno.land/x/compress@v0.4.5/zlib/mod.ts';
 
 // @ts-ignore

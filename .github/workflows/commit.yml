@@ -21,7 +21,7 @@ jobs:
       - name: Running ESLint
         run: npx eslint src/**/*.ts --fix
       - name: Running Prettier
-          npx prettier **/*.ts --write
+        run: npx prettier **/*.ts --write
       - name: Running tests
         run: npm run test
       - name: Commit
