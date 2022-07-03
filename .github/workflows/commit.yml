@@ -17,18 +17,13 @@ jobs:
         with:
           node-version: 18
       - name: Installing dependencies
-        run: |
-          npm install --save-dev
-      - name: Running ESLint and Prettier
-        run: |
-          npx eslint src/**/*.ts --fix
+        run: npm install --save-dev
+      - name: Running ESLint
+        run: npx eslint src/**/*.ts --fix
+      - name: Running Prettier
           npx prettier **/*.ts --write
-      - name: Building the project
-        run: |
-          npm run build
       - name: Running tests
-        run: |
-          node ./test.mjs
+        run: npm run test
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
