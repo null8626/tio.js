@@ -1,54 +1,54 @@
-import type { TioLanguage } from './languages';
+import type { TioLanguage } from './languages'
 
 export class TioError extends Error {
   public constructor(message: string) {
-    super(message);
+    super(message)
 
-    this.name = `TioError: ${message}`;
+    this.name = `TioError: ${message}`
   }
 }
 
 export class TioHttpError extends TioError {
-  public status: number;
-  public statusText: string;
+  public status: number
+  public statusText: string
 
   public constructor(response: Response) {
-    super(`[HTTP ${response.status}: ${response.statusText}]`);
+    super(`[HTTP ${response.status}: ${response.statusText}]`)
 
-    this.status = response.status;
-    this.statusText = response.statusText;
+    this.status = response.status
+    this.statusText = response.statusText
   }
 }
 
 export async function requestText(path: string): Promise<string> {
-  const response: Response = await fetch(`https://tio.run${path}`);
+  const response: Response = await fetch(`https://tio.run${path}`)
 
   if (response.status >= 400) {
-    throw new TioHttpError(response);
+    throw new TioHttpError(response)
   }
 
-  return await response.text();
+  return await response.text()
 }
 
 export async function randomHex(size: number): Promise<string> {
-  const arr: Uint8Array = new Uint8Array(size);
+  const arr: Uint8Array = new Uint8Array(size)
 
   // @ts-ignore
   const crypto: any = globalThis.Deno
     ? globalThis.crypto
-    : await import('node:crypto');
+    : await import('node:crypto')
   return [...crypto.getRandomValues(arr)]
     .map(x => x.toString(16).padStart(2, '0'))
-    .join('');
+    .join('')
 }
 
 // constants
 const SCRIPT_REGEX: RegExp =
-  /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/;
-const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m;
-const DEFAULT_LANGUAGE: 'javascript-node' = 'javascript-node';
-const DEFAULT_REFRESH_TIMEOUT: number = 850000;
-const version: string = '3.0.2';
+  /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/
+const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m
+const DEFAULT_LANGUAGE: 'javascript-node' = 'javascript-node'
+const DEFAULT_REFRESH_TIMEOUT: number = 850000
+const version: string = '3.0.2'
 
 export {
   SCRIPT_REGEX,
@@ -56,4 +56,4 @@ export {
   DEFAULT_LANGUAGE,
   DEFAULT_REFRESH_TIMEOUT,
   version
-};
+}

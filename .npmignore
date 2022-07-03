@@ -5,3 +5,4 @@ tsconfig.json
 .github/
 __tests__/
 mod.ts
+.gitattributes

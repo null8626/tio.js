@@ -20,7 +20,7 @@ npm i tio.js
 In your source:
 
 ```ts
-import tio from 'tio.js';
+import tio from 'tio.js'
 ```
 
 ### [Deno](https://deno.land/x/tio)
@@ -28,7 +28,7 @@ import tio from 'tio.js';
 In your source:
 
 ```ts
-import tio from 'https://deno.land/x/tio@v3.0.2/mod.ts';
+import tio from 'https://deno.land/x/tio@v3.0.2/mod.ts'
 ```
 
 # Examples
@@ -36,7 +36,7 @@ import tio from 'https://deno.land/x/tio@v3.0.2/mod.ts';
 ## Getting a list of available languages
 
 ```js
-console.log(tio.languages);
+console.log(tio.languages)
 ```
 
 ## Evaluating a string
@@ -45,14 +45,14 @@ Evaluating a string is really simple.
 
 ```js
 // Evaluate a code (Node.js is the default language).
-let response = await tio('console.log("Hello, World!");');
+let response = await tio('console.log("Hello, World!");')
 
-console.log(response);
+console.log(response)
 
 // Evaluate a code from another programming language (e.g. Python).
-response = await tio('print("Hello, World!")', 'python3');
+response = await tio('print("Hello, World!")', 'python3')
 
-console.log(response);
+console.log(response)
 ```
 
 **Console output (for the first `console.log`):**
@@ -75,11 +75,11 @@ console.log(response);
 Set a default language so you don't have to repeat the same arguments all over again.
 
 ```js
-tio.defaultLanguage = 'python3';
+tio.defaultLanguage = 'python3'
 
-const response = await tio('print("Hello, World!")');
+const response = await tio('print("Hello, World!")')
 
-console.log(response);
+console.log(response)
 ```
 
 ## Timeouts
@@ -88,9 +88,9 @@ Use this to contain scripts that runs longer than it should've been. **(e.g. inf
 
 ```js
 // Make the response time out after waiting for 10000 ms (10 seconds).
-const response = await tio('for (;;);', 'javascript-node', 10000);
+const response = await tio('for (;;);', 'javascript-node', 10000)
 
-console.log(response);
+console.log(response)
 ```
 
 **Console output:**
@@ -113,9 +113,9 @@ console.log(response);
 Just like setting a default language beforehand, you can set default timeouts so you don't have to enter the same arguments again.
 
 ```js
-tio.defaultTimeout = 10000;
+tio.defaultTimeout = 10000
 
-const response = await tio('for (;;);', 'javascript-node');
+const response = await tio('for (;;);', 'javascript-node')
 
-console.log(response); // Does the same as the example before.
+console.log(response) // Does the same as the example before.
 ```

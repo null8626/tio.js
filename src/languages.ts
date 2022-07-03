@@ -679,7 +679,7 @@ export type TioLanguage =
   | 'zig'
   | 'zkl'
   | 'zoidberg'
-  | 'zsh';
+  | 'zsh'
 
 const languages: TioLanguage[] = [
   '05ab1e',
@@ -1363,6 +1363,6 @@ const languages: TioLanguage[] = [
   'zkl',
   'zoidberg',
   'zsh'
-];
+]
 
-export default languages;
+export default languages
