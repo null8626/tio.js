@@ -1,23 +1,12 @@
-name: Test
-'on':
+name: Run ESLint, Prettier, and Tests
+on:
   push:
     branches:
       - master
     tags-ignore:
       - '**'
-    paths-ignore:
-      - '**/*.md'
-      - LICENSE
-      - '**/*.gitignore'
-      - '**/*.npmignore'
-      - '.vscode/*'
-      - .prettierignore
-      - .editorconfig
-      - .eslintrc.json
-      - .prettierrc.json
-      - tsconfig.json
-      - yarn.lock
-  pull_request: null
+    paths:
+      - '**/*.ts'
 jobs:
   test:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
@@ -29,10 +18,20 @@ jobs:
           node-version: 18
       - name: Installing dependencies
         run: |
-          npm install --save-dev --ignore-scripts
-      - name: Compiling and linting the project
+          npm install --save-dev
+      - name: Running ESLint and Prettier
+        run: |
+          npx eslint **/*.ts --fix
+          npx prettier **/*.ts --write
+      - name: Building the project
         run: |
           npm run build
       - name: Running tests
         run: |
           node ./test.mjs
+      - name: Commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'chore: prettier and lint'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

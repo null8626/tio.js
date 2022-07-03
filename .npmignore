@@ -1,5 +1,4 @@
 .prettierrc.json
-.prettierignore
 .gitattributes
 LICENSE
 src/
