@@ -13,7 +13,11 @@ export interface TioResponse {
   readonly exitCode: number;
 }
 
-export type TioFunction = (code: string, language?: Option<TioLanguage>, timeout?: Option<number>) => Promise<TioResponse>;
+export type TioFunction = (
+  code: string,
+  language?: Option<TioLanguage>,
+  timeout?: Option<number>
+) => Promise<TioResponse>;
 
 export interface Tio extends TioFunction {
   version: string;
