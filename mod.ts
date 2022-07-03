@@ -11,7 +11,7 @@ import type { TioLanguage } from './src/languages';
 import {
   DEFAULT_LANGUAGE,
   DEFAULT_REFRESH_TIMEOUT,
-  Option,
+ Option,
   randomHex,
   requestText,
   RUNURL_REGEX,
@@ -29,8 +29,8 @@ let refreshTimeout: number = DEFAULT_REFRESH_TIMEOUT;
 let nextRefresh: number = 0;
 
 async function prepare(): Promise<void> {
-  if (runURL !== null && Date.now() < nextRefresh) {
-    return;
+if (runURL !== null && Date.now() < nextRefresh) {
+  return;
   }
 
   const scrapeResponse: string = await requestText('/');
