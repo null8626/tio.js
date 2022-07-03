@@ -21,7 +21,7 @@ jobs:
           npm install --save-dev
       - name: Running ESLint and Prettier
         run: |
-          npx eslint **/*.ts --fix
+          npx eslint src/**/*.ts --fix
           npx prettier **/*.ts --write
       - name: Building the project
         run: |

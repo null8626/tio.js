@@ -11,7 +11,7 @@ import type { TioLanguage } from './src/languages';
 import {
   DEFAULT_LANGUAGE,
   DEFAULT_REFRESH_TIMEOUT,
-  Option,
+ Option,
   randomHex,
   requestText,
   RUNURL_REGEX,
