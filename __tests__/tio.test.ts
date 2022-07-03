@@ -1,5 +1,3 @@
-'use strict';
-
 import tio from '../src/index';
 
 it('outputs Hello, World in JavaScript', async () => {
