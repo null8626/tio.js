@@ -271,7 +271,6 @@
       "@typescript-eslint/prefer-return-this-type": "warn",
       "@typescript-eslint/require-array-sort-compare": "warn",
       "@typescript-eslint/restrict-plus-operands": "error",
-      "@typescript-eslint/semi": "error",
       "@typescript-eslint/space-before-blocks": "warn",
       "@typescript-eslint/type-annotation-spacing": "error",
       "@typescript-eslint/typedef": [
@@ -287,7 +286,7 @@
     }
   },
   "prettier": {
-    "semi": true,
+    "semi": false,
     "singleQuote": true,
     "trailingComma": "none",
     "arrowParens": "avoid",
