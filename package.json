@@ -19,13 +19,11 @@
     "api"
   ],
   "author": {
-    "name": "null8626",
-    "email": "vierofernando9@gmail.com"
+    "name": "null8626"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/null8626/tio.js/issues",
-    "email": "vierofernando9@gmail.com"
+    "url": "https://github.com/null8626/tio.js/issues"
   },
   "homepage": "https://github.com/null8626/tio.js#readme",
   "devDependencies": {
