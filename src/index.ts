@@ -4,7 +4,7 @@ import { Buffer } from 'node:buffer'
 
 import Timeout from './timeout'
 import languages from './languages'
-import type { Option, Tio, TioLanguage, TioResponse } from './typings'
+import type { Option, Tio, TioLanguage, TioResponse } from '../typings'
 
 class TioError extends Error {
   public constructor(message: string) {
