@@ -679,7 +679,7 @@ export type TioLanguage =
   | 'zig'
   | 'zkl'
   | 'zoidberg'
-  | 'zsh';
+  | 'zsh'
 
 export type Option<T> = T | undefined | null
 
@@ -705,4 +705,3 @@ export interface Tio extends TioFunction {
   defaultTimeout: Option<number>
   refreshTimeout: number
 }
-

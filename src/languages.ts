@@ -682,6 +682,6 @@ const languages: TioLanguage[] = [
   'zkl',
   'zoidberg',
   'zsh'
-];
+]
 
-export default languages;
+export default languages
