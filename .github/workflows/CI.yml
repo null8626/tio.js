@@ -17,8 +17,10 @@ jobs:
           node-version: 18
       - name: Installing dependencies
         run: npm install --save-dev
+      - name: Trying to compile
+        run: npx tsc
       - name: Running tests
-        run: npm run test
+        run: npm test
       - name: Running ESLint
         run: npx eslint src/**/*.ts --fix
       - name: Running Prettier
