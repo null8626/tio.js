@@ -1,4 +1,4 @@
-import type { Option } from './typings'
+import type { Option } from '../typings'
 
 export default class Timeout {
   private t: Option<NodeJS.Timeout> = null

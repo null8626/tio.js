@@ -1,4 +1,4 @@
-import type { TioLanguage } from './typings'
+import type { TioLanguage } from '../typings'
 
 const languages: TioLanguage[] = [
   '05ab1e',
