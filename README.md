@@ -54,7 +54,7 @@ import tio from 'tio.js'
 
 </details>
 
-# Examples
+## Examples
 
 <details>
 <summary>Getting a list of available languages</summary>
