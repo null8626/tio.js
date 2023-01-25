@@ -684,14 +684,14 @@ export type TioLanguage =
 export type Option<T> = T | undefined | null
 
 export interface TioResponse {
-  readonly output: string
-  readonly language: TioLanguage
-  readonly timedOut: boolean
-  readonly realTime: number
-  readonly userTime: number
-  readonly sysTime: number
-  readonly CPUshare: number
-  readonly exitCode: number
+  readonly output: string;
+  readonly language: TioLanguage;
+  readonly timedOut: boolean;
+  readonly realTime: number;
+  readonly userTime: number;
+  readonly sysTime: number;
+  readonly CPUshare: number;
+  readonly exitCode: number;
 }
 
 export type TioFunction = (
@@ -701,7 +701,7 @@ export type TioFunction = (
 ) => Promise<TioResponse>
 
 export interface Tio extends TioFunction {
-  defaultLanguage: TioLanguage
-  defaultTimeout: Option<number>
-  refreshTimeout: number
+  defaultLanguage: TioLanguage;
+  defaultTimeout: Option<number>;
+  refreshTimeout: number;
 }
