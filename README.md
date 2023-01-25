@@ -1,4 +1,4 @@
-# tio.js [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![prettier][prettier-image]][prettier-url]
+# [tio.js](https://npmjs.org/package/tio.js) [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![prettier][prettier-image]][prettier-url]
 
 [prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
 [prettier-url]: https://github.com/prettier/prettier
@@ -7,39 +7,65 @@
 [downloads-image]: https://img.shields.io/npm/dm/tio.js.svg
 [downloads-url]: https://npmjs.org/package/tio.js
 
-Evaluate code in a sandboxed environment everywhere with [Node.js](https://npmjs.org/package/tio.js) or [Deno](https://deno.land/x/tio).
+A small TypeScript library that lets you evaluate code in a sandboxed environment everywhere.
 
-### [Node.js](https://npmjs.org/package/tio.js)
+## Installation
 
-In the shell, do:
+<details>
+<summary>Node.js</summary>
 
-```shell
-npm i tio.js
+In your shell:
+
+```console
+$ npm install tio.js
 ```
 
-In your source:
+In your code:
 
-```ts
+```js
 import tio from 'tio.js'
 ```
 
-### [Deno](https://deno.land/x/tio)
+</details>
+<details>
+<summary>Deno</summary>
 
-In your source:
+In your code:
 
-```ts
-import tio from 'https://deno.land/x/tio@v3.0.2/mod.ts'
+```js
+import tio from 'npm:tio.js'
 ```
+
+</details>
+<details>
+<summary>Bun</summary>
+
+In your shell:
+
+```console
+$ bun install tio.js
+```
+
+In your code:
+
+```js
+import tio from 'tio.js'
+```
+
+</details>
 
 # Examples
 
-## Getting a list of available languages
+<details>
+<summary>Getting a list of available languages</summary>
 
 ```js
 console.log(tio.languages)
 ```
 
-## Evaluating a string
+</details>
+<details>
+<summary>Evaluating a string</summary>
 
 Evaluating a string is really simple.
 
@@ -70,7 +96,9 @@ console.log(response)
 }
 ```
 
-## Setting a default language
+</details>
+<details>
+<summary>Setting a default language</summary>
 
 Set a default language so you don't have to repeat the same arguments all over again.
 
@@ -82,7 +110,9 @@ const response = await tio('print("Hello, World!")')
 console.log(response)
 ```
 
-## Timeouts
+</details>
+<details>
+<summary>Timeouts</summary>
 
 Use this to contain scripts that runs longer than it should've been. **(e.g. infinite loop)**
 
@@ -108,7 +138,9 @@ console.log(response)
 }
 ```
 
-## Setting a default timeout
+</details>
+<details>
+<summary>Setting a default timeout</summary>
 
 Just like setting a default language beforehand, you can set default timeouts so you don't have to enter the same arguments again.
 
@@ -119,3 +151,5 @@ const response = await tio('for (;;);', 'javascript-node')
 
 console.log(response) // Does the same as the example before.
 ```
+
+</details>

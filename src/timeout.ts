@@ -1,17 +1,16 @@
-// rust <3
-type Option<T> = T | undefined | null
+import type { Option } from './typings'
 
 export default class Timeout {
-  private t: Option<any> = null
-  public readonly promise: Promise<null>
+  private t: Option<NodeJS.Timeout> = null;
+  public readonly promise: Promise<null>;
 
   public constructor(tm: number) {
     this.promise = new Promise(resolve => {
-      this.t = setTimeout(() => resolve(null), tm)
-    })
+      this.t = setTimeout(() => resolve(null), tm);
+    });
   }
 
   public cancel(): void {
-    clearTimeout(this.t)
+    clearTimeout(this.t!);
   }
 }
