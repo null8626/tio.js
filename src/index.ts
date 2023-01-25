@@ -1,22 +1,50 @@
-import Timeout from './timeout'
-import languages, { TioLanguage } from './languages'
-import {
-  randomHex,
-  requestText,
-  RUNURL_REGEX,
-  SCRIPT_REGEX,
-  TioError,
-  TioHttpError,
-  version
-} from './main'
 import { deflateRawSync, gunzipSync } from 'node:zlib'
-import { Option, Tio, TioResponse } from './typings'
+import { randomBytes } from 'node:crypto'
+import { Buffer } from 'node:buffer'
+
+import Timeout from './timeout'
+import languages from './languages'
+import type { Option, TioLanguage, TioResponse } from './typings'
+
+class TioError extends Error {
+  public constructor(message: string) {
+    super(message)
+
+    this.name = `TioError: ${message}`
+  }
+}
+
+class TioHttpError extends TioError {
+  public status: number
+  public statusText: string
+
+  public constructor(response: Response) {
+    super(`[HTTP ${response.status}: ${response.statusText}]`)
+
+    this.status = response.status
+    this.statusText = response.statusText
+  }
+}
+
+const SCRIPT_REGEX: RegExp =
+  /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/
+const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m
 
 let runURL: Option<string> = null
 let defaultTimeout: Option<number> = null
 let defaultLanguage: TioLanguage = 'javascript-node'
 let refreshTimeout: number = 850000
 let nextRefresh: number = 0
+
+async function requestText(path: string): Promise<string> {
+  const response: Response = await fetch(`https://tio.run${path}`)
+
+  if (response.status >= 400) {
+    throw new TioHttpError(response)
+  }
+
+  return await response.text()
+}
 
 async function prepare(): Promise<void> {
   if (runURL !== null && Date.now() < nextRefresh) {
@@ -53,17 +81,16 @@ async function evaluate(
   timeout: Option<number>
 ): Promise<Option<string>> {
   const ab: AbortController = new AbortController()
-  const hex: string = await randomHex(16)
 
   const response: Response = await fetch(
-    `https://tio.run/cgi-bin/static/${runURL}/${hex}`,
+    `https://tio.run/cgi-bin/static/${runURL}/${randomBytes(16).toString(
+      'hex'
+    )}`,
     {
       method: 'POST',
       body: deflateRawSync(
         `Vlang\0\x31\0${language}\0VTIO_OPTIONS\0\x30\0F.code.tio\0${code.length}\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`,
-        {
-          level: 9
-        }
+        { level: 9 }
       ),
       signal: ab.signal
     }
@@ -162,13 +189,6 @@ Object.defineProperty(tio, 'languages', {
   enumerable: true,
   writable: false,
   value: languages
-})
-
-Object.defineProperty(tio, 'version', {
-  configurable: false,
-  enumerable: true,
-  writable: false,
-  value: version
 })
 
 Object.defineProperty(tio, 'defaultLanguage', {
