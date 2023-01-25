@@ -66,20 +66,9 @@
       "sourceType": "module",
       "ecmaFeatures": {
         "impliedStrict": true
-      }
+      },
+      "project": ["./tsconfig.json"]
     },
-    "overrides": [
-      {
-        "files": [
-          "src/**/*.ts"
-        ],
-        "parserOptions": {
-          "project": [
-            "./tsconfig.json"
-          ]
-        }
-      }
-    ],
     "rules": {
       "no-restricted-globals": [
         "error",
@@ -185,6 +174,7 @@
       "prefer-spread": "error",
       "prefer-template": "error",
       "require-yield": "warn",
+      "semi": "off",
       "strict": "error",
       "block-spacing": "warn",
       "comma-style": "warn",
@@ -269,6 +259,7 @@
       "@typescript-eslint/prefer-return-this-type": "warn",
       "@typescript-eslint/require-array-sort-compare": "warn",
       "@typescript-eslint/restrict-plus-operands": "error",
+      "@typescript-eslint/semi": ["error", "never"],
       "@typescript-eslint/space-before-blocks": "warn",
       "@typescript-eslint/type-annotation-spacing": "error",
       "@typescript-eslint/typedef": [
