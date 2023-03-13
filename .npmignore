@@ -7,3 +7,6 @@ tsconfig.json
 __tests__/
 .gitattributes
 .prettierignore
+jest.config.json
+.prettierrc.json
+.eslintrc.json
