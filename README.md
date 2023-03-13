@@ -23,7 +23,7 @@
 [github-url]: https://github.com/null8626/tio.js
 [github-code-size-image]: https://img.shields.io/github/languages/code-size/null8626/tio.js?style=flat-square
 [github-license-image]: https://img.shields.io/npm/l/tio.js?style=flat-square
-[github-license-url]: https://github.com/null8626/tio.js/blob/main/LICENSE
+[github-license-url]: https://github.com/null8626/tio.js/blob/master/LICENSE
 [blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
 [blazingly-fast-url]: https://twitter.com/acdlite/status/974390255393505280
 
