@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    commit-message:
+      prefix: "deps: "
+    schedule:
+      day: "saturday"
+      interval: "weekly"
+      time: "07:00"
