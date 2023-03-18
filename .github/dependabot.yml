@@ -7,4 +7,4 @@ updates:
     schedule:
       day: "saturday"
       interval: "weekly"
-      time: "07:00"
+      time: "06:00"
