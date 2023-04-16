@@ -1,4 +1,4 @@
-# [tio.js][npm-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![code style: prettier][prettier-image]][prettier-url] [![Build Status][ci-image]][ci-url] [![npm vulnerabilities][npm-vulnerabilities-image]][npm-vulnerabilities-url] [![github vulnerabilities][github-vulnerabilities-image]][github-url] [![languages][languages-image]][github-url] [![npms.io popularity score][npms-io-popularity-image]][npms-io-url] [![npms.io quality score][npms-io-quality-image]][npms-io-url] [![npms.io maintenance score][npms-io-maintenance-image]][npms-io-url] [![npms.io final score][npms-io-final-image]][npms-io-url] [![libraries.io dependents][libraries-io-dependents-image]][libraries-io-url] [![libraries.io score][libraries-io-score-image]][libraries-io-url] [![github code size][github-code-size-image]][github-url] [![license][github-license-image]][github-license-url] [![BLAZINGLY FAST!!!][blazingly-fast-image]][blazingly-fast-url]
+# [tio.js][npm-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![code style: prettier][prettier-image]][prettier-url] [![Build Status][ci-image]][ci-url] [![license][github-license-image]][github-license-url] [![BLAZINGLY FAST!!!][blazingly-fast-image]][blazingly-fast-url]
 
 [npm-image]: https://img.shields.io/npm/v/tio.js.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/tio.js
@@ -7,21 +7,7 @@
 [prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
 [prettier-url]: https://github.com/prettier/prettier
 [ci-image]: https://github.com/null8626/tio.js/workflows/CI/badge.svg
-[ci-url]: https://github.com/null8626/tio.js/actions
-[npm-vulnerabilities-image]: https://img.shields.io/snyk/vulnerabilities/npm/tio.js?style=flat-square
-[npm-vulnerabilities-url]: https://snyk.io/advisor/npm-package/tio.js
-[github-vulnerabilities-image]: https://img.shields.io/snyk/vulnerabilities/github/null8626/tio.js?style=flat-square
-[languages-image]: https://img.shields.io/github/languages/top/null8626/tio.js?style=flat-square
-[npms-io-url]: https://npms.io/search?q=tio.js
-[npms-io-popularity-image]: https://img.shields.io/npms-io/popularity-score/tio.js?style=flat-square
-[npms-io-quality-image]: https://img.shields.io/npms-io/quality-score/tio.js?style=flat-square
-[npms-io-maintenance-image]: https://img.shields.io/npms-io/maintenance-score/tio.js?style=flat-square
-[npms-io-final-image]: https://img.shields.io/npms-io/final-score/tio.js?style=flat-square
-[libraries-io-dependents-image]: https://img.shields.io/librariesio/dependents/npm/tio.js?style=flat-square
-[libraries-io-score-image]: https://img.shields.io/librariesio/sourcerank/npm/tio.js?style=flat-square
-[libraries-io-url]: https://libraries.io/npm/tio.js
-[github-url]: https://github.com/null8626/tio.js
-[github-code-size-image]: https://img.shields.io/github/languages/code-size/null8626/tio.js?style=flat-square
+[ci-url]: https://github.com/null8626/tio.js/actions/workflows/CI.yml
 [github-license-image]: https://img.shields.io/npm/l/tio.js?style=flat-square
 [github-license-url]: https://github.com/null8626/tio.js/blob/master/LICENSE
 [blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
