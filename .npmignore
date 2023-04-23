@@ -1,7 +1,7 @@
-**/*.ts
 LICENSE
 dist/*.d.ts
-test.js
+src/
+test.mjs
 tsconfig.json
 .editorconfig
 .github/
