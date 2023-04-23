@@ -2,8 +2,8 @@ import { deflateRawSync, gunzipSync } from 'node:zlib'
 import { randomBytes } from 'node:crypto'
 import { Buffer } from 'node:buffer'
 
-import Timeout from './timeout'
-import languages from './languages'
+import Timeout from './timeout.js'
+import languages from './languages.js'
 import type { Option, Tio, TioLanguage, TioResponse } from '../typings'
 
 class TioError extends Error {
