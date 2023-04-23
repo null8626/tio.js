@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "typings": "typings.d.ts",
   "scripts": {
-    "test": "npx tsc && npx tsc test.ts -t esnext -m esnext --lib esnext,dom --removeComments --strict && node test.js"
+    "test": "npx tsc && node test.mjs"
   },
   "repository": {
     "type": "git",
