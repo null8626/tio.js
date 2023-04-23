@@ -1,12 +1,11 @@
+**/*.ts
 LICENSE
-src/
 dist/*.d.ts
+test.js
 tsconfig.json
 .editorconfig
 .github/
-__tests__/
 .gitattributes
 .prettierignore
-jest.config.json
 .prettierrc.json
 .eslintrc.json
