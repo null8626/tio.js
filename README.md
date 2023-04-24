@@ -66,10 +66,10 @@ Before running into the examples, please note that `tio.js` supports a wide vari
 
 For example `javascript-node` is for running JavaScript in a [Node.js](https://nodejs.org) runtime, `python3` is for running in a [Python 3](https://docs.python.org/3/) environment, etc.
 
-Therefore, here are the full list of supported languages alongside with their friendly names and respective URLs for your convenience.
+Therefore, here are the full list of supported languages alongside with their friendly names and respective URLs in alphabetical order for your convenience.
 
 <details>
-<summary>Practical languages (260)</summary>
+<summary><b>Practical languages</b> (260)</summary>
 
 | ID | Name |
 |---|---|
@@ -337,7 +337,7 @@ Therefore, here are the full list of supported languages alongside with their fr
 </summary>
 </details>
 <details>
-<summary>Esoteric languages (421)</summary>
+<summary><b>Esoteric languages</b> (421)</summary>
 
 | ID | Name |
 |---|---|
