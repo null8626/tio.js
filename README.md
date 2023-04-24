@@ -62,14 +62,20 @@ import tio from 'tio.js'
 
 ## Supported languages
 
-Before running into the examples, please note that `tio.js` supports a wide variety of languages. These languages contain their own IDs that can be used in customizing the languages to use before you input the code.
+Before running into the examples, please note that `tio.js` supports a wide variety of programming languages. These programming languages contain their own IDs that can be used in customizing the programming languages to use before you input the code.
 
 For example `javascript-node` is for running JavaScript in a [Node.js](https://nodejs.org) runtime, `python3` is for running in a [Python 3](https://docs.python.org/3/) environment, etc.
 
-Therefore, here are the full list of supported languages alongside with their friendly names and respective URLs in alphabetical order for your convenience.
+In code, these can be retrieved programmatically by using:
+
+```js
+console.log(tio.languages)
+```
+
+Therefore, here are the full list of supported programming languages alongside with their friendly names and respective URLs in alphabetical order for your convenience.
 
 <details>
-<summary><b>Practical languages</b> (260)</summary>
+<summary><b>Practical programming languages</b> (260)</summary>
 
 | ID | Name |
 |---|---|
@@ -337,7 +343,7 @@ Therefore, here are the full list of supported languages alongside with their fr
 </summary>
 </details>
 <details>
-<summary><b>Esoteric languages</b> (421)</summary>
+<summary><b>Esoteric programming languages</b> (421)</summary>
 
 | ID | Name |
 |---|---|
@@ -769,14 +775,6 @@ Therefore, here are the full list of supported languages alongside with their fr
 ## Examples
 
 <details>
-<summary><b>Getting a list of available languages</b></summary>
-
-```js
-console.log(tio.languages)
-```
-
-</details>
-<details>
 <summary><b>Evaluating a string</b></summary>
 
 Evaluating a string is really simple.
@@ -810,9 +808,9 @@ console.log(response)
 
 </details>
 <details>
-<summary><b>Setting a default language</b></summary>
+<summary><b>Setting a default programming language</b></summary>
 
-Set a default language so you don't have to repeat the same arguments all over again.
+Set a default programming language so you don't have to repeat the same arguments all over again.
 
 ```js
 tio.defaultLanguage = 'python3'
@@ -854,7 +852,7 @@ console.log(response)
 <details>
 <summary><b>Setting a default timeout</b></summary>
 
-Just like setting a default language beforehand, you can set default timeouts so you don't have to enter the same arguments again.
+Just like setting a default programming language beforehand, you can set default timeouts so you don't have to enter the same arguments again.
 
 ```js
 tio.defaultTimeout = 10000
