@@ -72,7 +72,7 @@ In code, these can be retrieved programmatically by using:
 console.log(tio.languages)
 ```
 
-Therefore, here are the full list of supported programming languages alongside with their respective ID and URL in alphabetical order for your convenience.
+Therefore, here are the full list of supported programming languages alongside with their respective IDs in alphabetical order for your convenience.
 
 <details>
 <summary><b>Practical programming languages</b> (260)</summary>
@@ -467,7 +467,7 @@ Therefore, here are the full list of supported programming languages alongside w
 | [D2](https://github.com/ConorOBrien-Foxx/Attache/blob/master/D2.md) | `d2` |
 | [Deadfish~](https://github.com/TryItOnline/deadfish-) | `deadfish-` |
 | [Decimal](https://github.com/aaronryank/Decimal) | `decimal` |
-| [Del|m|t](https://github.com/MistahFiggins/Delimit) | `delimit` |
+| [Del\|m\|t](https://github.com/MistahFiggins/Delimit) | `delimit` |
 | [Deorst](https://github.com/cairdcoinheringaahing/Deorst) | `deorst` |
 | [Dirty](https://github.com/Ourous/dirty) | `dirty` |
 | [Detour](https://github.com/cyoce/detour) | `detour` |
