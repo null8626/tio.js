@@ -18,7 +18,7 @@ A small TypeScript library that lets you evaluate code in a sandboxed environmen
 ## Installation
 
 <details>
-<summary>Node.js</summary>
+<summary><b>Node.js</b></summary>
 
 In your shell:
 
@@ -34,7 +34,7 @@ import tio from 'tio.js'
 
 </details>
 <details>
-<summary>Deno</summary>
+<summary><b>Deno</b></summary>
 
 In your code:
 
@@ -44,7 +44,7 @@ import tio from 'npm:tio.js'
 
 </details>
 <details>
-<summary>Bun</summary>
+<summary><b>Bun</b></summary>
 
 In your shell:
 
@@ -769,7 +769,7 @@ Therefore, here are the full list of supported languages alongside with their fr
 ## Examples
 
 <details>
-<summary>Getting a list of available languages</summary>
+<summary><b>Getting a list of available languages</b></summary>
 
 ```js
 console.log(tio.languages)
@@ -777,7 +777,7 @@ console.log(tio.languages)
 
 </details>
 <details>
-<summary>Evaluating a string</summary>
+<summary><b>Evaluating a string</b></summary>
 
 Evaluating a string is really simple.
 
@@ -810,7 +810,7 @@ console.log(response)
 
 </details>
 <details>
-<summary>Setting a default language</summary>
+<summary><b>Setting a default language</b></summary>
 
 Set a default language so you don't have to repeat the same arguments all over again.
 
@@ -824,7 +824,7 @@ console.log(response)
 
 </details>
 <details>
-<summary>Timeouts</summary>
+<summary><b>Timeouts</b></summary>
 
 Use this to contain scripts that runs longer than it should've been. **(e.g. infinite loop)**
 
@@ -852,7 +852,7 @@ console.log(response)
 
 </details>
 <details>
-<summary>Setting a default timeout</summary>
+<summary><b>Setting a default timeout</b></summary>
 
 Just like setting a default language beforehand, you can set default timeouts so you don't have to enter the same arguments again.
 
