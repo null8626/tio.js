@@ -9,7 +9,8 @@ import type { Option, Tio, TioLanguage, TioResponse } from '../typings'
 const SCRIPT_REGEX: RegExp =
   /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/
 const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m
-const DEBUG_REGEX: RegExp = /([\s\S]*)Real time\: ([\d\.]+) s\nUser time\: ([\d\.]+) s\nSys\. time\: ([\d\.]+) s\nCPU share\: ([\d\.]+) %\nExit code\: (\d+)$/
+const DEBUG_REGEX: RegExp =
+  /([\s\S]*)Real time\: ([\d\.]+) s\nUser time\: ([\d\.]+) s\nSys\. time\: ([\d\.]+) s\nCPU share\: ([\d\.]+) %\nExit code\: (\d+)$/
 
 let runURL: Option<string> = null
 let defaultTimeout: number = Infinity
@@ -150,7 +151,7 @@ const tio: Tio = async (
 
   if (result === null) {
     // The website formats this as in seconds.
-    const timeoutInSecs: number = timeout! / 1000
+    const timeoutInSecs: number = timeout / 1000
 
     return Object.freeze({
       output: `Request timed out after ${timeout}ms`,
@@ -165,8 +166,10 @@ const tio: Tio = async (
   }
 
   const s: string[] = result!.substring(16).split(result!.substring(0, 16))
-  const [debug, realTime, userTime, sysTime, CPUshare, exitCode] = s[1].match(DEBUG_REGEX)!.slice(1)
-  
+  const [debug, realTime, userTime, sysTime, CPUshare, exitCode] = s[1]
+    .match(DEBUG_REGEX)!
+    .slice(1)
+
   return Object.freeze({
     output: s[0] || debug,
     language,
