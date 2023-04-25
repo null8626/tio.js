@@ -3,7 +3,6 @@ dist/*.d.ts
 src/
 test.mjs
 tsconfig.json
-.editorconfig
 .github/
 .gitattributes
 .prettierignore

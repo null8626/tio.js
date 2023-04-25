@@ -6,6 +6,18 @@ import Timeout from './timeout.js'
 import languages from './languages.js'
 import type { Option, Tio, TioLanguage, TioResponse } from '../typings'
 
+const SCRIPT_REGEX: RegExp =
+  /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/
+const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m
+const DEBUG_REGEX: RegExp =
+  /([\s\S]*)Real time\: ([\d\.]+) s\nUser time\: ([\d\.]+) s\nSys\. time\: ([\d\.]+) s\nCPU share\: ([\d\.]+) %\nExit code\: (\d+)$/
+
+let runURL: Option<string> = null
+let defaultTimeout: number = Infinity
+let defaultLanguage: TioLanguage = 'javascript-node'
+let refreshTimeout: number = 850000
+let nextRefresh: number = 0
+
 class TioError extends Error {
   public constructor(message: string) {
     super(message)
@@ -25,16 +37,6 @@ class TioHttpError extends TioError {
     this.statusText = response.statusText
   }
 }
-
-const SCRIPT_REGEX: RegExp =
-  /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/
-const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m
-
-let runURL: Option<string> = null
-let defaultTimeout: Option<number> = null
-let defaultLanguage: TioLanguage = 'javascript-node'
-let refreshTimeout: number = 850000
-let nextRefresh: number = 0
 
 async function requestText(path: string): Promise<string> {
   const response: Response = await fetch(`https://tio.run${path}`)
@@ -102,7 +104,7 @@ async function evaluate(
 
   let data: Option<ArrayBuffer> = null
 
-  if (timeout === null) {
+  if (timeout === Infinity) {
     data = await response.arrayBuffer()
   } else {
     const tm: Timeout = new Timeout(timeout!)
@@ -126,12 +128,9 @@ const tio: Tio = async (
   language: Option<TioLanguage> = null,
   timeout: Option<number> = null
 ): Promise<TioResponse> => {
-  if (
-    typeof timeout === 'number' &&
-    (!Number.isSafeInteger(timeout) || timeout < 500)
-  ) {
+  if (timeout !== null && (!Number.isSafeInteger(timeout) || timeout < 500)) {
     throw new TioError(
-      'Timeout must be a valid integer. and it must be greater or equal to 500.'
+      `Timeout must be a valid integer and it's value must be 500 or greater. Got ${timeout}`
     )
   } else if (
     language != null &&
@@ -139,7 +138,7 @@ const tio: Tio = async (
     !languages.includes(language)
   ) {
     throw new TioError(
-      'Unsupported/Invalid language provided, a list of supported languages can be requested with `tio.languages`.'
+      `Unsupported/invalid language ID provided (${language}), a list of supported language IDs can be seen in \`tio.languages\`.`
     )
   }
 
@@ -152,7 +151,7 @@ const tio: Tio = async (
 
   if (result === null) {
     // The website formats this as in seconds.
-    const timeoutInSecs: number = timeout! / 1000
+    const timeoutInSecs: number = timeout / 1000
 
     return Object.freeze({
       output: `Request timed out after ${timeout}ms`,
@@ -162,25 +161,24 @@ const tio: Tio = async (
       userTime: timeoutInSecs,
       sysTime: timeoutInSecs,
       CPUshare: 0,
-      exitCode: 0
+      exitCode: 124
     })
   }
 
-  const s: string[] = result!.replaceAll(result!.slice(-16), '').split('\n')
-  const output: string = s.slice(0, -5).join('\n')
-  const [realTime, userTime, sysTime, CPUshare, exitCode] = s
-    .slice(-5)
-    .map((x: string) => parseFloat(x.slice(11).split(' ')[0]))
+  const s: string[] = result!.substring(16).split(result!.substring(0, 16))
+  const [debug, realTime, userTime, sysTime, CPUshare, exitCode] = s[1]
+    .match(DEBUG_REGEX)!
+    .slice(1)
 
   return Object.freeze({
-    output,
+    output: s[0] || debug,
     language,
     timedOut: false,
-    realTime,
-    userTime,
-    sysTime,
-    CPUshare,
-    exitCode
+    realTime: parseFloat(realTime),
+    userTime: parseFloat(userTime),
+    sysTime: parseFloat(sysTime),
+    CPUshare: parseFloat(CPUshare),
+    exitCode: parseInt(exitCode)
   })
 }
 
@@ -202,7 +200,7 @@ Object.defineProperty(tio, 'defaultLanguage', {
   set(lang: TioLanguage) {
     if (lang != null && lang !== defaultLanguage && !languages.includes(lang)) {
       throw new TioError(
-        'Unsupported/Invalid language provided, a list of supported languages can be requested with `await tio.languages()`.'
+        `Unsupported/invalid language ID provided (${lang}), a list of supported language IDs can be seen in \`tio.languages\`.`
       )
     }
 
@@ -214,17 +212,14 @@ Object.defineProperty(tio, 'defaultTimeout', {
   configurable: false,
   enumerable: true,
 
-  get(): Option<number> {
+  get(): number {
     return defaultTimeout
   },
 
-  set(timeout: Option<number>) {
-    if (
-      typeof timeout === 'number' &&
-      (!Number.isSafeInteger(timeout) || timeout < 500)
-    ) {
+  set(timeout: number) {
+    if (!Number.isSafeInteger(timeout) || timeout < 500) {
       throw new TioError(
-        'Timeout must be a valid integer. and it must be greater or equal to 500.'
+        `Timeout must be a valid integer and it's value must be 500 or greater. Got ${timeout}`
       )
     }
 
@@ -246,7 +241,7 @@ Object.defineProperty(tio, 'refreshTimeout', {
       (!Number.isSafeInteger(timeout) || timeout < 500000)
     ) {
       throw new TioError(
-        'Refresh timeout must be a valid integer. and it must be greater or equal to 500000.'
+        'Refresh timeout must be a valid integer. and it must be 500000 or greater.'
       )
     }
 
