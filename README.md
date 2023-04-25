@@ -838,7 +838,7 @@ console.log(response)
 
 </details>
 <details>
-<summary><b>Containing infinite loops with timeouts</b></summary>
+<summary><b>Contain infinite loops with timeouts</b></summary>
 
 ```js
 // make the response timeout after 10000 ms (10 seconds).
