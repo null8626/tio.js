@@ -780,7 +780,7 @@ Therefore, here are the full list of supported programming languages alongside w
 
 ```js
 // Evaluate a code (uses `javascript-node` by default).
-let response = await tio('console.log("Hello, World!");')
+const response = await tio('console.log("Hello, World!");')
 
 console.log(response)
 // =>
@@ -794,9 +794,16 @@ console.log(response)
 //   CPUshare: 99.99,
 //   exitCode: 0
 // }
+```
 
-// Evaluate a code from another programming language (e.g. Python).
-response = await tio('print("Hello, World!")', 'python3')
+</details>
+<details>
+<summary><b>Evaluating a string from another programming language</b></summary>
+
+```js
+let response = await tio('print("Hello, World!")', {
+  language: 'python3'
+})
 
 console.log(response)
 // =>
@@ -810,16 +817,10 @@ console.log(response)
 //   CPUshare: 99.99,
 //   exitCode: 0
 // }
-```
 
-</details>
-<details>
-<summary><b>Configuring the default programming language</b></summary>
-
-```js
 tio.defaultLanguage = 'python3'
 
-const response = await tio('print("Hello, World!")')
+response = await tio('print("Hello, World!")')
 
 console.log(response)
 // =>
@@ -840,8 +841,10 @@ console.log(response)
 <summary><b>Containing infinite loops with timeouts</b></summary>
 
 ```js
-// Make the response time out after waiting for 10000 ms (10 seconds).
-const response = await tio('for (;;);', 'javascript-node', 10000)
+// make the response timeout after 10000 ms (10 seconds).
+let response = await tio('for (;;);', {
+  timeout: 10000
+})
 
 console.log(response)
 // =>
@@ -855,16 +858,10 @@ console.log(response)
 //   CPUshare: 0,
 //   exitCode: 0
 // }
-```
 
-</details>
-<details>
-<summary><b>Configuring the default timeout</b></summary>
-
-```js
 tio.defaultTimeout = 10000
 
-const response = await tio('for (;;);', 'javascript-node')
+response = await tio('for (;;);', 'javascript-node')
 
 console.log(response)
 // =>

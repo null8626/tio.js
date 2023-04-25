@@ -17,7 +17,10 @@ it('outputs Hello, World in Python 3', async () => {
 })
 
 it('surpresses an infinite loop', async () => {
-  const { output, timedOut } = await tio('for (;;);', 'javascript-node', 2000)
+  const { output, timedOut } = await tio('for (;;);', {
+    language: 'javascript-node',
+    timeout: 2000
+  })
 
   strictEqual(timedOut, true)
   strictEqual(output, 'Request timed out after 2000ms')

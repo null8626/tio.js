@@ -683,6 +683,13 @@ export type TioLanguage =
 
 export type Option<T> = T | undefined | null
 
+export interface TioOptions {
+  language?: TioLanguage;
+  timeout?: number;
+  flags?: string[];
+  args?: string[];
+}
+
 export interface TioResponse {
   readonly output: string;
   readonly language: TioLanguage;
@@ -696,12 +703,13 @@ export interface TioResponse {
 
 export type TioFunction = (
   code: string,
-  language?: Option<TioLanguage>,
-  timeout?: Option<number>
+  options?: TioOptions
 ) => Promise<TioResponse>
 
 export interface Tio extends TioFunction {
   defaultLanguage: TioLanguage;
-  defaultTimeout: Option<number>;
+  defaultTimeout: number;
+  defaultFlags: string[];
+  defaultArgs: string[];
   refreshTimeout: number;
 }
