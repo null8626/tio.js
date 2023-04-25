@@ -776,10 +776,9 @@ Therefore, here are the full list of supported programming languages alongside w
 ## Examples
 
 <details>
-<summary><b>Evaluating a string</b></summary>
+<summary><b>Evaluate a code</b></summary>
 
 ```js
-// Evaluate a code (uses `javascript-node` by default).
 const response = await tio('console.log("Hello, World!");')
 
 console.log(response)
@@ -798,7 +797,7 @@ console.log(response)
 
 </details>
 <details>
-<summary><b>Evaluating a string from another programming language</b></summary>
+<summary><b>Evaluate a code from another programming language</b></summary>
 
 ```js
 let response = await tio('print("Hello, World!")', {
@@ -818,6 +817,7 @@ console.log(response)
 //   exitCode: 0
 // }
 
+// tio.js uses 'javascript-node' by default.
 tio.defaultLanguage = 'python3'
 
 response = await tio('print("Hello, World!")')
@@ -838,7 +838,7 @@ console.log(response)
 
 </details>
 <details>
-<summary><b>Containing infinite loops with timeouts</b></summary>
+<summary><b>Contain infinite loops with timeouts</b></summary>
 
 ```js
 // make the response timeout after 10000 ms (10 seconds).
@@ -859,9 +859,10 @@ console.log(response)
 //   exitCode: 0
 // }
 
+// tio.js uses Infinity (no timeouts) by default.
 tio.defaultTimeout = 10000
 
-response = await tio('for (;;);', 'javascript-node')
+response = await tio('for (;;);')
 
 console.log(response)
 // =>
