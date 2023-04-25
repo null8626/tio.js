@@ -62,7 +62,7 @@ import tio from 'tio.js'
 
 ## Supported languages
 
-Before running into the examples, please note that `tio.js` supports a wide variety of programming languages. These programming languages contain their own IDs that can be used in customizing the programming languages to use before you input the code.
+Before running into the [examples](#examples), please note that `tio.js` supports a wide variety of programming languages. These programming languages contain their own IDs that can be used in customizing the programming language to use.
 
 For example `javascript-node` is for running JavaScript in a [Node.js](https://nodejs.org) runtime, `python3` is for running in a [Python 3](https://docs.python.org/3/) environment, etc.
 
@@ -70,6 +70,7 @@ In code, these can be retrieved programmatically by using:
 
 ```js
 console.log(tio.languages)
+// => ['05ab1e', '1l-a', '1l-aoi', '2dfuck', ...]
 ```
 
 Therefore, here are the full list of supported programming languages alongside with their respective IDs in alphabetical order for your convenience.
@@ -777,40 +778,43 @@ Therefore, here are the full list of supported programming languages alongside w
 <details>
 <summary><b>Evaluating a string</b></summary>
 
-Evaluating a string is really simple.
-
 ```js
-// Evaluate a code (Node.js is the default language).
+// Evaluate a code (uses `javascript-node` by default).
 let response = await tio('console.log("Hello, World!");')
 
 console.log(response)
+// =>
+// {
+//   output: 'Hello, World!\n',
+//   language: 'javascript-node',
+//   timedOut: false,
+//   realTime: 0.069,
+//   userTime: 0.069,
+//   sysTime: 0.069,
+//   CPUshare: 99.99,
+//   exitCode: 0
+// }
 
 // Evaluate a code from another programming language (e.g. Python).
 response = await tio('print("Hello, World!")', 'python3')
 
 console.log(response)
-```
-
-**Console output (for the first `console.log`):**
-
-```js
-{
-  output: 'Hello, World!\n',
-  language: 'javascript-node',
-  timedOut: false,
-  realTime: 0.069,
-  userTime: 0.069,
-  sysTime: 0.069,
-  CPUshare: 99.99,
-  exitCode: 0
-}
+// =>
+// {
+//   output: 'Hello, World!\n',
+//   language: 'python3',
+//   timedOut: false,
+//   realTime: 0.069,
+//   userTime: 0.069,
+//   sysTime: 0.069,
+//   CPUshare: 99.99,
+//   exitCode: 0
+// }
 ```
 
 </details>
 <details>
-<summary><b>Setting a default programming language</b></summary>
-
-Set a default programming language so you don't have to repeat the same arguments all over again.
+<summary><b>Configuring the default programming language</b></summary>
 
 ```js
 tio.defaultLanguage = 'python3'
@@ -818,48 +822,62 @@ tio.defaultLanguage = 'python3'
 const response = await tio('print("Hello, World!")')
 
 console.log(response)
+// =>
+// {
+//   output: 'Hello, World!\n',
+//   language: 'python3',
+//   timedOut: false,
+//   realTime: 0.069,
+//   userTime: 0.069,
+//   sysTime: 0.069,
+//   CPUshare: 99.99,
+//   exitCode: 0
+// }
 ```
 
 </details>
 <details>
-<summary><b>Timeouts</b></summary>
-
-Use this to contain scripts that runs longer than it should've been. **(e.g. infinite loop)**
+<summary><b>Containing infinite loops with timeouts</b></summary>
 
 ```js
 // Make the response time out after waiting for 10000 ms (10 seconds).
 const response = await tio('for (;;);', 'javascript-node', 10000)
 
 console.log(response)
-```
-
-**Console output:**
-
-```js
-{
-  output: 'Request timed out after 10000ms',
-  language: 'javascript-node',
-  timedOut: true,
-  realTime: 10,
-  userTime: 10,
-  sysTime: 10,
-  CPUshare: 0,
-  exitCode: 0
-}
+// =>
+// {
+//   output: 'Request timed out after 10000ms',
+//   language: 'javascript-node',
+//   timedOut: true,
+//   realTime: 10,
+//   userTime: 10,
+//   sysTime: 10,
+//   CPUshare: 0,
+//   exitCode: 0
+// }
 ```
 
 </details>
 <details>
-<summary><b>Setting a default timeout</b></summary>
-
-Just like setting a default programming language beforehand, you can set default timeouts so you don't have to enter the same arguments again.
+<summary><b>Configuring the default timeout</b></summary>
 
 ```js
 tio.defaultTimeout = 10000
 
 const response = await tio('for (;;);', 'javascript-node')
 
-console.log(response) // Does the same as the example before.
+console.log(response)
+// =>
+// {
+//   output: 'Request timed out after 10000ms',
+//   language: 'javascript-node',
+//   timedOut: true,
+//   realTime: 10,
+//   userTime: 10,
+//   sysTime: 10,
+//   CPUshare: 0,
+//   exitCode: 0
+// }
 ```
 
 </details>
