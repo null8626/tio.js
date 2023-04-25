@@ -686,7 +686,7 @@ Therefore, here are the full list of supported programming languages alongside w
 | [Self-modifying Brainfuck](https://soulsphere.org/hacks/smbf/) | `smbf` |
 | [smol](https://github.com/ConorOBrien-Foxx/smol) | `smol` |
 | [Snails](https://github.com/feresum/PMA) | `snails` |
-| [Snowman](http://github.com/KeyboardFire/snowman-lang) | `snowman` |
+| [Snowman](https://github.com/KeyboardFire/snowman-lang) | `snowman` |
 | [SNUSP (Modular)](https://github.com/TryItOnline/snusp) | `snusp` |
 | [SNUSP (Bloated)](https://github.com/TryItOnline/Bloated-SNUSP) | `snusp-bloated` |
 | [SNUSP (Snuspi)](https://github.com/graue/esofiles/tree/master/snusp) | `snuspi` |
