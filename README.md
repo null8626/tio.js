@@ -2,7 +2,7 @@
 
 [npm-image]: https://img.shields.io/npm/v/tio.js.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/tio.js
-[downloads-image]: https://img.shields.io/npm/dm/tio.js.svg?style=flat-square
+[downloads-image]: https://img.shields.io/npm/dt/tio.js.svg?style=flat-square
 [downloads-url]: https://npmjs.org/package/tio.js
 [prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
 [prettier-url]: https://github.com/prettier/prettier
@@ -13,7 +13,7 @@
 [blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
 [blazingly-fast-url]: https://twitter.com/acdlite/status/974390255393505280
 
-A small TypeScript library that lets you evaluate code in a sandboxed environment everywhere.
+A small TypeScript library that lets you evaluate code in a sandboxed environment everywhere with [TryItOnline](https://tio.run).
 
 ## Installation
 

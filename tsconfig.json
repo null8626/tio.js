@@ -2,22 +2,17 @@
   "include": ["src/**/*.ts"],
   "compilerOptions": {
     "outDir": "dist",
-    "declaration": true,
-    "noImplicitAny": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noImplicitThis": true,
     "allowUnreachableCode": false,
     "noUnusedParameters": true,
     "strict": true,
-    "strictFunctionTypes": true,
     "module": "esnext",
     "target": "esnext",
     "lib": [
       "esnext",
       "dom"
     ],
-    "allowJs": false,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "removeComments": true
