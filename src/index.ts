@@ -4,7 +4,7 @@ import { Buffer } from 'node:buffer'
 
 import Timeout from './timeout.js'
 import languages from './languages.js'
-import type { Option, Tio, TioLanguage, TioResponse } from '../typings'
+import type { Option, Tio, TioLanguage, TioOptions, TioResponse } from '../typings'
 
 const SCRIPT_REGEX: RegExp =
   /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/
@@ -13,8 +13,10 @@ const DEBUG_REGEX: RegExp =
   /([\s\S]*)Real time\: ([\d\.]+) s\nUser time\: ([\d\.]+) s\nSys\. time\: ([\d\.]+) s\nCPU share\: ([\d\.]+) %\nExit code\: (\d+)$/
 
 let runURL: Option<string> = null
-let defaultTimeout: number = Infinity
 let defaultLanguage: TioLanguage = 'javascript-node'
+let defaultTimeout: number = Infinity
+let defaultFlags: string[] = []
+let defaultArgs: string[] = []
 let refreshTimeout: number = 850000
 let nextRefresh: number = 0
 
@@ -77,12 +79,10 @@ async function prepare(): Promise<void> {
   nextRefresh = Date.now() + refreshTimeout
 }
 
-async function evaluate(
-  code: string,
-  language: TioLanguage,
-  timeout: Option<number>
-): Promise<Option<string>> {
+async function evaluate(code: string, options: TioOptions): Promise<Option<string>> {
   const ab: AbortController = new AbortController()
+  const flags: string = options.flags!.map(f => f + '\0').join('')
+  const args: string = options.args!.map(a => a + '\0').join('')
 
   const response: Response = await fetch(
     `https://tio.run/cgi-bin/static/${runURL}/${randomBytes(16).toString(
@@ -91,7 +91,7 @@ async function evaluate(
     {
       method: 'POST',
       body: deflateRawSync(
-        `Vlang\0\x31\0${language}\0VTIO_OPTIONS\0\x30\0F.code.tio\0${code.length}\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`,
+        `Vargs\0${options.args!.length}\0${args}Vlang\0\x31\0${options.language!}\0VTIO_CFLAGS\0${options.flags!.length}\0${flags}VTIO_OPTIONS\0\x30\0F.code.tio\0${code.length}\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`,
         { level: 9 }
       ),
       signal: ab.signal
@@ -104,10 +104,10 @@ async function evaluate(
 
   let data: Option<ArrayBuffer> = null
 
-  if (timeout === Infinity) {
+  if (options.timeout === Infinity) {
     data = await response.arrayBuffer()
   } else {
-    const tm: Timeout = new Timeout(timeout!)
+    const tm: Timeout = new Timeout(options.timeout!)
 
     data = await Promise.race([response.arrayBuffer(), tm.promise])
 
@@ -125,37 +125,42 @@ async function evaluate(
 // @ts-ignore
 const tio: Tio = async (
   code: string,
-  language: Option<TioLanguage> = null,
-  timeout: Option<number> = null
+  options?: TioOptions
 ): Promise<TioResponse> => {
-  if (timeout !== null && (!Number.isSafeInteger(timeout) || timeout < 500)) {
+  options ??= {}
+
+  if (options.timeout != null && (!Number.isSafeInteger(options.timeout) || options.timeout! < 500)) {
     throw new TioError(
-      `Timeout must be a valid integer and it's value must be 500 or greater. Got ${timeout}`
+      `Timeout must be a valid integer and it's value must be 500 or greater. Got ${options.timeout}`
     )
   } else if (
-    language != null &&
-    language !== defaultLanguage &&
-    !languages.includes(language)
+    options.language != null &&
+    options.language !== defaultLanguage &&
+    !languages.includes(options.language)
   ) {
     throw new TioError(
-      `Unsupported/invalid language ID provided (${language}), a list of supported language IDs can be seen in \`tio.languages\`.`
+      `Unsupported/invalid language ID provided (${options.language}), a list of supported language IDs can be seen in \`tio.languages\`.`
     )
   }
 
-  timeout ??= defaultTimeout
-  language ??= defaultLanguage
+  options = Object.assign({
+    language: defaultLanguage,
+    timeout: defaultTimeout,
+    flags: defaultFlags,
+    args: defaultArgs
+  }, options)
 
   await prepare()
 
-  const result: Option<string> = await evaluate(code, language, timeout)
+  const result: Option<string> = await evaluate(code, options)
 
   if (result === null) {
     // The website formats this as in seconds.
-    const timeoutInSecs: number = timeout / 1000
+    const timeoutInSecs: number = options.timeout! / 1000
 
     return Object.freeze({
-      output: `Request timed out after ${timeout}ms`,
-      language,
+      output: `Request timed out after ${options.timeout}ms`,
+      language: options.language!,
       timedOut: true,
       realTime: timeoutInSecs,
       userTime: timeoutInSecs,
@@ -172,7 +177,7 @@ const tio: Tio = async (
 
   return Object.freeze({
     output: s[0] || debug,
-    language,
+    language: options.language!,
     timedOut: false,
     realTime: parseFloat(realTime),
     userTime: parseFloat(userTime),
@@ -198,7 +203,7 @@ Object.defineProperty(tio, 'defaultLanguage', {
   },
 
   set(lang: TioLanguage) {
-    if (lang != null && lang !== defaultLanguage && !languages.includes(lang)) {
+    if (lang !== defaultLanguage && !languages.includes(lang)) {
       throw new TioError(
         `Unsupported/invalid language ID provided (${lang}), a list of supported language IDs can be seen in \`tio.languages\`.`
       )
