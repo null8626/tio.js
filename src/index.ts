@@ -4,7 +4,13 @@ import { Buffer } from 'node:buffer'
 
 import Timeout from './timeout.js'
 import languages from './languages.js'
-import type { Option, Tio, TioLanguage, TioOptions, TioResponse } from '../typings'
+import type {
+  Option,
+  Tio,
+  TioLanguage,
+  TioOptions,
+  TioResponse
+} from '../typings'
 
 const SCRIPT_REGEX: RegExp =
   /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/
@@ -15,8 +21,8 @@ const DEBUG_REGEX: RegExp =
 let runURL: Option<string> = null
 let defaultLanguage: TioLanguage = 'javascript-node'
 let defaultTimeout: number = Infinity
-let defaultFlags: string[] = []
-let defaultArgs: string[] = []
+const defaultFlags: string[] = []
+const defaultArgs: string[] = []
 let refreshTimeout: number = 850000
 let nextRefresh: number = 0
 
@@ -79,10 +85,13 @@ async function prepare(): Promise<void> {
   nextRefresh = Date.now() + refreshTimeout
 }
 
-async function evaluate(code: string, options: TioOptions): Promise<Option<string>> {
+async function evaluate(
+  code: string,
+  options: TioOptions
+): Promise<Option<string>> {
   const ab: AbortController = new AbortController()
-  const flags: string = options.flags!.map(f => f + '\0').join('')
-  const args: string = options.args!.map(a => a + '\0').join('')
+  const flags: string = options.flags!.map(f => `${f}\0`).join('')
+  const args: string = options.args!.map(a => `${a}\0`).join('')
 
   const response: Response = await fetch(
     `https://tio.run/cgi-bin/static/${runURL}/${randomBytes(16).toString(
@@ -91,7 +100,13 @@ async function evaluate(code: string, options: TioOptions): Promise<Option<strin
     {
       method: 'POST',
       body: deflateRawSync(
-        `Vargs\0${options.args!.length}\0${args}Vlang\0\x31\0${options.language!}\0VTIO_CFLAGS\0${options.flags!.length}\0${flags}VTIO_OPTIONS\0\x30\0F.code.tio\0${code.length}\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`,
+        `Vargs\0${
+          options.args!.length
+        }\0${args}Vlang\0\x31\0${options.language!}\0VTIO_CFLAGS\0${
+          options.flags!.length
+        }\0${flags}VTIO_OPTIONS\0\x30\0F.code.tio\0${
+          code.length
+        }\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`,
         { level: 9 }
       ),
       signal: ab.signal
@@ -129,7 +144,10 @@ const tio: Tio = async (
 ): Promise<TioResponse> => {
   options ??= {}
 
-  if (options.timeout != null && (!Number.isSafeInteger(options.timeout) || options.timeout! < 500)) {
+  if (
+    options.timeout != null &&
+    (!Number.isSafeInteger(options.timeout) || options.timeout < 500)
+  ) {
     throw new TioError(
       `Timeout must be a valid integer and it's value must be 500 or greater. Got ${options.timeout}`
     )
@@ -143,12 +161,15 @@ const tio: Tio = async (
     )
   }
 
-  options = Object.assign({
-    language: defaultLanguage,
-    timeout: defaultTimeout,
-    flags: defaultFlags,
-    args: defaultArgs
-  }, options)
+  options = Object.assign(
+    {
+      language: defaultLanguage,
+      timeout: defaultTimeout,
+      flags: defaultFlags,
+      args: defaultArgs
+    },
+    options
+  )
 
   await prepare()
 
