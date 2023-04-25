@@ -236,12 +236,9 @@ Object.defineProperty(tio, 'refreshTimeout', {
   },
 
   set(timeout: number) {
-    if (
-      timeout !== Infinity &&
-      (!Number.isSafeInteger(timeout) || timeout < 500000)
-    ) {
+    if (!Number.isSafeInteger(timeout) || timeout < 500000) {
       throw new TioError(
-        'Refresh timeout must be a valid integer. and it must be 500000 or greater.'
+        `Refresh timeout must be a valid integer and it's value must be 500000 or greater. Got ${timeout}`
       )
     }
 
