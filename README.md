@@ -878,7 +878,7 @@ console.log(response)
 <summary><b>Passing in extra compiler flags</b></summary>
 
 ```js
-// this only works for compiled languages. (e.g rust)
+// this only works in compiled languages. (e.g rust)
 const code = `
 fn main() {
   #[cfg(feature = "something")]
