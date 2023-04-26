@@ -9,12 +9,13 @@ on:
       - '**/*.ts'
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 18
+          check-latest: true
       - name: Installing dependencies
         run: npm i --save-dev
       - name: Running tests

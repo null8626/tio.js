@@ -1,9 +1,7 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": ["@typescript-eslint"],
   "env": {
     "es2022": true,
     "node": true
@@ -126,10 +124,7 @@
     "comma-style": "warn",
     "generator-star-spacing": "error",
     "implicit-arrow-linebreak": "warn",
-    "indent": [
-      "warn",
-      2
-    ],
+    "indent": ["warn", 2],
     "key-spacing": "warn",
     "new-parens": "error",
     "no-mixed-spaces-and-tabs": "warn",
@@ -146,25 +141,14 @@
       }
     ],
     "@typescript-eslint/await-thenable": "error",
-    "@typescript-eslint/class-literal-property-style": [
-      "error",
-      "fields"
-    ],
-    "@typescript-eslint/comma-dangle": [
-      "error"
-    ],
-    "@typescript-eslint/consistent-indexed-object-style": [
-      "error",
-      "record"
-    ],
+    "@typescript-eslint/class-literal-property-style": ["error", "fields"],
+    "@typescript-eslint/comma-dangle": ["error"],
+    "@typescript-eslint/consistent-indexed-object-style": ["error", "record"],
     "@typescript-eslint/consistent-type-exports": "error",
     "@typescript-eslint/explicit-function-return-type": "error",
     "@typescript-eslint/keyword-spacing": "error",
     "@typescript-eslint/member-delimiter-style": "warn",
-    "@typescript-eslint/method-signature-style": [
-      "error",
-      "property"
-    ],
+    "@typescript-eslint/method-signature-style": ["error", "property"],
     "@typescript-eslint/no-array-constructor": "error",
     "@typescript-eslint/no-dupe-class-members": "error",
     "@typescript-eslint/no-duplicate-imports": "error",
@@ -193,10 +177,7 @@
     "@typescript-eslint/no-unused-expressions": "warn",
     "@typescript-eslint/no-useless-empty-export": "error",
     "@typescript-eslint/non-nullable-type-assertion-style": "error",
-    "@typescript-eslint/object-curly-spacing": [
-      "warn",
-      "always"
-    ],
+    "@typescript-eslint/object-curly-spacing": ["warn", "always"],
     "@typescript-eslint/prefer-for-of": "warn",
     "@typescript-eslint/prefer-includes": "warn",
     "@typescript-eslint/prefer-literal-enum-member": "error",

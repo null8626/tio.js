@@ -10,10 +10,10 @@ import { validStringArray, requestText } from './util.js'
 import type { Tio, TioLanguage, TioOptions, TioResponse } from '../typings'
 
 const SCRIPT_REGEX: RegExp =
-  /<script src="(\/static\/[0-9a-f]+-frontend.js)" defer><\/script>/
+  /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/
 const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m
 const DEBUG_REGEX: RegExp =
-  /([\s\S]*)Real time: ([\d.]+) s\nUser time: ([\d.]+) s\nSys. time: ([\d.]+) s\nCPU share: ([\d.]+) %\nExit code: (\d+)$/
+  /([\s\S]*)Real time: ([\d.]+) s\nUser time: ([\d.]+) s\nSys\. time: ([\d.]+) s\nCPU share: ([\d.]+) %\nExit code: (\d+)$/
 
 let runURL: string | null = null
 
@@ -104,8 +104,7 @@ async function evaluate(
   return gunzipSync(data).toString()
 }
 
-// @ts-ignore
-const tio: Tio = async (
+const tio: Tio = <Tio>(async (
   code: string,
   options?: TioOptions
 ): Promise<TioResponse> => {
@@ -187,115 +186,112 @@ const tio: Tio = async (
     CPUshare: parseFloat(CPUshare),
     exitCode: parseInt(exitCode)
   })
-}
-
-Object.defineProperty(tio, 'languages', {
-  configurable: false,
-  enumerable: true,
-  writable: false,
-  value: languages
 })
 
-Object.defineProperty(tio, 'defaultLanguage', {
-  configurable: false,
-  enumerable: true,
-
-  get(): TioLanguage {
-    return defaultLanguage
+Object.defineProperties(tio, {
+  languages: {
+    configurable: false,
+    enumerable: true,
+    writable: false,
+    value: languages
   },
+  defaultLanguage: {
+    configurable: false,
+    enumerable: true,
 
-  set(lang: TioLanguage) {
-    if (lang !== defaultLanguage && !languages.includes(lang)) {
-      throw new TioError(
-        `Unsupported/invalid language ID provided (${lang}), a list of supported language IDs can be seen in \`tio.languages\`.`
-      )
+    get(): TioLanguage {
+      return defaultLanguage
+    },
+
+    set(lang: TioLanguage) {
+      if (lang !== defaultLanguage && !languages.includes(lang)) {
+        throw new TioError(
+          `Unsupported/invalid language ID provided (${lang}), a list of supported language IDs can be seen in \`tio.languages\`.`
+        )
+      }
+
+      defaultLanguage = lang
     }
-
-    defaultLanguage = lang
-  }
-})
-
-Object.defineProperty(tio, 'defaultTimeout', {
-  configurable: false,
-  enumerable: true,
-
-  get(): number {
-    return defaultTimeout
   },
+  defaultTimeout: {
+    configurable: false,
+    enumerable: true,
 
-  set(timeout: number) {
-    if (!Number.isSafeInteger(timeout) || timeout < 500) {
-      throw new TioError(
-        `Timeout must be a valid integer and it's value must be 500 or greater. Got ${inspect(
-          timeout
-        )}`
-      )
+    get(): number {
+      return defaultTimeout
+    },
+
+    set(timeout: number) {
+      if (!Number.isSafeInteger(timeout) || timeout < 500) {
+        throw new TioError(
+          `Timeout must be a valid integer and it's value must be 500 or greater. Got ${inspect(
+            timeout
+          )}`
+        )
+      }
+
+      defaultTimeout = timeout
     }
-
-    defaultTimeout = timeout
-  }
-})
-
-Object.defineProperty(tio, 'defaultCflags', {
-  configurable: false,
-  enumerable: true,
-
-  get(): string[] {
-    return defaultCflags
   },
+  defaultCflags: {
+    configurable: false,
+    enumerable: true,
 
-  set(cflags: string[]) {
-    if (!validStringArray(cflags)) {
-      throw new TioError(
-        `Compiler flags must be a valid array of strings. Got ${inspect(
-          cflags
-        )}`
-      )
+    get(): string[] {
+      return defaultCflags
+    },
+
+    set(cflags: string[]) {
+      if (!validStringArray(cflags)) {
+        throw new TioError(
+          `Compiler flags must be a valid array of strings. Got ${inspect(
+            cflags
+          )}`
+        )
+      }
+
+      defaultCflags = cflags
     }
-
-    defaultCflags = cflags
-  }
-})
-
-Object.defineProperty(tio, 'defaultArgv', {
-  configurable: false,
-  enumerable: true,
-
-  get(): string[] {
-    return defaultArgv
   },
+  defaultArgv: {
+    configurable: false,
+    enumerable: true,
 
-  set(argv: string[]) {
-    if (!validStringArray(argv)) {
-      throw new TioError(
-        `Command-line arguments must be a valid array of strings. Got ${inspect(
-          argv
-        )}`
-      )
+    get(): string[] {
+      return defaultArgv
+    },
+
+    set(argv: string[]) {
+      if (!validStringArray(argv)) {
+        throw new TioError(
+          `Command-line arguments must be a valid array of strings. Got ${inspect(
+            argv
+          )}`
+        )
+      }
+
+      defaultArgv = argv
     }
-
-    defaultArgv = argv
-  }
-})
-
-Object.defineProperty(tio, 'refreshTimeout', {
-  configurable: false,
-  enumerable: true,
-
-  get(): number {
-    return refreshTimeout
   },
+  refreshTimeout: {
+    configurable: false,
+    enumerable: true,
 
-  set(timeout: number) {
-    if (!Number.isSafeInteger(timeout) || timeout < 500000) {
-      throw new TioError(
-        `Refresh timeout must be a valid integer and it's value must be 500000 or greater. Got ${inspect(
-          timeout
-        )}`
-      )
+    get(): number {
+      return refreshTimeout
+    },
+
+    set(timeout: number) {
+      if (!Number.isSafeInteger(timeout) || timeout < 500000) {
+        throw new TioError(
+          `Refresh timeout must be a valid integer and it's value must be 500000 or greater. Got ${inspect(
+            timeout
+          )}`
+        )
+      }
+
+      refreshTimeout = timeout
     }
-
-    refreshTimeout = timeout
   }
 })
 
