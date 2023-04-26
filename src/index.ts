@@ -1,60 +1,28 @@
 import { deflateRawSync, gunzipSync } from 'node:zlib'
 import { randomBytes } from 'node:crypto'
 import { Buffer } from 'node:buffer'
+import { inspect } from 'node:util'
 
 import Timeout from './timeout.js'
 import languages from './languages.js'
-import type {
-  Option,
-  Tio,
-  TioLanguage,
-  TioOptions,
-  TioResponse
-} from '../typings'
+import { TioError, TioHttpError } from './error.js'
+import { validStringArray, requestText } from './util.js'
+import type { Tio, TioLanguage, TioOptions, TioResponse } from '../typings'
 
 const SCRIPT_REGEX: RegExp =
-  /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/
+  /<script src="(\/static\/[0-9a-f]+-frontend.js)" defer><\/script>/
 const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m
 const DEBUG_REGEX: RegExp =
-  /([\s\S]*)Real time\: ([\d\.]+) s\nUser time\: ([\d\.]+) s\nSys\. time\: ([\d\.]+) s\nCPU share\: ([\d\.]+) %\nExit code\: (\d+)$/
+  /([\s\S]*)Real time: ([\d.]+) s\nUser time: ([\d.]+) s\nSys. time: ([\d.]+) s\nCPU share: ([\d.]+) %\nExit code: (\d+)$/
 
-let runURL: Option<string> = null
+let runURL: string | null = null
+
 let defaultLanguage: TioLanguage = 'javascript-node'
 let defaultTimeout: number = Infinity
-const defaultFlags: string[] = []
-const defaultArgs: string[] = []
+let defaultFlags: string[] = []
+let defaultArgs: string[] = []
 let refreshTimeout: number = 850000
 let nextRefresh: number = 0
-
-class TioError extends Error {
-  public constructor(message: string) {
-    super(message)
-
-    this.name = `TioError: ${message}`
-  }
-}
-
-class TioHttpError extends TioError {
-  public status: number
-  public statusText: string
-
-  public constructor(response: Response) {
-    super(`[HTTP ${response.status}: ${response.statusText}]`)
-
-    this.status = response.status
-    this.statusText = response.statusText
-  }
-}
-
-async function requestText(path: string): Promise<string> {
-  const response: Response = await fetch(`https://tio.run${path}`)
-
-  if (response.status >= 400) {
-    throw new TioHttpError(response)
-  }
-
-  return await response.text()
-}
 
 async function prepare(): Promise<void> {
   if (runURL !== null && Date.now() < nextRefresh) {
@@ -62,33 +30,32 @@ async function prepare(): Promise<void> {
   }
 
   const scrapeResponse: string = await requestText('/')
-  const frontendJSURL: Option<string> = scrapeResponse.match(SCRIPT_REGEX)?.[1]
+  const frontendJSURL: string | undefined =
+    scrapeResponse.match(SCRIPT_REGEX)?.[1]
 
-  if (frontendJSURL == null) {
+  if (frontendJSURL === undefined) {
     throw new TioError(
       'An error occurred while scraping tio.run. Please try again later or report this bug to the developer.'
     )
   }
 
   const frontendJS: string = await requestText(frontendJSURL)
+  const newRunURL: string | undefined = frontendJS.match(RUNURL_REGEX)?.[1]
 
-  runURL = frontendJS.match(RUNURL_REGEX)?.[1]
-
-  if (runURL == null) {
-    runURL = null
-
+  if (newRunURL === undefined) {
     throw new TioError(
       'An error occurred while scraping tio.run. Please try again later or report this bug to the developer.'
     )
   }
 
+  runURL = newRunURL
   nextRefresh = Date.now() + refreshTimeout
 }
 
 async function evaluate(
   code: string,
   options: TioOptions
-): Promise<Option<string>> {
+): Promise<string | null> {
   const ab: AbortController = new AbortController()
   const flags: string = options.flags!.map(f => `${f}\0`).join('')
   const args: string = options.args!.map(a => `${a}\0`).join('')
@@ -117,7 +84,7 @@ async function evaluate(
     throw new TioHttpError(response)
   }
 
-  let data: Option<ArrayBuffer> = null
+  let data: ArrayBuffer | null = null
 
   if (options.timeout === Infinity) {
     data = await response.arrayBuffer()
@@ -126,12 +93,12 @@ async function evaluate(
 
     data = await Promise.race([response.arrayBuffer(), tm.promise])
 
-    if (data !== null) {
-      tm.cancel()
-    } else {
+    if (data === null) {
       ab.abort()
       return null
     }
+
+    tm.cancel()
   }
 
   return gunzipSync(data).toString()
@@ -145,19 +112,31 @@ const tio: Tio = async (
   options ??= {}
 
   if (
-    options.timeout != null &&
-    (!Number.isSafeInteger(options.timeout) || options.timeout < 500)
+    'timeout' in options &&
+    (!Number.isSafeInteger(options.timeout) || options.timeout! < 500)
   ) {
     throw new TioError(
-      `Timeout must be a valid integer and it's value must be 500 or greater. Got ${options.timeout}`
+      `Timeout must be a valid integer and it's value must be 500 or greater. Got ${inspect(
+        options.timeout
+      )}`
     )
   } else if (
-    options.language != null &&
+    'language' in options &&
     options.language !== defaultLanguage &&
-    !languages.includes(options.language)
+    !languages.includes(options.language!)
   ) {
     throw new TioError(
-      `Unsupported/invalid language ID provided (${options.language}), a list of supported language IDs can be seen in \`tio.languages\`.`
+      `Unsupported/invalid language ID provided (Got ${inspect(
+        options.language
+      )}), a list of supported language IDs can be seen in \`tio.languages\`.`
+    )
+  } else if ('flags' in options && !validStringArray(options.flags)) {
+    throw new TioError(
+      `Flags must be a valid array of strings. Got ${inspect(options.flags)}`
+    )
+  } else if ('args' in options && !validStringArray(options.args)) {
+    throw new TioError(
+      `Args must be a valid array of strings. Got ${inspect(options.args)}`
     )
   }
 
@@ -173,7 +152,7 @@ const tio: Tio = async (
 
   await prepare()
 
-  const result: Option<string> = await evaluate(code, options)
+  const result: string | null = await evaluate(code, options)
 
   if (result === null) {
     // The website formats this as in seconds.
@@ -181,7 +160,6 @@ const tio: Tio = async (
 
     return Object.freeze({
       output: `Request timed out after ${options.timeout}ms`,
-      language: options.language!,
       timedOut: true,
       realTime: timeoutInSecs,
       userTime: timeoutInSecs,
@@ -191,14 +169,13 @@ const tio: Tio = async (
     })
   }
 
-  const s: string[] = result!.substring(16).split(result!.substring(0, 16))
+  const s: string[] = result.substring(16).split(result.substring(0, 16))
   const [debug, realTime, userTime, sysTime, CPUshare, exitCode] = s[1]
     .match(DEBUG_REGEX)!
     .slice(1)
 
   return Object.freeze({
     output: s[0] || debug,
-    language: options.language!,
     timedOut: false,
     realTime: parseFloat(realTime),
     userTime: parseFloat(userTime),
@@ -245,11 +222,51 @@ Object.defineProperty(tio, 'defaultTimeout', {
   set(timeout: number) {
     if (!Number.isSafeInteger(timeout) || timeout < 500) {
       throw new TioError(
-        `Timeout must be a valid integer and it's value must be 500 or greater. Got ${timeout}`
+        `Timeout must be a valid integer and it's value must be 500 or greater. Got ${inspect(
+          timeout
+        )}`
       )
     }
 
     defaultTimeout = timeout
+  }
+})
+
+Object.defineProperty(tio, 'defaultFlags', {
+  configurable: false,
+  enumerable: true,
+
+  get(): string[] {
+    return defaultFlags
+  },
+
+  set(flags: string[]) {
+    if (!validStringArray(flags)) {
+      throw new TioError(
+        `Flags must be a valid array of strings. Got ${inspect(flags)}`
+      )
+    }
+
+    defaultFlags = flags
+  }
+})
+
+Object.defineProperty(tio, 'defaultArgs', {
+  configurable: false,
+  enumerable: true,
+
+  get(): string[] {
+    return defaultArgs
+  },
+
+  set(args: string[]) {
+    if (!validStringArray(args)) {
+      throw new TioError(
+        `Args must be a valid array of strings. Got ${inspect(args)}`
+      )
+    }
+
+    defaultArgs = args
   }
 })
 
@@ -264,7 +281,9 @@ Object.defineProperty(tio, 'refreshTimeout', {
   set(timeout: number) {
     if (!Number.isSafeInteger(timeout) || timeout < 500000) {
       throw new TioError(
-        `Refresh timeout must be a valid integer and it's value must be 500000 or greater. Got ${timeout}`
+        `Refresh timeout must be a valid integer and it's value must be 500000 or greater. Got ${inspect(
+          timeout
+        )}`
       )
     }
 

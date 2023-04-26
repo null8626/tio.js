@@ -681,24 +681,21 @@ export type TioLanguage =
   | 'zoidberg'
   | 'zsh'
 
-export type Option<T> = T | undefined | null
-
 export interface TioOptions {
-  language?: TioLanguage;
-  timeout?: number;
-  flags?: string[];
-  args?: string[];
+  language?: TioLanguage
+  timeout?: number
+  flags?: string[]
+  args?: string[]
 }
 
 export interface TioResponse {
-  readonly output: string;
-  readonly language: TioLanguage;
-  readonly timedOut: boolean;
-  readonly realTime: number;
-  readonly userTime: number;
-  readonly sysTime: number;
-  readonly CPUshare: number;
-  readonly exitCode: number;
+  readonly output: string
+  readonly timedOut: boolean
+  readonly realTime: number
+  readonly userTime: number
+  readonly sysTime: number
+  readonly CPUshare: number
+  readonly exitCode: number
 }
 
 export type TioFunction = (
@@ -707,9 +704,9 @@ export type TioFunction = (
 ) => Promise<TioResponse>
 
 export interface Tio extends TioFunction {
-  defaultLanguage: TioLanguage;
-  defaultTimeout: number;
-  defaultFlags: string[];
-  defaultArgs: string[];
-  refreshTimeout: number;
+  defaultLanguage: TioLanguage
+  defaultTimeout: number
+  defaultFlags: string[]
+  defaultArgs: string[]
+  refreshTimeout: number
 }

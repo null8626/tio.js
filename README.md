@@ -785,7 +785,6 @@ console.log(response)
 // =>
 // {
 //   output: 'Hello, World!\n',
-//   language: 'javascript-node',
 //   timedOut: false,
 //   realTime: 0.069,
 //   userTime: 0.069,
@@ -808,7 +807,6 @@ console.log(response)
 // =>
 // {
 //   output: 'Hello, World!\n',
-//   language: 'python3',
 //   timedOut: false,
 //   realTime: 0.069,
 //   userTime: 0.069,
@@ -826,7 +824,6 @@ console.log(response)
 // =>
 // {
 //   output: 'Hello, World!\n',
-//   language: 'python3',
 //   timedOut: false,
 //   realTime: 0.069,
 //   userTime: 0.069,
@@ -850,7 +847,6 @@ console.log(response)
 // =>
 // {
 //   output: 'Request timed out after 10000ms',
-//   language: 'javascript-node',
 //   timedOut: true,
 //   realTime: 10,
 //   userTime: 10,
@@ -868,12 +864,101 @@ console.log(response)
 // =>
 // {
 //   output: 'Request timed out after 10000ms',
-//   language: 'javascript-node',
 //   timedOut: true,
 //   realTime: 10,
 //   userTime: 10,
 //   sysTime: 10,
 //   CPUshare: 0,
+//   exitCode: 0
+// }
+```
+
+</details>
+<details>
+<summary><b>Passing in extra compiler flags</b></summary>
+
+```js
+// this only works for compiled languages. (e.g rust)
+const code = `
+fn main() {
+  #[cfg(feature = "something")]
+  println!("this will be printed");
+}
+`
+
+// compiled as 'rustc code.rs --cfg feature="something"'
+let response = await tio(code, {
+  language: 'rust',
+  flags: ['--cfg', 'feature="something"']
+})
+
+console.log(response)
+// =>
+// {
+//   output: 'this will be printed\n',
+//   timedOut: false,
+//   realTime: 0.069,
+//   userTime: 0.069,
+//   sysTime: 0.069,
+//   CPUshare: 99.99,
+//   exitCode: 0
+// }
+
+// tio.js uses [] (no extra compiler flags) by default.
+tio.defaultFlags = ['--cfg', 'feature="something"']
+
+response = await tio(code, {
+  language: 'rust'
+})
+
+console.log(response)
+// =>
+// {
+//   output: 'this will be printed\n',
+//   timedOut: false,
+//   realTime: 0.069,
+//   userTime: 0.069,
+//   sysTime: 0.069,
+//   CPUshare: 99.99,
+//   exitCode: 0
+// }
+```
+
+</details>
+<details>
+<summary><b>Passing in command-line arguments</b></summary>
+
+```js
+let response = await tio('console.log(process.argv.slice(2))', {
+  args: ['hello', 'world']
+})
+
+console.log(response)
+// =>
+// {
+//   output: '["hello", "world"]\n',
+//   timedOut: false,
+//   realTime: 0.069,
+//   userTime: 0.069,
+//   sysTime: 0.069,
+//   CPUshare: 99.99,
+//   exitCode: 0
+// }
+
+// tio.js uses [] (no command-line arguments) by default.
+tio.defaultArgs = ['hello', 'world']
+
+response = await tio('console.log(process.argv.slice(2))')
+
+console.log(response)
+// =>
+// {
+//   output: '["hello", "world"]\n',
+//   timedOut: false,
+//   realTime: 0.069,
+//   userTime: 0.069,
+//   sysTime: 0.069,
+//   CPUshare: 99.99,
 //   exitCode: 0
 // }
 ```

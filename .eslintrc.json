@@ -98,7 +98,6 @@
     "no-return-assign": "error",
     "no-shadow-restricted-names": "error",
     "no-undef-init": "error",
-    "no-undefined": "error",
     "no-unneeded-ternary": "error",
     "no-unused-labels": "warn",
     "no-useless-call": "error",
