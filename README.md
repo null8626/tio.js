@@ -889,7 +889,7 @@ fn main() {
 // compiled as 'rustc code.rs --cfg feature="something"'
 let response = await tio(code, {
   language: 'rust',
-  flags: ['--cfg', 'feature="something"']
+  cflags: ['--cfg', 'feature="something"']
 })
 
 console.log(response)
@@ -905,7 +905,7 @@ console.log(response)
 // }
 
 // tio.js uses [] (no extra compiler flags) by default.
-tio.defaultFlags = ['--cfg', 'feature="something"']
+tio.defaultCflags = ['--cfg', 'feature="something"']
 
 response = await tio(code, {
   language: 'rust'
@@ -930,7 +930,7 @@ console.log(response)
 
 ```js
 let response = await tio('console.log(process.argv.slice(2))', {
-  args: ['hello', 'world']
+  argv: ['hello', 'world']
 })
 
 console.log(response)
@@ -946,7 +946,7 @@ console.log(response)
 // }
 
 // tio.js uses [] (no command-line arguments) by default.
-tio.defaultArgs = ['hello', 'world']
+tio.defaultArgv = ['hello', 'world']
 
 response = await tio('console.log(process.argv.slice(2))')
 

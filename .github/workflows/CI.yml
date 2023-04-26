@@ -26,6 +26,6 @@ jobs:
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
-          message: 'chore: prettier and lint'
+          message: 'style: prettier'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
