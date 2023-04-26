@@ -684,8 +684,8 @@ export type TioLanguage =
 export interface TioOptions {
   language?: TioLanguage
   timeout?: number
-  flags?: string[]
-  args?: string[]
+  cflags?: string[]
+  argv?: string[]
 }
 
 export interface TioResponse {
@@ -706,7 +706,7 @@ export type TioFunction = (
 export interface Tio extends TioFunction {
   defaultLanguage: TioLanguage
   defaultTimeout: number
-  defaultFlags: string[]
-  defaultArgs: string[]
+  defaultCflags: string[]
+  defaultArgv: string[]
   refreshTimeout: number
 }

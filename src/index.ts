@@ -19,8 +19,8 @@ let runURL: string | null = null
 
 let defaultLanguage: TioLanguage = 'javascript-node'
 let defaultTimeout: number = Infinity
-let defaultFlags: string[] = []
-let defaultArgs: string[] = []
+let defaultCflags: string[] = []
+let defaultArgv: string[] = []
 let refreshTimeout: number = 850000
 let nextRefresh: number = 0
 
@@ -57,8 +57,8 @@ async function evaluate(
   options: TioOptions
 ): Promise<string | null> {
   const ab: AbortController = new AbortController()
-  const flags: string = options.flags!.map(f => `${f}\0`).join('')
-  const args: string = options.args!.map(a => `${a}\0`).join('')
+  const cflags: string = options.cflags!.map(f => `${f}\0`).join('')
+  const argv: string = options.argv!.map(a => `${a}\0`).join('')
 
   const response: Response = await fetch(
     `https://tio.run/cgi-bin/static/${runURL}/${randomBytes(16).toString(
@@ -68,12 +68,12 @@ async function evaluate(
       method: 'POST',
       body: deflateRawSync(
         `Vargs\0${
-          options.args!.length
-        }\0${args}Vlang\0\x31\0${options.language!}\0VTIO_CFLAGS\0${
-          options.flags!.length
-        }\0${flags}VTIO_OPTIONS\0\x30\0F.code.tio\0${
+          options.argv!.length
+        }\0${argv}Vlang\0\x31\0${options.language!}\0VTIO_CFLAGS\0${
+          options.cflags!.length
+        }\0${cflags}VTIO_OPTIONS\0\x30\0F.code.tio\0${
           code.length
-        }\0${code}F.input.tio\0\x30\0Vargs\0\x30\0R`,
+        }\0${code}F.input.tio\0\x30\0R`,
         { level: 9 }
       ),
       signal: ab.signal
@@ -130,13 +130,13 @@ const tio: Tio = async (
         options.language
       )}), a list of supported language IDs can be seen in \`tio.languages\`.`
     )
-  } else if ('flags' in options && !validStringArray(options.flags)) {
+  } else if ('cflags' in options && !validStringArray(options.cflags)) {
     throw new TioError(
-      `Flags must be a valid array of strings. Got ${inspect(options.flags)}`
+      `Compiler flags must be a valid array of strings. Got ${inspect(options.cflags)}`
     )
-  } else if ('args' in options && !validStringArray(options.args)) {
+  } else if ('argv' in options && !validStringArray(options.argv)) {
     throw new TioError(
-      `Args must be a valid array of strings. Got ${inspect(options.args)}`
+      `Command-line arguments must be a valid array of strings. Got ${inspect(options.argv)}`
     )
   }
 
@@ -144,8 +144,8 @@ const tio: Tio = async (
     {
       language: defaultLanguage,
       timeout: defaultTimeout,
-      flags: defaultFlags,
-      args: defaultArgs
+      cflags: defaultCflags,
+      argv: defaultArgv
     },
     options
   )
@@ -232,41 +232,41 @@ Object.defineProperty(tio, 'defaultTimeout', {
   }
 })
 
-Object.defineProperty(tio, 'defaultFlags', {
+Object.defineProperty(tio, 'defaultCflags', {
   configurable: false,
   enumerable: true,
 
   get(): string[] {
-    return defaultFlags
+    return defaultCflags
   },
 
-  set(flags: string[]) {
-    if (!validStringArray(flags)) {
+  set(cflags: string[]) {
+    if (!validStringArray(cflags)) {
       throw new TioError(
-        `Flags must be a valid array of strings. Got ${inspect(flags)}`
+        `Compiler flags must be a valid array of strings. Got ${inspect(cflags)}`
       )
     }
 
-    defaultFlags = flags
+    defaultCflags = cflags
   }
 })
 
-Object.defineProperty(tio, 'defaultArgs', {
+Object.defineProperty(tio, 'defaultArgv', {
   configurable: false,
   enumerable: true,
 
   get(): string[] {
-    return defaultArgs
+    return defaultArgv
   },
 
-  set(args: string[]) {
-    if (!validStringArray(args)) {
+  set(argv: string[]) {
+    if (!validStringArray(argv)) {
       throw new TioError(
-        `Args must be a valid array of strings. Got ${inspect(args)}`
+        `Command-line arguments must be a valid array of strings. Got ${inspect(argv)}`
       )
     }
 
-    defaultArgs = args
+    defaultArgv = argv
   }
 })
 
