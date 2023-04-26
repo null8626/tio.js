@@ -776,7 +776,7 @@ Therefore, here are the full list of supported programming languages alongside w
 ## Examples
 
 <details>
-<summary><b>Evaluate a code</b></summary>
+<summary><b>Evaluating a code</b></summary>
 
 ```js
 const response = await tio('console.log("Hello, World!");')
@@ -796,7 +796,7 @@ console.log(response)
 
 </details>
 <details>
-<summary><b>Evaluate a code from another programming language</b></summary>
+<summary><b>Evaluating a code from another programming language</b></summary>
 
 ```js
 let response = await tio('print("Hello, World!")', {
@@ -835,7 +835,7 @@ console.log(response)
 
 </details>
 <details>
-<summary><b>Contain infinite loops with timeouts</b></summary>
+<summary><b>Surpressing infinite loops with timeouts</b></summary>
 
 ```js
 // make the response timeout after 10000 ms (10 seconds).
@@ -929,14 +929,14 @@ console.log(response)
 <summary><b>Passing in command-line arguments</b></summary>
 
 ```js
-let response = await tio('console.log(process.argv.slice(2))', {
-  argv: ['hello', 'world']
+let response = await tio('console.log(process.argv.slice(2).join(", "))', {
+  argv: ['Hello', 'World!']
 })
 
 console.log(response)
 // =>
 // {
-//   output: '["hello", "world"]\n',
+//   output: 'Hello, World!\n',
 //   timedOut: false,
 //   realTime: 0.069,
 //   userTime: 0.069,
@@ -946,14 +946,14 @@ console.log(response)
 // }
 
 // tio.js uses [] (no command-line arguments) by default.
-tio.defaultArgv = ['hello', 'world']
+tio.defaultArgv = ['Hello', 'World!']
 
-response = await tio('console.log(process.argv.slice(2))')
+response = await tio('console.log(process.argv.slice(2).join(", "))')
 
 console.log(response)
 // =>
 // {
-//   output: '["hello", "world"]\n',
+//   output: 'Hello, World!\n',
 //   timedOut: false,
 //   realTime: 0.069,
 //   userTime: 0.069,
