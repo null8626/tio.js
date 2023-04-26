@@ -1,5 +1,5 @@
 export class TioError extends Error {
-  public constructor(message: string) {
+  constructor(message: string) {
     super(message)
 
     this.name = `TioError: ${message}`
@@ -7,10 +7,10 @@ export class TioError extends Error {
 }
 
 export class TioHttpError extends TioError {
-  public status: number
-  public statusText: string
+  status: number
+  statusText: string
 
-  public constructor(response: Response) {
+  constructor(response: Response) {
     super(`[HTTP ${response.status}: ${response.statusText}]`)
 
     this.status = response.status

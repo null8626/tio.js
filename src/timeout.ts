@@ -1,14 +1,14 @@
 export default class Timeout {
-  private t: NodeJS.Timeout | null = null
-  public readonly promise: Promise<null>
+  #t: NodeJS.Timeout | null = null
+  readonly promise: Promise<null>
 
-  public constructor(tm: number) {
+  constructor(tm: number) {
     this.promise = new Promise(resolve => {
-      this.t = setTimeout(() => resolve(null), tm)
+      this.#t = setTimeout(() => resolve(null), tm)
     })
   }
 
-  public cancel(): void {
-    clearTimeout(this.t!)
+  cancel(): void {
+    clearTimeout(this.#t!)
   }
 }
