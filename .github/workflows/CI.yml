@@ -22,7 +22,7 @@ jobs:
       - name: Running ESLint
         run: npx eslint src/**/*.ts
       - name: Running Prettier
-        run: npx prettier **/*.ts --write
+        run: npx prettier src/**/*.ts typings.d.ts test.mjs --write
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:

@@ -132,11 +132,15 @@ const tio: Tio = async (
     )
   } else if ('cflags' in options && !validStringArray(options.cflags)) {
     throw new TioError(
-      `Compiler flags must be a valid array of strings. Got ${inspect(options.cflags)}`
+      `Compiler flags must be a valid array of strings. Got ${inspect(
+        options.cflags
+      )}`
     )
   } else if ('argv' in options && !validStringArray(options.argv)) {
     throw new TioError(
-      `Command-line arguments must be a valid array of strings. Got ${inspect(options.argv)}`
+      `Command-line arguments must be a valid array of strings. Got ${inspect(
+        options.argv
+      )}`
     )
   }
 
@@ -243,7 +247,9 @@ Object.defineProperty(tio, 'defaultCflags', {
   set(cflags: string[]) {
     if (!validStringArray(cflags)) {
       throw new TioError(
-        `Compiler flags must be a valid array of strings. Got ${inspect(cflags)}`
+        `Compiler flags must be a valid array of strings. Got ${inspect(
+          cflags
+        )}`
       )
     }
 
@@ -262,7 +268,9 @@ Object.defineProperty(tio, 'defaultArgv', {
   set(argv: string[]) {
     if (!validStringArray(argv)) {
       throw new TioError(
-        `Command-line arguments must be a valid array of strings. Got ${inspect(argv)}`
+        `Command-line arguments must be a valid array of strings. Got ${inspect(
+          argv
+        )}`
       )
     }
 
