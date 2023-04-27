@@ -3,7 +3,7 @@ import { TioHttpError } from './error.js'
 export function validStringArray(arr?: string[]): boolean {
   return (
     Array.isArray(arr) &&
-    arr.every(elem => typeof elem === 'string' && elem.length > 1)
+    arr.every(elem => typeof elem === 'string' && elem.length > 0)
   )
 }
 

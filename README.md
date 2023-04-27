@@ -73,7 +73,7 @@ console.log(tio.languages)
 // => ['05ab1e', '1l-a', '1l-aoi', '2dfuck', ...]
 ```
 
-Therefore, here are the full list of supported programming languages alongside with their respective IDs in alphabetical order for your convenience.
+Therefore, here are the full list of supported programming languages alongside with their IDs in alphabetical order for your convenience.
 
 <details>
 <summary><b>Practical programming languages</b> (260)</summary>
