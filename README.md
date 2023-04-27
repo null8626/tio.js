@@ -18,7 +18,7 @@ A small TypeScript library that lets you evaluate code in a sandboxed environmen
 ## Installation
 
 <details>
-<summary><b>Node.js</b></summary>
+<summary><b>Node.js</b></summary><br>
 
 In your shell:
 
@@ -34,7 +34,7 @@ import tio from 'tio.js'
 
 </details>
 <details>
-<summary><b>Deno</b></summary>
+<summary><b>Deno</b></summary><br>
 
 In your code:
 
@@ -44,7 +44,7 @@ import tio from 'npm:tio.js'
 
 </details>
 <details>
-<summary><b>Bun</b></summary>
+<summary><b>Bun</b></summary><br>
 
 In your shell:
 
@@ -76,7 +76,7 @@ console.log(tio.languages)
 Therefore, here are the full list of supported programming languages alongside with their respective IDs in alphabetical order for your convenience.
 
 <details>
-<summary><b>Practical programming languages</b> (260)</summary>
+<summary><b>Practical programming languages</b> (260)</summary><br>
 
 | Name                                                                                                            | ID                        |
 | --------------------------------------------------------------------------------------------------------------- | ------------------------- |
@@ -341,10 +341,10 @@ Therefore, here are the full list of supported programming languages alongside w
 | [Zoidberg](https://metacpan.org/pod/Zoidberg)                                                                   | `zoidberg`                |
 | [Zsh](https://www.zsh.org/)                                                                                     | `zsh`                     |
 
-</summary>
+</summary><br>
 </details>
 <details>
-<summary><b>Esoteric programming languages</b> (421)</summary>
+<summary><b>Esoteric programming languages</b> (421)</summary><br>
 
 | Name                                                                                                                               | ID                          |
 | ---------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
@@ -770,13 +770,13 @@ Therefore, here are the full list of supported programming languages alongside w
 | [yup](https://github.com/ConorOBrien-Foxx/yup)                                                                                     | `yup`                       |
 | [Z80Golf](https://github.com/lynn/z80golf)                                                                                         | `z80golf`                   |
 
-</summary>
+</summary><br>
 </details>
 
 ## Examples
 
 <details>
-<summary><b>Evaluating a code</b></summary>
+<summary><b>Evaluating a code</b></summary><br>
 
 ```js
 const response = await tio('console.log("Hello, World!");')
@@ -796,7 +796,7 @@ console.log(response)
 
 </details>
 <details>
-<summary><b>Evaluating a code from another programming language</b></summary>
+<summary><b>Evaluating a code from another programming language</b></summary><br>
 
 ```js
 let response = await tio('print("Hello, World!")', {
@@ -835,7 +835,7 @@ console.log(response)
 
 </details>
 <details>
-<summary><b>Surpressing infinite loops with timeouts</b></summary>
+<summary><b>Surpressing infinite loops with timeouts</b></summary><br>
 
 ```js
 // make the response timeout after 10000 ms (10 seconds).
@@ -875,7 +875,7 @@ console.log(response)
 
 </details>
 <details>
-<summary><b>Passing in extra compiler flags</b></summary>
+<summary><b>Passing in extra compiler flags</b></summary><br>
 
 ```js
 // this only works in compiled languages. (e.g rust)
@@ -926,7 +926,7 @@ console.log(response)
 
 </details>
 <details>
-<summary><b>Passing in command-line arguments</b></summary>
+<summary><b>Passing in command-line arguments</b></summary><br>
 
 ```js
 let response = await tio('console.log(process.argv.slice(2).join(", "))', {
