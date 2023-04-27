@@ -1,3 +1,12 @@
+/**
+ * @name tio.js
+ * @description A small TypeScript library that lets you evaluate code in a sandboxed environment everywhere with TryItOnline.
+ * @copyright 2021-2023 null8626
+ * @license MIT
+ * @author null8626
+ * @version 4.0.0
+ */
+
 import { deflateRawSync, gunzipSync } from 'node:zlib'
 import { randomBytes } from 'node:crypto'
 import { Buffer } from 'node:buffer'
@@ -104,6 +113,44 @@ async function evaluate(
   return gunzipSync(data).toString()
 }
 
+/**
+ * The optional options to be passed onto tio().
+ * @typedef {object} TioOptions
+ * @property {string} [language] - The preferred language ID.
+ * @property {number} [timeout] - How much milliseconds for the client to wait before the request times out. Great for surpressing infinite loops. Defaults to Infinity.
+ * @property {string[]} [cflags] - Extra arguments to be passed onto the compiler (Only works in compiled languages).
+ * @property {string[]} [argv] - Custom command-line arguments.
+ * @public
+ */
+
+/**
+ * The evaluated response.
+ * @typedef {object} TioResponse
+ * @property {string} output - The output from the command line.
+ * @property {boolean} timedOut - Whether the request timed out or not.
+ * @property {number} realTime - The time it takes to evaluate the code in real-time.
+ * @property {number} userTime - The time it takes to evaluate the code in user-time.
+ * @property {number} sysTime - The time it takes to evaluate the code in system-time.
+ * @property {number} CPUshare - The CPU share percentage value.
+ * @property {number} exitCode - The program's exit code.
+ * @public
+ */
+
+/**
+ * Evaluates a code.
+ * @param {string} code - The source code to be evaluated.
+ * @param {TioOptions} [options] - The opional options to be passed in to override the default options.
+ * @returns {Promise<TioResponse>} The evaluated response.
+ * @async
+ * @throws {TioError} The user supplied invalid arguments or the client couldn't scrape tio.run.
+ * @throws {TioHttpError} The client received an invalid HTTP response from the tio.run servers. This is usually not expected.
+ * @public
+ * @see {@link https://github.com/null8626/tio.js#examples}
+ * @example await tio('console.log("Hello, World!");')
+ * @example await tio('print("Hello, World!")', { language: 'python3' })
+ * @example await tio('console.log("Hello, World!");', { timeout: 2000 })
+ * @example await tio('console.log(process.argv.slice(2).join(", "));', { argv: ['Hello', 'World!'] })
+ */
 const tio: Tio = <Tio>(async (
   code: string,
   options?: TioOptions
@@ -158,7 +205,6 @@ const tio: Tio = <Tio>(async (
   const result: string | null = await evaluate(code, options)
 
   if (result === null) {
-    // The website formats this as in seconds.
     const timeoutInSecs: number = options.timeout! / 1000
 
     return Object.freeze({
