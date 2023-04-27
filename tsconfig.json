@@ -11,7 +11,6 @@
     "target": "esnext",
     "lib": ["esnext", "dom"],
     "esModuleInterop": true,
-    "moduleResolution": "node",
-    "removeComments": true
+    "moduleResolution": "node"
   }
 }
