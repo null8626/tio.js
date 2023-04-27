@@ -698,12 +698,8 @@ export interface TioResponse {
   readonly exitCode: number
 }
 
-export type TioFunction = (
-  code: string,
-  options?: TioOptions
-) => Promise<TioResponse>
-
-export interface Tio extends TioFunction {
+export type Tio = {
+  (code: string, options?: TioOptions): Promise<TioResponse>
   defaultLanguage: TioLanguage
   defaultTimeout: number
   defaultCflags: string[]

@@ -9,10 +9,7 @@
     "strict": true,
     "module": "esnext",
     "target": "esnext",
-    "lib": [
-      "esnext",
-      "dom"
-    ],
+    "lib": ["esnext", "dom"],
     "esModuleInterop": true,
     "moduleResolution": "node",
     "removeComments": true
