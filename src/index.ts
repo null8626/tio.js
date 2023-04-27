@@ -16,13 +16,13 @@ const DEBUG_REGEX: RegExp =
   /([\s\S]*)Real time: ([\d.]+) s\nUser time: ([\d.]+) s\nSys\. time: ([\d.]+) s\nCPU share: ([\d.]+) %\nExit code: (\d+)$/
 
 let runURL: string | null = null
+let nextRefresh: number = 0
 
 let defaultLanguage: TioLanguage = 'javascript-node'
 let defaultTimeout: number = Infinity
 let defaultCflags: string[] = []
 let defaultArgv: string[] = []
 let refreshTimeout: number = 850000
-let nextRefresh: number = 0
 
 async function prepare(): Promise<void> {
   if (runURL !== null && Date.now() < nextRefresh) {
