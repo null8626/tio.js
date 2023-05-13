@@ -18,7 +18,7 @@ A small TypeScript library that lets you evaluate code in a sandboxed environmen
 ## Installation
 
 <details>
-<summary><b>Node.js</b></summary>
+<summary><b>Node.js (v18 or later)</b></summary>
 
 In your shell:
 
@@ -34,7 +34,7 @@ import tio from 'tio.js'
 
 </details>
 <details>
-<summary><b>Deno</b></summary>
+<summary><b>Deno (v1.28 or later)</b></summary>
 
 In your code:
 
