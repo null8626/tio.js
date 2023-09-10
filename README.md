@@ -15,51 +15,6 @@
 
 A small TypeScript library that lets you evaluate code in a sandboxed environment everywhere with [TryItOnline](https://tio.run).
 
-## Installation
-
-<details>
-<summary><b>Node.js (v18 or later)</b></summary>
-
-In your shell:
-
-```console
-$ npm install tio.js
-```
-
-In your code:
-
-```js
-import tio from 'tio.js'
-```
-
-</details>
-<details>
-<summary><b>Deno (v1.28 or later)</b></summary>
-
-In your code:
-
-```js
-import tio from 'npm:tio.js'
-```
-
-</details>
-<details>
-<summary><b>Bun</b></summary>
-
-In your shell:
-
-```console
-$ bun install tio.js
-```
-
-In your code:
-
-```js
-import tio from 'tio.js'
-```
-
-</details>
-
 ## Supported languages
 
 Before running into the [examples](#examples), please note that `tio.js` supports a wide variety of programming languages. These programming languages contain their own IDs that can be used in customizing the programming language to use.
@@ -774,6 +729,12 @@ Therefore, here are the full list of supported programming languages alongside w
 </details>
 
 ## Examples
+
+In your code:
+
+```js
+import tio from 'tio.js'
+```
 
 <details>
 <summary><b>Evaluating a code</b></summary>
