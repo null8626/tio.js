@@ -4,7 +4,7 @@
  * @copyright 2021-2023 null8626
  * @license MIT
  * @author null8626
- * @version 4.0.1
+ * @version 4.0.2
  */
 
 import { deflateRawSync, gunzipSync } from 'node:zlib'
