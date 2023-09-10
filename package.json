@@ -1,6 +1,6 @@
 {
   "name": "tio.js",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "A small TypeScript library that lets you evaluate code in a sandboxed environment everywhere with TryItOnline.",
   "main": "dist/index.js",
   "typings": "typings.d.ts",
@@ -31,11 +31,11 @@
   "homepage": "https://github.com/null8626/tio.js#readme",
   "devDependencies": {
     "@types/node": "^20.1.0",
-    "@typescript-eslint/eslint-plugin": "^5.59.1",
-    "@typescript-eslint/parser": "^5.59.1",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.1",
     "eslint": "^8.39.0",
-    "eslint-plugin-jsdoc": "^46.2.0",
-    "prettier": "^2.8.8",
+    "eslint-plugin-jsdoc": "^48.0.2",
+    "prettier": "^3.0.3",
     "typescript": "^5.0.4"
   },
   "engines": {
