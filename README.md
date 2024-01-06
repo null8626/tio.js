@@ -1,17 +1,4 @@
-# [tio.js][npm-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![code style: prettier][prettier-image]][prettier-url] [![Build Status][ci-image]][ci-url] [![license][github-license-image]][github-license-url] [![BLAZINGLY FAST!!!][blazingly-fast-image]][blazingly-fast-url]
-
-[npm-image]: https://img.shields.io/npm/v/tio.js.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/tio.js
-[downloads-image]: https://img.shields.io/npm/dt/tio.js.svg?style=flat-square
-[downloads-url]: https://npmjs.org/package/tio.js
-[prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
-[prettier-url]: https://github.com/prettier/prettier
-[ci-image]: https://github.com/null8626/tio.js/workflows/CI/badge.svg
-[ci-url]: https://github.com/null8626/tio.js/actions/workflows/CI.yml
-[github-license-image]: https://img.shields.io/npm/l/tio.js?style=flat-square
-[github-license-url]: https://github.com/null8626/tio.js/blob/master/LICENSE
-[blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
-[blazingly-fast-url]: https://twitter.com/acdlite/status/974390255393505280
+# [tio.js](https://npmjs.org/package/tio.js)
 
 A small TypeScript library that lets you evaluate code in a sandboxed environment everywhere with [TryItOnline](https://tio.run).
 
