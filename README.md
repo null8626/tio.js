@@ -1,10 +1,14 @@
-# [tio.js](https://npmjs.org/package/tio.js)
+# [tio.js](https://npmjs.org/package/tio.js) [![npm][npm-image]][npm-url] [![npm downloads][npm-downloads-image]][npm-url]
+
+[npm-image]: https://img.shields.io/npm/v/tio.js.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/tio.js
+[npm-downloads-image]: https://img.shields.io/npm/dt/tio.js.svg?style=flat-square
 
 A small TypeScript library that lets you evaluate code in a sandboxed environment everywhere with [TryItOnline](https://tio.run).
 
 ## Supported languages
 
-Before running into the [examples](#examples), please note that `tio.js` supports a wide variety of programming languages. These programming languages contain their own IDs that can be used in customizing the programming language to use.
+Before getting to the [examples](#examples), please note that `tio.js` supports a wide variety of programming languages. These programming languages contain their own IDs that can be used in customizing the programming language to use.
 
 For example `javascript-node` is for running JavaScript in a [Node.js](https://nodejs.org) runtime, `python3` is for running in a [Python 3](https://docs.python.org/3/) environment, etc.
 
