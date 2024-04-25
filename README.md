@@ -1,8 +1,11 @@
-# [tio.js](https://npmjs.org/package/tio.js) [![npm][npm-image]][npm-url] [![npm downloads][npm-downloads-image]][npm-url]
+# [tio.js](https://npmjs.org/package/tio.js) [![npm][npm-image]][npm-url] [![npm downloads][npm-downloads-image]][npm-url] [![ko-fi][ko-fi-brief-image]][ko-fi-url]
 
 [npm-image]: https://img.shields.io/npm/v/tio.js.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/tio.js
 [npm-downloads-image]: https://img.shields.io/npm/dt/tio.js.svg?style=flat-square
+[ko-fi-brief-image]: https://img.shields.io/badge/donations-ko--fi-red?color=ff5e5b&style=flat-square
+[ko-fi-image]: https://ko-fi.com/img/githubbutton_sm.svg
+[ko-fi-url]: https://ko-fi.com/null8626
 
 A small TypeScript library that lets you evaluate code in a sandboxed environment everywhere with [TryItOnline](https://tio.run).
 
@@ -916,3 +919,9 @@ console.log(response)
 ```
 
 </details>
+
+## Donations
+
+If you want to support this project, consider donating! ❤
+
+[![ko-fi][ko-fi-image]][ko-fi-url]
