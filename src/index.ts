@@ -1,10 +1,10 @@
 /**
  * @name tio.js
  * @description A small TypeScript library that lets you evaluate code in a sandboxed environment everywhere with TryItOnline.
- * @copyright 2021-2023 null8626
+ * @copyright 2021-2024 null8626
  * @license MIT
  * @author null8626
- * @version 4.0.2
+ * @version 4.0.3
  */
 
 import { deflateRawSync, gunzipSync } from 'node:zlib'
