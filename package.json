@@ -41,5 +41,6 @@
   "engines": {
     "node": ">= 18"
   },
-  "type": "module"
+  "type": "module",
+  "funding": "https://ko-fi.com/null8626"
 }
