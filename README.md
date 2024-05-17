@@ -1,8 +1,10 @@
-# [tio.js](https://npmjs.org/package/tio.js) [![npm][npm-image]][npm-url] [![npm downloads][npm-downloads-image]][npm-url] [![ko-fi][ko-fi-brief-image]][ko-fi-url]
+# [tio.js](https://npmjs.org/package/tio.js) [![npm][npm-image]][npm-url] [![npm downloads][npm-downloads-image]][npm-url] [![codacy][codacy-url]][codacy-image] [![ko-fi][ko-fi-brief-image]][ko-fi-url]
 
 [npm-image]: https://img.shields.io/npm/v/tio.js.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/tio.js
 [npm-downloads-image]: https://img.shields.io/npm/dt/tio.js.svg?style=flat-square
+[codacy-url]: https://app.codacy.com/project/badge/Grade/91661f8e74504da19bfa451ff2207a44
+[codacy-image]: https://app.codacy.com/gh/null8626/tio.js/dashboard
 [ko-fi-brief-image]: https://img.shields.io/badge/donations-ko--fi-red?color=ff5e5b&style=flat-square
 [ko-fi-image]: https://ko-fi.com/img/githubbutton_sm.svg
 [ko-fi-url]: https://ko-fi.com/null8626
