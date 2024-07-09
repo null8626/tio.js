@@ -5,7 +5,6 @@
  * @license MIT
  * @author null8626
  * @version 4.0.3
- * @link https://github.com/null8626/tio.js
  */
 
 import { deflateRawSync, gunzipSync } from 'node:zlib'
