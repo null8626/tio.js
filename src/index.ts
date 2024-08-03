@@ -241,6 +241,7 @@ Object.defineProperties(tio, {
     writable: false,
     value: languages
   },
+  
   defaultLanguage: {
     configurable: false,
     enumerable: true,
@@ -259,6 +260,7 @@ Object.defineProperties(tio, {
       defaultLanguage = lang
     }
   },
+  
   defaultTimeout: {
     configurable: false,
     enumerable: true,
@@ -279,6 +281,7 @@ Object.defineProperties(tio, {
       defaultTimeout = timeout
     }
   },
+  
   defaultCflags: {
     configurable: false,
     enumerable: true,
@@ -299,6 +302,7 @@ Object.defineProperties(tio, {
       defaultCflags = cflags
     }
   },
+  
   defaultArgv: {
     configurable: false,
     enumerable: true,
@@ -319,6 +323,7 @@ Object.defineProperties(tio, {
       defaultArgv = argv
     }
   },
+  
   refreshTimeout: {
     configurable: false,
     enumerable: true,
