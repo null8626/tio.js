@@ -7,10 +7,10 @@
  * @version 4.0.3
  */
 
-import { deflateRawSync, gunzipSync } from 'node:zlib'
+import { deflateRaw, gunzip } from 'node:zlib'
+import { inspect, promisify } from 'node:util'
 import { randomBytes } from 'node:crypto'
 import { Buffer } from 'node:buffer'
-import { inspect } from 'node:util'
 
 import Timeout from './timeout.js'
 import languages from './languages.js'
@@ -18,29 +18,31 @@ import { TioError, TioHttpError } from './error.js'
 import { validStringArray, requestText } from './util.js'
 import type { Tio, TioLanguage, TioOptions, TioResponse } from '../typings'
 
-const SCRIPT_REGEX: RegExp =
+const SCRIPT_REGEX =
   /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/
-const RUNURL_REGEX: RegExp = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m
-const DEBUG_REGEX: RegExp =
+const RUNURL_REGEX = /^var runURL = "\/cgi-bin\/static\/([^"]+)";$/m
+const DEBUG_REGEX =
   /([\s\S]*)Real time: ([\d.]+) s\nUser time: ([\d.]+) s\nSys\. time: ([\d.]+) s\nCPU share: ([\d.]+) %\nExit code: (\d+)$/
 
+const deflateRawAsync = promisify(deflateRaw)
+const gunzipAsync = promisify(gunzip)
+
 let runURL: string | null = null
-let nextRefresh: number = 0
+let nextRefresh = 0
 
 let defaultLanguage: TioLanguage = 'javascript-node'
-let defaultTimeout: number = Infinity
+let defaultTimeout = Infinity
 let defaultCflags: string[] = []
 let defaultArgv: string[] = []
-let refreshTimeout: number = 850000
+let refreshTimeout = 850000
 
 async function prepare(): Promise<void> {
   if (runURL !== null && Date.now() < nextRefresh) {
     return
   }
 
-  const scrapeResponse: string = await requestText('/')
-  const frontendJSURL: string | undefined =
-    scrapeResponse.match(SCRIPT_REGEX)?.[1]
+  const scrapeResponse = await requestText('/')
+  const frontendJSURL = scrapeResponse.match(SCRIPT_REGEX)?.[1]
 
   if (frontendJSURL === undefined) {
     throw new TioError(
@@ -48,8 +50,8 @@ async function prepare(): Promise<void> {
     )
   }
 
-  const frontendJS: string = await requestText(frontendJSURL)
-  const newRunURL: string | undefined = frontendJS.match(RUNURL_REGEX)?.[1]
+  const frontendJS = await requestText(frontendJSURL)
+  const newRunURL = frontendJS.match(RUNURL_REGEX)?.[1]
 
   if (newRunURL === undefined) {
     throw new TioError(
@@ -65,17 +67,17 @@ async function evaluate(
   code: string,
   options: TioOptions
 ): Promise<string | null> {
-  const ab: AbortController = new AbortController()
-  const cflags: string = options.cflags!.map(f => `${f}\0`).join('')
-  const argv: string = options.argv!.map(a => `${a}\0`).join('')
+  const ab = new AbortController()
+  const cflags = options.cflags!.map(f => `${f}\0`).join('')
+  const argv = options.argv!.map(a => `${a}\0`).join('')
 
-  const response: Response = await fetch(
+  const response = await fetch(
     `https://tio.run/cgi-bin/static/${runURL}/${randomBytes(16).toString(
       'hex'
     )}`,
     {
       method: 'POST',
-      body: deflateRawSync(
+      body: await deflateRawAsync(
         `Vargs\0${
           options.argv!.length
         }\0${argv}Vlang\0\x31\0${options.language!}\0VTIO_CFLAGS\0${
@@ -93,12 +95,12 @@ async function evaluate(
     throw new TioHttpError(response)
   }
 
-  let data: ArrayBuffer | null = null
+  let data = null
 
   if (options.timeout === Infinity) {
     data = await response.arrayBuffer()
   } else {
-    const tm: Timeout = new Timeout(options.timeout!)
+    const tm = new Timeout(options.timeout!)
 
     data = await Promise.race([response.arrayBuffer(), tm.promise])
 
@@ -110,7 +112,7 @@ async function evaluate(
     tm.cancel()
   }
 
-  return gunzipSync(data).toString()
+  return (await gunzipAsync(data)).toString()
 }
 
 /**
@@ -202,10 +204,10 @@ const tio: Tio = <Tio>(async (
 
   await prepare()
 
-  const result: string | null = await evaluate(code, options)
+  const result = await evaluate(code, options)
 
   if (result === null) {
-    const timeoutInSecs: number = options.timeout! / 1000
+    const timeoutInSecs = options.timeout! / 1000
 
     return Object.freeze({
       output: `Request timed out after ${options.timeout}ms`,
@@ -218,7 +220,7 @@ const tio: Tio = <Tio>(async (
     })
   }
 
-  const s: string[] = result.substring(16).split(result.substring(0, 16))
+  const s = result.substring(16).split(result.substring(0, 16))
   const [debug, realTime, userTime, sysTime, CPUshare, exitCode] = s[1]
     .match(DEBUG_REGEX)!
     .slice(1)
