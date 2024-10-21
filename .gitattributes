@@ -1,2 +1,3 @@
 * eol=lf
+eslint.config.mjs linguist-vendored=true
 test.mjs linguist-vendored=true
