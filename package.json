@@ -35,6 +35,7 @@
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.9.0",
     "eslint-plugin-jsdoc": "^50.0.0",
+    "globals": "^15.11.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5"
   },
@@ -42,5 +43,8 @@
     "node": ">= 18"
   },
   "type": "module",
-  "funding": ["https://github.com/sponsors/null8626", "https://ko-fi.com/null8626"]
+  "funding": [
+    "https://github.com/sponsors/null8626",
+    "https://ko-fi.com/null8626"
+  ]
 }
