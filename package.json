@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "typings": "typings.d.ts",
   "scripts": {
-    "lint": "npx eslint src/**/*.ts",
+    "lint": "npx eslint",
     "prettier": "npx prettier src/**/*.ts typings.d.ts test.mjs --write",
     "test": "npx tsc && node --test"
   },
@@ -31,6 +31,7 @@
   "homepage": "https://github.com/null8626/tio.js#readme",
   "devDependencies": {
     "@types/node": "^22.1.0",
+    "@stylistic/eslint-plugin-ts": "^2.9.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.9.0",

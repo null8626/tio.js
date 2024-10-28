@@ -1,12 +1,16 @@
 import typescriptEslint from '@typescript-eslint/eslint-plugin'
+import stylisticTs from '@stylistic/eslint-plugin-ts'
 import jsdoc from 'eslint-plugin-jsdoc'
 import globals from 'globals'
 import tsParser from '@typescript-eslint/parser'
 
 export default [
   {
+    files: ['src/**/*.ts'],
+
     plugins: {
       '@typescript-eslint': typescriptEslint,
+      '@stylistic/ts': stylisticTs,
       jsdoc
     },
 
@@ -41,20 +45,20 @@ export default [
       '@typescript-eslint/ban-ts-comment': 'error',
       '@typescript-eslint/ban-tslint-comment': 'error',
       '@typescript-eslint/class-literal-property-style': ['error', 'fields'],
-      '@typescript-eslint/comma-dangle': ['error'],
+      '@stylistic/ts/comma-dangle': ['error'],
       '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/explicit-function-return-type': 'error',
-      '@typescript-eslint/keyword-spacing': 'error',
-      '@typescript-eslint/member-delimiter-style': 'error',
+      '@stylistic/ts/keyword-spacing': 'error',
+      '@stylistic/ts/member-delimiter-style': 'error',
       '@typescript-eslint/method-signature-style': ['error', 'property'],
       '@typescript-eslint/no-array-constructor': 'error',
       '@typescript-eslint/no-dupe-class-members': 'error',
       '@typescript-eslint/no-empty-function': 'error',
       '@typescript-eslint/no-empty-interface': 'error',
       '@typescript-eslint/no-extra-non-null-assertion': 'error',
-      '@typescript-eslint/no-extra-parens': 'error',
-      '@typescript-eslint/no-extra-semi': 'error',
+      '@stylistic/ts/no-extra-parens': 'error',
+      '@stylistic/ts/no-extra-semi': 'error',
       '@typescript-eslint/no-extraneous-class': 'error',
       '@typescript-eslint/no-invalid-this': 'error',
       '@typescript-eslint/no-loop-func': 'error',
@@ -71,13 +75,13 @@ export default [
       '@typescript-eslint/no-non-null-asserted-nullish-coalescing': 'error',
       '@typescript-eslint/no-require-imports': 'error',
       '@typescript-eslint/no-this-alias': 'error',
-      '@typescript-eslint/no-throw-literal': 'error',
+      '@typescript-eslint/only-throw-error': 'error',
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       '@typescript-eslint/no-unnecessary-type-constraint': 'error',
       '@typescript-eslint/no-unused-expressions': 'error',
       '@typescript-eslint/no-useless-empty-export': 'error',
       '@typescript-eslint/non-nullable-type-assertion-style': 'error',
-      '@typescript-eslint/object-curly-spacing': ['error', 'always'],
+      '@stylistic/ts/object-curly-spacing': ['error', 'always'],
       '@typescript-eslint/prefer-for-of': 'error',
       '@typescript-eslint/prefer-includes': 'error',
       '@typescript-eslint/prefer-literal-enum-member': 'error',
@@ -86,9 +90,9 @@ export default [
       '@typescript-eslint/prefer-return-this-type': 'error',
       '@typescript-eslint/require-array-sort-compare': 'error',
       '@typescript-eslint/restrict-plus-operands': 'error',
-      '@typescript-eslint/semi': ['error', 'never'],
-      '@typescript-eslint/space-before-blocks': 'error',
-      '@typescript-eslint/type-annotation-spacing': 'error',
+      '@stylistic/ts/semi': ['error', 'never'],
+      '@stylistic/ts/space-before-blocks': 'error',
+      '@stylistic/ts/type-annotation-spacing': 'error',
 
       '@typescript-eslint/typedef': [
         'error',
@@ -96,7 +100,7 @@ export default [
           memberVariableDeclaration: true,
           parameter: true,
           propertyDeclaration: true,
-          variableDeclaration: true
+          variableDeclaration: false
         }
       ],
 

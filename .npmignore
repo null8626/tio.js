@@ -1,5 +1,6 @@
 LICENSE
 dist/*.d.ts
+eslint.config.mjs
 src/
 test.mjs
 tsconfig.json
@@ -7,4 +8,3 @@ tsconfig.json
 .gitattributes
 .prettierignore
 .prettierrc.json
-.eslintrc.json
