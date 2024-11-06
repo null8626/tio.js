@@ -8,6 +8,8 @@ export class TioError extends Error {
     super(message)
 
     this.name = `TioError: ${message}`
+
+    Object.setPrototypeOf(this, TioError.prototype)
   }
 }
 
@@ -22,8 +24,10 @@ export class TioHttpError extends TioError {
 
   constructor(response: Response) {
     super(`[HTTP ${response.status}: ${response.statusText}]`)
-
+    
     this.status = response.status
     this.statusText = response.statusText
+
+    Object.setPrototypeOf(this, TioHttpError.prototype)
   }
 }
