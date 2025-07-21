@@ -10,7 +10,6 @@
 import { deflateRaw, gunzip } from 'node:zlib'
 import { inspect, promisify } from 'node:util'
 import { randomBytes } from 'node:crypto'
-import { Buffer } from 'node:buffer'
 
 import Timeout from './timeout.js'
 import languages from './languages.js'
