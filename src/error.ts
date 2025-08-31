@@ -24,7 +24,7 @@ export class TioHttpError extends TioError {
 
   constructor(response: Response) {
     super(`[HTTP ${response.status}: ${response.statusText}]`)
-    
+
     this.status = response.status
     this.statusText = response.statusText
 

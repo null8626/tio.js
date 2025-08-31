@@ -1,6 +1,6 @@
 {
   "name": "tio.js",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "description": "A small TypeScript library that lets you evaluate code in a sandboxed environment everywhere with TryItOnline.",
   "main": "dist/index.js",
   "typings": "typings.d.ts",

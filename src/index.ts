@@ -4,7 +4,7 @@
  * @copyright Copyright (c) 2021-2025 null8626
  * @license MIT
  * @author null8626
- * @version 4.0.3
+ * @version 4.0.4
  */
 
 import { deflateRaw, gunzip } from 'node:zlib'
@@ -76,15 +76,17 @@ async function evaluate(
     )}`,
     {
       method: 'POST',
-      body: await deflateRawAsync(
-        `Vargs\0${
-          options.argv!.length
-        }\0${argv}Vlang\0\x31\0${options.language!}\0VTIO_CFLAGS\0${
-          options.cflags!.length
-        }\0${cflags}VTIO_OPTIONS\0\x30\0F.code.tio\0${
-          code.length
-        }\0${code}F.input.tio\0\x30\0R`,
-        { level: 9 }
+      body: new Uint8Array(
+        await deflateRawAsync(
+          `Vargs\0${
+            options.argv!.length
+          }\0${argv}Vlang\0\x31\0${options.language!}\0VTIO_CFLAGS\0${
+            options.cflags!.length
+          }\0${cflags}VTIO_OPTIONS\0\x30\0F.code.tio\0${
+            code.length
+          }\0${code}F.input.tio\0\x30\0R`,
+          { level: 9 }
+        )
       ),
       signal: ab.signal
     }
