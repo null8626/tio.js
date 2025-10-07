@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 2
       - name: Pull previous commit
         run: git reset --soft HEAD~1
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: latest
       - name: Install dependencies
