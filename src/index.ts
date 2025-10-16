@@ -1,6 +1,6 @@
 /**
  * @name tio.js
- * @description A small TypeScript library that lets you evaluate code in a sandboxed environment everywhere with TryItOnline.
+ * @description Evaluate code in a sandboxed environment everywhere with TryItOnline.
  * @copyright Copyright (c) 2021-2025 null8626
  * @license MIT
  * @author null8626

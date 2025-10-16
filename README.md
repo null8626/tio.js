@@ -9,7 +9,7 @@
 [ko-fi-image]: https://ko-fi.com/img/githubbutton_sm.svg
 [ko-fi-url]: https://ko-fi.com/null8626
 
-A small TypeScript library that lets you evaluate code in a sandboxed environment everywhere with [TryItOnline](https://tio.run).
+Evaluate code in a sandboxed environment everywhere with [TryItOnline](https://tio.run).
 
 ## Supported languages
 
