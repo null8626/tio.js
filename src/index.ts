@@ -101,7 +101,7 @@ async function evaluate(
   if (options.timeout === Infinity) {
     data = await response.arrayBuffer()
   } else {
-    const tm = new Timeout(options.timeout!)
+    const tm = new Timeout(options.timeout)
 
     data = await Promise.race([response.arrayBuffer(), tm.promise])
 
@@ -172,7 +172,7 @@ const tio: Tio = <Tio>(async (
   } else if (
     'language' in options &&
     options.language !== defaultLanguage &&
-    !languages.includes(options.language!)
+    !languages.includes(options.language)
   ) {
     throw new TioError(
       `Unsupported/invalid language ID provided (Got ${inspect(
