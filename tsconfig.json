@@ -7,10 +7,10 @@
     "allowUnreachableCode": false,
     "noUnusedParameters": true,
     "strict": true,
-    "module": "esnext",
+    "module": "nodenext",
     "target": "esnext",
     "lib": ["esnext", "dom"],
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "nodenext"
   }
 }
