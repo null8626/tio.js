@@ -47,6 +47,12 @@ export default [
       '@typescript-eslint/class-literal-property-style': ['error', 'fields'],
       '@stylistic/comma-dangle': ['error'],
       '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        {
+          fixStyle: 'inline-type-imports',
+        },
+      ],
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/explicit-function-return-type': 'error',
       '@stylistic/keyword-spacing': 'error',
