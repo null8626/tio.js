@@ -698,11 +698,12 @@ export interface TioResponse {
   readonly exitCode: number
 }
 
-export type Tio = {
+export interface Tio {
   (code: string, options?: TioOptions): Promise<TioResponse>
   defaultLanguage: TioLanguage
   defaultTimeout: number
   defaultCflags: string[]
   defaultArgv: string[]
+  /** @deprecated tio.js now only depends on tio.run's Cache-Control response header. */
   refreshTimeout: number
 }

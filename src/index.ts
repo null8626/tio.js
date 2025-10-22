@@ -11,11 +11,10 @@ import { deflateRaw, gunzip } from 'node:zlib'
 import { inspect, promisify } from 'node:util'
 import { randomBytes } from 'node:crypto'
 
-import Timeout from './timeout.js'
+import type { Tio, TioLanguage, TioOptions, TioResponse } from '../typings.d.ts'
+import { validStringArray, request, Timeout } from './util.js'
 import languages from './languages.js'
-import { TioError, TioHttpError } from './error.js'
-import { validStringArray, requestText } from './util.js'
-import type { Tio, TioLanguage, TioOptions, TioResponse } from '../typings'
+import { TioError } from './error.js'
 
 const SCRIPT_REGEX =
   /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/
@@ -33,14 +32,14 @@ let defaultLanguage: TioLanguage = 'javascript-node'
 let defaultTimeout = Infinity
 let defaultCflags: string[] = []
 let defaultArgv: string[] = []
-let refreshTimeout = 850000
+let refreshTimeout = 0
 
 async function prepare(): Promise<void> {
   if (runURL !== null && Date.now() < nextRefresh) {
     return
   }
 
-  const scrapeResponse = await requestText('/')
+  const scrapeResponse = await (await request('/')).text()
   const frontendJSURL = scrapeResponse.match(SCRIPT_REGEX)?.[1]
 
   if (frontendJSURL === undefined) {
@@ -49,7 +48,22 @@ async function prepare(): Promise<void> {
     )
   }
 
-  const frontendJS = await requestText(frontendJSURL)
+  const frontendJSResponse = await request(frontendJSURL)
+  refreshTimeout =
+    Number(
+      frontendJSResponse.headers
+        .get('Cache-Control')
+        ?.match(/max-age=(\d+)/)?.[1]
+    ) * 1000
+
+  if (!refreshTimeout || isNaN(refreshTimeout)) {
+    throw new TioError(
+      'An error occurred while scraping tio.run. Please try again later or report this bug to the developer.'
+    )
+  }
+
+  const frontendJS = await frontendJSResponse.text()
+
   const newRunURL = frontendJS.match(RUNURL_REGEX)?.[1]
 
   if (newRunURL === undefined) {
@@ -64,56 +78,71 @@ async function prepare(): Promise<void> {
 
 async function evaluate(
   code: string,
-  options: TioOptions
+  options: TioOptions,
+  ab: AbortController,
+  tm: Timeout
 ): Promise<string | null> {
-  const ab = new AbortController()
   const cflags = options.cflags!.map(f => `${f}\0`).join('')
   const argv = options.argv!.map(a => `${a}\0`).join('')
 
-  const response = await fetch(
-    `https://tio.run/cgi-bin/static/${runURL}/${randomBytes(16).toString(
-      'hex'
-    )}`,
-    {
-      method: 'POST',
-      body: new Uint8Array(
-        await deflateRawAsync(
-          `Vargs\0${
-            options.argv!.length
-          }\0${argv}Vlang\0\x31\0${options.language!}\0VTIO_CFLAGS\0${
-            options.cflags!.length
-          }\0${cflags}VTIO_OPTIONS\0\x30\0F.code.tio\0${
-            code.length
-          }\0${code}F.input.tio\0\x30\0R`,
-          { level: 9 }
-        )
-      ),
-      signal: ab.signal
-    }
-  )
+  try {
+    const response = await request(
+      `/cgi-bin/static/${runURL}/${randomBytes(16).toString('hex')}`,
+      {
+        method: 'POST',
+        body: new Uint8Array(
+          await deflateRawAsync(
+            `Vargs\0${
+              options.argv!.length
+            }\0${argv}Vlang\0\x31\0${options.language!}\0VTIO_CFLAGS\0${
+              options.cflags!.length
+            }\0${cflags}VTIO_OPTIONS\0\x30\0F.code.tio\0${
+              code.length
+            }\0${code}F.input.tio\0\x30\0R`,
+            { level: 9 }
+          )
+        ),
+        signal: ab.signal
+      }
+    )
 
-  if (response.status >= 400) {
-    throw new TioHttpError(response)
+    const reader = response.body?.getReader()
+
+    const chunks: Uint8Array[] = []
+    let total = 0
+
+    if (reader) {
+      let data: ReadableStreamReadResult<Uint8Array> | null
+
+      while (
+        (data = await Promise.race([reader.read(), tm.promise])) !== null
+      ) {
+        if (data.done) {
+          const rawResult = new Uint8Array(total)
+          let offset = 0
+
+          for (const chunk of chunks) {
+            rawResult.set(chunk, offset)
+
+            offset += chunk.length
+          }
+
+          return (await gunzipAsync(rawResult)).toString()
+        }
+
+        chunks.push(data.value)
+        total += data.value.length
+      }
+
+      void reader.cancel()
+    }
+  } catch (err: any) {
+    if (err.name !== 'AbortError') {
+      throw err
+    }
   }
 
-  let data = null
-
-  if (options.timeout === Infinity) {
-    data = await response.arrayBuffer()
-  } else {
-    const tm = new Timeout(options.timeout)
-
-    data = await Promise.race([response.arrayBuffer(), tm.promise])
-
-    if (data === null) {
-      ab.abort()
-      return null
-    }
-
-    tm.cancel()
-  }
-
-  return (await gunzipAsync(data)).toString()
+  return null
 }
 
 /**
@@ -146,7 +175,7 @@ async function evaluate(
  * @returns {Promise<TioResponse>} The evaluated response.
  * @async
  * @throws {TioError} The user supplied invalid arguments or the client couldn't scrape tio.run.
- * @throws {TioHttpError} The client received an invalid HTTP response from the tio.run servers. This is usually not expected.
+ * @throws {import('./error.js').TioHttpError} The client received an invalid HTTP response from the tio.run servers. This is usually not expected.
  * @public
  * @see {@link https://github.com/null8626/tio.js#examples}
  * @example await tio('console.log("Hello, World!");')
@@ -154,7 +183,7 @@ async function evaluate(
  * @example await tio('console.log("Hello, World!");', { timeout: 2000 })
  * @example await tio('console.log(process.argv.slice(2).join(", "));', { argv: ['Hello', 'World!'] })
  */
-const tio: Tio = <Tio>(async (
+const tio: Tio = (async (
   code: string,
   options?: TioOptions
 ): Promise<TioResponse> => {
@@ -172,7 +201,7 @@ const tio: Tio = <Tio>(async (
   } else if (
     'language' in options &&
     options.language !== defaultLanguage &&
-    !languages.includes(options.language)
+    !languages.includes(options.language!)
   ) {
     throw new TioError(
       `Unsupported/invalid language ID provided (Got ${inspect(
@@ -205,7 +234,16 @@ const tio: Tio = <Tio>(async (
 
   await prepare()
 
-  const result = await evaluate(code, options)
+  const ab = new AbortController()
+
+  const result = await evaluate(
+    code,
+    options,
+    ab,
+    new Timeout(ab, options.timeout)
+  )
+
+  ab.abort()
 
   if (result === null) {
     const timeoutInSecs = options.timeout! / 1000
@@ -233,9 +271,9 @@ const tio: Tio = <Tio>(async (
     userTime: parseFloat(userTime),
     sysTime: parseFloat(sysTime),
     CPUshare: parseFloat(CPUshare),
-    exitCode: parseInt(exitCode)
+    exitCode: Number(exitCode)
   })
-})
+}) as Tio
 
 Object.defineProperties(tio, {
   languages: {
@@ -332,19 +370,17 @@ Object.defineProperties(tio, {
     enumerable: true,
 
     get(): number {
+      console.warn(
+        "[DEPRECATED] refreshTimeout is deprecated. tio.js now only depends on tio.run's Cache-Control response header."
+      )
+
       return refreshTimeout
     },
 
-    set(timeout: number) {
-      if (!Number.isSafeInteger(timeout) || timeout < 500000) {
-        throw new TioError(
-          `Refresh timeout must be a valid integer and it's value must be 500000 or greater. Got ${inspect(
-            timeout
-          )}`
-        )
-      }
-
-      refreshTimeout = timeout
+    set(_timeout: number) {
+      console.warn(
+        "[DEPRECATED] refreshTimeout is deprecated. tio.js now only depends on tio.run's Cache-Control response header."
+      )
     }
   }
 })
