@@ -13,6 +13,7 @@ export async function request(
 ): Promise<Response> {
   const response: Response = await fetch(`https://tio.run${path}`, options)
 
+  /* node:coverage ignore next 3 */
   if (!response.ok) {
     throw new TioHttpError(response)
   }

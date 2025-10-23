@@ -42,6 +42,7 @@ async function prepare(): Promise<void> {
   const scrapeResponse = await (await request('/')).text()
   const frontendJSURL = scrapeResponse.match(SCRIPT_REGEX)?.[1]
 
+  /* node:coverage ignore next 5 */
   if (frontendJSURL === undefined) {
     throw new TioError(
       'An error occurred while scraping tio.run. Please try again later or report this bug to the developer.'
@@ -56,6 +57,7 @@ async function prepare(): Promise<void> {
         ?.match(/max-age=(\d+)/)?.[1]
     ) * 1000
 
+  /* node:coverage ignore next 5 */
   if (!refreshTimeout || isNaN(refreshTimeout)) {
     throw new TioError(
       'An error occurred while scraping tio.run. Please try again later or report this bug to the developer.'
@@ -66,6 +68,7 @@ async function prepare(): Promise<void> {
 
   const newRunURL = frontendJS.match(RUNURL_REGEX)?.[1]
 
+  /* node:coverage ignore next 5 */
   if (newRunURL === undefined) {
     throw new TioError(
       'An error occurred while scraping tio.run. Please try again later or report this bug to the developer.'
@@ -135,7 +138,7 @@ async function evaluate(
       }
 
       void reader.cancel()
-    }
+    } /* node:coverage ignore next 5 */
   } catch (err: any) {
     if (err.name !== 'AbortError') {
       throw err
@@ -191,6 +194,7 @@ const tio: Tio = (async (
 
   if (
     'timeout' in options &&
+    options.timeout !== Infinity &&
     (!Number.isSafeInteger(options.timeout) || options.timeout! < 500)
   ) {
     throw new TioError(
@@ -311,7 +315,10 @@ Object.defineProperties(tio, {
     },
 
     set(timeout: number) {
-      if (!Number.isSafeInteger(timeout) || timeout < 500) {
+      if (
+        timeout !== Infinity &&
+        (!Number.isSafeInteger(timeout) || timeout < 500)
+      ) {
         throw new TioError(
           `Timeout must be a valid integer and it's value must be 500 or greater. Got ${inspect(
             timeout
@@ -365,6 +372,7 @@ Object.defineProperties(tio, {
     }
   },
 
+  /* node:coverage ignore next 18 */
   refreshTimeout: {
     configurable: false,
     enumerable: true,

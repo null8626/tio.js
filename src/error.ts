@@ -13,6 +13,7 @@ export class TioError extends Error {
   }
 }
 
+/* node:coverage ignore next 18 */
 /**
  * An HTTP-related error coming from tio.js.
  * This can happen if the client received an invalid HTTP response from the tio.run servers. This is usually not expected.

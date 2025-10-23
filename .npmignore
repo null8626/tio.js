@@ -1,6 +1,10 @@
 LICENSE
+codecov*
+coverage/
 dist/*.d.ts
 eslint.config.mjs
+junit.xml
+scripts/
 src/
 test.mjs
 tsconfig.json
