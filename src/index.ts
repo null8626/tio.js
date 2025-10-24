@@ -13,8 +13,8 @@ import { randomBytes } from 'node:crypto'
 
 import type { Tio, TioLanguage, TioOptions, TioResponse } from '../typings.d.ts'
 import { validStringArray, request, Timeout } from './util.js'
+import { TioError, type TioHttpError } from './error.js'
 import languages from './languages.js'
-import { TioError } from './error.js'
 
 const SCRIPT_REGEX =
   /<script src="(\/static\/[0-9a-f]+-frontend\.js)" defer><\/script>/
@@ -174,11 +174,11 @@ async function evaluate(
 /**
  * Evaluates a code.
  * @param {string} code - The source code to be evaluated.
- * @param {TioOptions} [options] - The opional options to be passed in to override the default options.
+ * @param {TioOptions} [options] - The optional options to be passed in to override the default options.
  * @returns {Promise<TioResponse>} The evaluated response.
  * @async
  * @throws {TioError} The user supplied invalid arguments or the client couldn't scrape tio.run.
- * @throws {import('./error.js').TioHttpError} The client received an invalid HTTP response from the tio.run servers. This is usually not expected.
+ * @throws {TioHttpError} The client received an invalid HTTP response from the tio.run servers. This is usually not expected.
  * @public
  * @see {@link https://github.com/null8626/tio.js#examples}
  * @example await tio('console.log("Hello, World!");')
