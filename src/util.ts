@@ -22,24 +22,24 @@ export async function request(
 }
 
 export class Timeout {
-  #t: NodeJS.Timeout | null
+  #timeout: NodeJS.Timeout | null
   readonly promise: Promise<null>
 
   constructor(ab: AbortController, tm?: number) {
-    this.#t = null
+    this.#timeout = null
     this.promise = new Promise(resolve => {
       ab.signal.addEventListener('abort', () => {
-        if (this.#t !== null) {
-          clearTimeout(this.#t)
+        if (this.#timeout !== null) {
+          clearTimeout(this.#timeout)
 
-          this.#t = null
+          this.#timeout = null
         }
 
         resolve(null)
       })
 
       if (tm && tm !== Infinity) {
-        this.#t = setTimeout(() => {
+        this.#timeout = setTimeout(() => {
           resolve(null)
         }, tm)
       }
