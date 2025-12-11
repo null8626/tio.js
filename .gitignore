@@ -3,4 +3,5 @@ node_modules
 junit.xml
 coverage/
 codecov*
+!codecov.yml
 dist/

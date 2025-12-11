@@ -14,17 +14,15 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 2
-      - name: Pull previous commit
-        run: git reset --soft HEAD~1
+          fetch-depth: 1
       - uses: actions/setup-node@v6
         with:
           node-version: latest
       - name: Install dependencies
         run: npm i --save-dev
-      - name: Run lint
+      - name: Lint files
         run: npm run lint
-      - name: Run prettier
+      - name: Pretty files
         if: ${{ github.event_name != 'pull_request' }}
         run: npm run prettier
       - name: Run tests
@@ -37,6 +35,11 @@ jobs:
         uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload coverage results to Codacy
+        if: ${{ github.event_name != 'pull_request' }}
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage/lcov.info
       - name: Import GPG key
         if: ${{ github.event_name != 'pull_request' }}
         uses: crazy-max/ghaction-import-gpg@v6
@@ -49,8 +52,7 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         uses: EndBug/add-and-commit@v9
         with:
-          commit: -S
-          message: ${{ github.event.head_commit.message }}
-          push: --force
+          commit: --amend --no-edit
+          push: --force-with-lease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
