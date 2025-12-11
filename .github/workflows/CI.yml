@@ -20,11 +20,6 @@ jobs:
           node-version: latest
       - name: Install dependencies
         run: npm i --save-dev
-      - name: Lint files
-        run: npm run lint
-      - name: Pretty files
-        if: ${{ github.event_name != 'pull_request' }}
-        run: npm run prettier
       - name: Run tests
         run: node scripts/coverage.mjs
       - name: Upload coverage results to Codecov
@@ -40,6 +35,11 @@ jobs:
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage/lcov.info
+      - name: Lint files
+        run: npm run lint
+      - name: Pretty files
+        if: ${{ github.event_name != 'pull_request' }}
+        run: npm run prettier
       - name: Import GPG key
         if: ${{ github.event_name != 'pull_request' }}
         uses: crazy-max/ghaction-import-gpg@v6
@@ -52,7 +52,7 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         uses: EndBug/add-and-commit@v9
         with:
-          commit: --amend --no-edit
+          commit: -S --amend --no-edit
           push: --force-with-lease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
