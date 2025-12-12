@@ -8,6 +8,7 @@ on:
     paths:
       - '**/*.ts'
   pull_request: null
+  workflow_dispatch: null
 jobs:
   test:
     runs-on: ubuntu-latest

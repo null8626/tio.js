@@ -2,6 +2,7 @@ name: Publish
 on:
   release:
     types: [created]
+  workflow_dispatch: null
 permissions:
   id-token: write
   contents: read
