@@ -1,4 +1,4 @@
-name: CI
+name: Run tests and pretty files
 on:
   push:
     branches:
