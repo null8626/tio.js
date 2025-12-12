@@ -1,6 +1,6 @@
 {
   "name": "tio.js",
-  "version": "4.0.4",
+  "version": "4.1.0",
   "description": "Evaluate code in a sandboxed environment everywhere with TryItOnline.",
   "main": "dist/index.js",
   "typings": "typings.d.ts",

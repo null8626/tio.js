@@ -4,7 +4,7 @@
  * @copyright Copyright (c) 2021-2025 null8626
  * @license MIT
  * @author null8626
- * @version 4.0.4
+ * @version 4.1.0
  */
 
 import { deflateRaw, gunzip } from 'node:zlib'
