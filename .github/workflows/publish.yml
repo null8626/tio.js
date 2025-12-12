@@ -14,7 +14,7 @@ jobs:
         with:
           node-version: latest
       - name: Install dependencies
-        run: npm ci
+        run: npm i --save-dev
       - name: Build
         run: npx tsc
       - name: Publish
