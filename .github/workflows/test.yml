@@ -11,12 +11,15 @@ on:
   workflow_dispatch: null
 jobs:
   test:
+    name: Run tests and pretty files
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - name: Clone repository
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
-      - uses: actions/setup-node@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
         with:
           node-version: latest
       - name: Install dependencies
@@ -33,9 +36,9 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload coverage results to Codacy
         if: ${{ github.event_name != 'pull_request' }}
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage/lcov.info
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage/lcov.info
       - name: Lint files
         run: npm run lint
       - name: Pretty files

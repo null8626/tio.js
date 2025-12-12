@@ -1,4 +1,4 @@
-name: Publish
+name: Publish to NPM
 on:
   release:
     types: [created]
@@ -8,10 +8,16 @@ permissions:
   contents: read
 jobs:
   publish:
+    name: Publish to NPM
     runs-on: ubuntu-latest
+    environment: publish
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - name: Clone repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
         with:
           node-version: latest
       - name: Install dependencies
