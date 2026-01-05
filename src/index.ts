@@ -1,7 +1,10 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 /**
  * @name tio.js
  * @description Evaluate code in a sandboxed environment everywhere with TryItOnline.
- * @copyright Copyright (c) 2021-2025 null8626
+ * @copyright Copyright (c) 2021-2026 null8626
  * @license MIT
  * @author null8626
  * @version 4.1.0

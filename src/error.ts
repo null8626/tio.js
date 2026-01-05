@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 /**
  * An error coming from tio.js.
  * This can happen if the user supplied invalid arguments or the client couldn't scrape tio.run.
