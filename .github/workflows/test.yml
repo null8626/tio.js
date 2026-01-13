@@ -27,14 +27,17 @@ jobs:
       - name: Run tests
         run: node scripts/coverage.mjs
       - name: Upload coverage results to Codecov
+        if: ${{ github.event_name != 'pull_request' }}
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload test results to Codecov
+        if: ${{ github.event_name != 'pull_request' }}
         uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload coverage results to Codacy
+        if: ${{ github.event_name != 'pull_request' }}
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           coverage-reports: coverage/lcov.info
