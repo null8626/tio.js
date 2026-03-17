@@ -32,7 +32,7 @@ try {
   execSync('npx tsc', EXEC_OPTIONS)
 
   const output = execSync(
-    'npx c8 node --test --test-reporter=junit',
+    'npx c8 node --import tsx --test tio.test.ts --test-reporter=junit',
     EXEC_OPTIONS
   )
     .toString()

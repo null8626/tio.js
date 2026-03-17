@@ -10,7 +10,7 @@ export class TioError extends Error {
   constructor(message: string) {
     super(message)
 
-    this.name = `TioError: ${message}`
+    this.name = 'TioError'
 
     Object.setPrototypeOf(this, TioError.prototype)
   }

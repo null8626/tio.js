@@ -6,7 +6,7 @@ eslint.config.mjs
 junit.xml
 scripts/
 src/
-test.mjs
+tio.test.ts
 tsconfig.json
 .github/
 .gitattributes

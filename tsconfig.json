@@ -1,7 +1,9 @@
 {
   "include": ["src/**/*.ts"],
   "compilerOptions": {
+    "rootDir": "src",
     "outDir": "dist",
+    "noImplicitAny": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "allowUnreachableCode": false,
@@ -9,9 +11,9 @@
     "strict": true,
     "module": "nodenext",
     "target": "esnext",
-    "lib": ["esnext", "dom"],
     "esModuleInterop": true,
     "moduleResolution": "nodenext",
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["node"]
   }
 }

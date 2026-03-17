@@ -6,8 +6,8 @@
   "typings": "typings.d.ts",
   "scripts": {
     "lint": "npx eslint",
-    "prettier": "npx prettier src/**/*.ts typings.d.ts scripts/*.mjs test.mjs --write",
-    "test": "npx tsc && node --test"
+    "prettier": "npx prettier **/*.ts scripts/*.mjs --write",
+    "test": "node --import tsx --test tio.test.ts"
   },
   "repository": {
     "type": "git",
@@ -37,7 +37,13 @@
     "eslint-plugin-jsdoc": "^62.8.0",
     "globals": "^17.4.0",
     "prettier": "^3.8.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "c8": {
+      "yargs": "^18.0.0"
+    }
   },
   "engines": {
     "node": ">= 20"

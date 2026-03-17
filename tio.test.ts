@@ -1,31 +1,14 @@
-import { deepStrictEqual, throws, strictEqual } from 'node:assert'
+import { deepStrictEqual, rejects, throws, strictEqual } from 'node:assert'
 import { it } from 'node:test'
+import tio from './src/index'
 
-import tio from './dist/index.js'
+function testTioAttribute<T>(key: string, defaultVariation: T, newVariation: T) {
+  deepStrictEqual((tio as any)[key], defaultVariation)
+  ;(tio as any)[key] = newVariation
 
-function testTioAttribute(key, defaultVariation, newVariation) {
-  deepStrictEqual(tio[key], defaultVariation)
-  tio[key] = newVariation
-
-  deepStrictEqual(tio[key], newVariation)
-  tio[key] = defaultVariation
+  deepStrictEqual((tio as any)[key], newVariation)
+  ;(tio as any)[key] = defaultVariation
 }
-
-async function assertThrowsAsync(func, options, ...args) {
-  let checkFunction = () => {}
-
-  try {
-    await func(...args)
-  } catch (err) {
-    checkFunction = () => {
-      throw err
-    }
-  } finally {
-    throws(checkFunction, options)
-  }
-}
-
-const TIO_ERROR_ASSERTION = /^TioError: /
 
 it('works with the timeout option', async () => {
   testTioAttribute('defaultTimeout', Infinity, 2000)
@@ -33,18 +16,15 @@ it('works with the timeout option', async () => {
   const invalidValues = [NaN, 0, -5, 'test', null, undefined]
 
   for (const invalidValue of invalidValues) {
-    await assertThrowsAsync(
-      tio,
-      TIO_ERROR_ASSERTION,
-      "console.log('Hello, World!');",
-      {
-        timeout: invalidValue
-      }
+    await rejects(
+      () => tio("console.log('Hello, World!');", {
+        timeout: invalidValue as any
+      }), { name: 'TioError' }
     )
 
     throws(() => {
-      tio.defaultTimeout = invalidValue
-    }, TIO_ERROR_ASSERTION)
+      tio.defaultTimeout = invalidValue as any
+    }, { name: 'TioError' })
   }
 })
 
@@ -54,18 +34,15 @@ it('works with the language option', async () => {
   const invalidValues = [0, 'test', null, undefined]
 
   for (const invalidValue of invalidValues) {
-    await assertThrowsAsync(
-      tio,
-      TIO_ERROR_ASSERTION,
-      "console.log('Hello, World!');",
-      {
-        language: invalidValue
-      }
+    await rejects(
+      () => tio("console.log('Hello, World!');", {
+        language: invalidValue as any
+      }), { name: 'TioError' }
     )
 
     throws(() => {
-      tio.defaultLanguage = invalidValue
-    }, TIO_ERROR_ASSERTION)
+      tio.defaultLanguage = invalidValue as any
+    }, { name: 'TioError' })
   }
 })
 
@@ -89,18 +66,11 @@ it('works with the cflags and argv options', async () => {
     testTioAttribute(defaultOptionKey, [], ['test', 'test 2'])
 
     for (const invalidValue of invalidValues) {
-      await assertThrowsAsync(
-        tio,
-        TIO_ERROR_ASSERTION,
-        "console.log('Hello, World!');",
-        {
-          [option]: invalidValue
-        }
-      )
+      await rejects(() => tio("console.log('Hello, World!');", { [option]: invalidValue }), { name: 'TioError' })
 
       throws(() => {
-        tio[defaultOptionKey] = invalidValue
-      }, TIO_ERROR_ASSERTION)
+        (tio as any)[defaultOptionKey] = invalidValue
+      }, { name: 'TioError' })
     }
   }
 })
