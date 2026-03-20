@@ -54,11 +54,11 @@ async function prepare(): Promise<void> {
 
   const frontendJSResponse = await request(frontendJSURL)
   refreshTimeout =
-    Number(
+    parseInt(
       frontendJSResponse.headers
         .get('Cache-Control')
-        ?.match(/max-age=(\d+)/)?.[1]
-    ) * 1000
+        ?.match(/max-age=(\d+)/)?.[1]!
+    , 10) * 1000
 
   /* node:coverage ignore next 5 */
   if (!refreshTimeout || isNaN(refreshTimeout)) {
@@ -278,7 +278,7 @@ const tio: Tio = (async (
     userTime: parseFloat(userTime),
     sysTime: parseFloat(sysTime),
     CPUshare: parseFloat(CPUshare),
-    exitCode: Number(exitCode)
+    exitCode: parseInt(exitCode, 10)
   })
 }) as Tio
 
