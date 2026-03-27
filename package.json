@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "typings": "typings.d.ts",
   "scripts": {
-    "lint": "eslint",
+    "lint": "eslint --fix",
     "prettier": "prettier src/**/*.ts scripts/*.mjs --write",
     "test": "node --import tsx --test tio.test.ts"
   },
