@@ -94,6 +94,7 @@ export default [
       '@typescript-eslint/require-array-sort-compare': 'error',
       '@typescript-eslint/restrict-plus-operands': 'error',
       '@stylistic/semi': ['error', 'never'],
+      '@stylistic/semi-spacing': 'error',
       '@stylistic/space-before-blocks': 'error',
       '@stylistic/type-annotation-spacing': 'error',
 
@@ -263,8 +264,6 @@ export default [
       'prefer-spread': 'error',
       'prefer-template': 'error',
       'require-yield': 'error',
-      semi: 'off',
-      'semi-spacing': 'error',
       strict: 'error',
       'switch-colon-spacing': 'error',
       'template-curly-spacing': 'error',
