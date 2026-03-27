@@ -6,6 +6,9 @@ import globals from 'globals'
 
 export default [
   {
+    ignores: ['coverage/**']
+  },
+  {
     files: ['src/**/*.ts'],
 
     plugins: {

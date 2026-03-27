@@ -6,7 +6,7 @@
   "typings": "typings.d.ts",
   "scripts": {
     "lint": "eslint",
-    "prettier": "prettier **/*.ts scripts/*.mjs --write",
+    "prettier": "prettier src/**/*.ts scripts/*.mjs --write",
     "test": "node --import tsx --test tio.test.ts"
   },
   "repository": {
