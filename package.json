@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "typings": "typings.d.ts",
   "scripts": {
-    "lint": "npx eslint",
-    "prettier": "npx prettier **/*.ts scripts/*.mjs --write",
+    "lint": "eslint",
+    "prettier": "prettier **/*.ts scripts/*.mjs --write",
     "test": "node --import tsx --test tio.test.ts"
   },
   "repository": {
