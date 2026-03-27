@@ -42,11 +42,10 @@ jobs:
         with:
           coverage-reports: coverage/lcov.info
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+      - name: Pretty files
+        run: npm run prettier
       - name: Lint files
         run: npm run lint
-      - name: Pretty files
-        if: ${{ github.event_name != 'pull_request' }}
-        run: npm run prettier
       - name: Import GPG key
         if: ${{ github.event_name != 'pull_request' }}
         uses: crazy-max/ghaction-import-gpg@v7
