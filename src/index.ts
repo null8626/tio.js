@@ -57,8 +57,9 @@ async function prepare(): Promise<void> {
     parseInt(
       frontendJSResponse.headers
         .get('Cache-Control')
-        ?.match(/max-age=(\d+)/)?.[1]!
-      , 10) * 1000
+        ?.match(/max-age=(\d+)/)?.[1]!,
+      10
+    ) * 1000
 
   /* node:coverage ignore next 5 */
   if (!refreshTimeout || isNaN(refreshTimeout)) {

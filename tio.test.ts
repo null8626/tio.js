@@ -2,7 +2,11 @@ import { deepStrictEqual, rejects, throws, strictEqual } from 'node:assert'
 import { it } from 'node:test'
 import tio from './src/index'
 
-function testTioAttribute<T>(key: string, defaultVariation: T, newVariation: T) {
+function testTioAttribute<T>(
+  key: string,
+  defaultVariation: T,
+  newVariation: T
+) {
   deepStrictEqual((tio as any)[key], defaultVariation)
   ;(tio as any)[key] = newVariation
 
@@ -17,14 +21,19 @@ it('works with the timeout option', async () => {
 
   for (const invalidValue of invalidValues) {
     await rejects(
-      () => tio("console.log('Hello, World!');", {
-        timeout: invalidValue as any
-      }), { name: 'TioError' }
+      () =>
+        tio("console.log('Hello, World!');", {
+          timeout: invalidValue as any
+        }),
+      { name: 'TioError' }
     )
 
-    throws(() => {
-      tio.defaultTimeout = invalidValue as any
-    }, { name: 'TioError' })
+    throws(
+      () => {
+        tio.defaultTimeout = invalidValue as any
+      },
+      { name: 'TioError' }
+    )
   }
 })
 
@@ -35,14 +44,19 @@ it('works with the language option', async () => {
 
   for (const invalidValue of invalidValues) {
     await rejects(
-      () => tio("console.log('Hello, World!');", {
-        language: invalidValue as any
-      }), { name: 'TioError' }
+      () =>
+        tio("console.log('Hello, World!');", {
+          language: invalidValue as any
+        }),
+      { name: 'TioError' }
     )
 
-    throws(() => {
-      tio.defaultLanguage = invalidValue as any
-    }, { name: 'TioError' })
+    throws(
+      () => {
+        tio.defaultLanguage = invalidValue as any
+      },
+      { name: 'TioError' }
+    )
   }
 })
 
@@ -66,11 +80,17 @@ it('works with the cflags and argv options', async () => {
     testTioAttribute(defaultOptionKey, [], ['test', 'test 2'])
 
     for (const invalidValue of invalidValues) {
-      await rejects(() => tio("console.log('Hello, World!');", { [option]: invalidValue }), { name: 'TioError' })
+      await rejects(
+        () => tio("console.log('Hello, World!');", { [option]: invalidValue }),
+        { name: 'TioError' }
+      )
 
-      throws(() => {
-        (tio as any)[defaultOptionKey] = invalidValue
-      }, { name: 'TioError' })
+      throws(
+        () => {
+          ;(tio as any)[defaultOptionKey] = invalidValue
+        },
+        { name: 'TioError' }
+      )
     }
   }
 })
