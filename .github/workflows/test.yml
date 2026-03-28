@@ -1,13 +1,10 @@
 name: Run tests and pretty files
 on:
   push:
-    branches:
-      - master
-    tags-ignore:
-      - '**'
-    paths:
-      - '**/*.ts'
-  pull_request: null
+    tags-ignore: ['**']
+    paths: ['**/*.ts']
+  pull_request:
+    paths: ['**/*.ts']
   workflow_dispatch: null
 jobs:
   test:
