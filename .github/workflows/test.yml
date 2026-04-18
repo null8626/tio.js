@@ -1,6 +1,7 @@
 name: Run tests and pretty files
 on:
   push:
+    branches: [master]
     tags-ignore: ['**']
     paths: ['**/*.ts']
   pull_request:
