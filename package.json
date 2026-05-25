@@ -34,7 +34,7 @@
     "@typescript-eslint/parser": "^8.57.1",
     "c8": "^11.0.0",
     "eslint": "^10.0.3",
-    "eslint-plugin-jsdoc": "^62.8.0",
+    "eslint-plugin-jsdoc": "^63.0.0",
     "globals": "^17.4.0",
     "prettier": "^3.8.1",
     "tsx": "^4.21.0",
