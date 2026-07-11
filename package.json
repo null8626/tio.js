@@ -29,7 +29,7 @@
   "homepage": "https://github.com/null8626/tio.js#readme",
   "devDependencies": {
     "@stylistic/eslint-plugin": "^5.10.0",
-    "@types/node": "^25.5.0",
+    "@types/node": "^26.1.1",
     "@typescript-eslint/eslint-plugin": "^8.57.1",
     "@typescript-eslint/parser": "^8.57.1",
     "c8": "^11.0.0",
