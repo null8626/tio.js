@@ -29,15 +29,15 @@
   "homepage": "https://github.com/null8626/tio.js#readme",
   "devDependencies": {
     "@stylistic/eslint-plugin": "^5.10.0",
-    "@types/node": "^26.5.1",
-    "@typescript-eslint/eslint-plugin": "^8.70.0",
-    "@typescript-eslint/parser": "^8.70.0",
+    "@types/node": "^26.6.6",
+    "@typescript-eslint/eslint-plugin": "^8.72.2",
+    "@typescript-eslint/parser": "^8.72.2",
     "c8": "^12.0.0",
-    "eslint": "^10.10.0",
-    "eslint-plugin-jsdoc": "^65.0.0",
-    "globals": "^17.12.0",
-    "prettier": "^3.9.6",
-    "tsx": "^4.23.13",
+    "eslint": "^10.14.0",
+    "eslint-plugin-jsdoc": "^65.4.5",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.0",
+    "tsx": "^4.23.15",
     "typescript": "^6.0.3"
   },
   "overrides": {
