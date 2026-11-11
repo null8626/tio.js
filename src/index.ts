@@ -32,7 +32,7 @@ let runURL: string | null = null
 let nextRefresh = 0
 
 let defaultLanguage: TioLanguage = 'javascript-node'
-let defaultTimeout = Infinity
+let defaultTimeout = Number.POSITIVE_INFINITY
 let defaultCflags: string[] = []
 let defaultArgv: string[] = []
 let refreshTimeout = 0
@@ -156,7 +156,7 @@ async function evaluate(
  * The optional options to be passed onto tio().
  * @typedef {object} TioOptions
  * @property {string} [language] - The preferred language ID.
- * @property {number} [timeout] - How much milliseconds for the client to wait before the request times out. Great for surpressing infinite loops. Defaults to Infinity.
+ * @property {number} [timeout] - How much milliseconds for the client to wait before the request times out. Great for surpressing infinite loops. Defaults to Number.POSITIVE_INFINITY.
  * @property {string[]} [cflags] - Extra arguments to be passed onto the compiler (Only works in compiled languages).
  * @property {string[]} [argv] - Custom command-line arguments.
  * @public
@@ -198,7 +198,7 @@ const tio: Tio = (async (
 
   if (
     'timeout' in options &&
-    options.timeout !== Infinity &&
+    options.timeout !== Number.POSITIVE_INFINITY &&
     (!Number.isSafeInteger(options.timeout) || options.timeout! < 500)
   ) {
     throw new TioError(
@@ -320,7 +320,7 @@ Object.defineProperties(tio, {
 
     set(timeout: number) {
       if (
-        timeout !== Infinity &&
+        timeout !== Number.POSITIVE_INFINITY &&
         (!Number.isSafeInteger(timeout) || timeout < 500)
       ) {
         throw new TioError(

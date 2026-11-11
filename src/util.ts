@@ -41,7 +41,7 @@ export class Timeout {
         resolve(null)
       })
 
-      if (tm && tm !== Infinity) {
+      if (tm && tm !== Number.POSITIVE_INFINITY) {
         this.#timeout = setTimeout(() => {
           resolve(null)
         }, tm)

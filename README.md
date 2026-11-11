@@ -814,7 +814,7 @@ console.log(response)
 //   exitCode: 0
 // }
 
-// tio.js uses Infinity (no timeouts) by default.
+// tio.js uses Number.POSITIVE_INFINITY (no timeouts) by default.
 tio.defaultTimeout = 10000
 
 response = await tio('for (;;);')

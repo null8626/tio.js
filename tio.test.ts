@@ -15,7 +15,7 @@ function testTioAttribute<T>(
 }
 
 it('works with the timeout option', async () => {
-  testTioAttribute('defaultTimeout', Infinity, 2000)
+  testTioAttribute('defaultTimeout', Number.POSITIVE_INFINITY, 2000)
 
   const invalidValues = [NaN, 0, -5, 'test', null, undefined]
 
